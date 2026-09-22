@@ -1,0 +1,516 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "custom_liquid_kBNhiG": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<style>\n.custom_qty_inner .qty_block {\n    display: flex;\n    align-items: center;\n    position: relative;\n    padding: 10px;\n    box-sizing: border-box;\n    flex-direction: row;\n    justify-content: space-around;\n    align-content: center;\n}\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "custom_liquid_XbDWbn": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<a href=\"#reviews\" class=\"na-store-rating\" aria-label=\"Rated 4.8 out of 5 from 164 reviews\">\n  <span class=\"na-store-rating__stars\" aria-hidden=\"true\">\u2605\u2605\u2605\u2605\u2605</span>\n  <span class=\"na-store-rating__text\">4.8/5 \u00b7 164 reviews</span>\n</a>\n\n<style>\n.na-store-rating {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin: 0 0 10px 0;\n  text-decoration: none;\n  font-family: 'Poppins', sans-serif;\n  line-height: 1;\n}\n.na-store-rating__stars {\n  color: #FFB800;\n  font-size: 22px;\n  letter-spacing: 1px;\n}\n.na-store-rating__text {\n  font-size: 13px;\n  font-weight: 600;\n  color: rgba(0,0,0,0.65);\n  letter-spacing: 0.2px;\n}\n.na-store-rating:hover .na-store-rating__text {\n  text-decoration: underline;\n}\n</style>"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "text_TCBWaB": {
+          "type": "text",
+          "settings": {
+            "text": "FREE UK SHIPPING - WHEN YOU BUY 2+ BUNDLES",
+            "text_style": "uppercase"
+          },
+          "disabled": true
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "custom_liquid_UaQbjX": {
+          "type": "custom_liquid",
+          "name": "Product Summary",
+          "settings": {
+            "custom_liquid": "{%- assign variant = product.selected_or_first_available_variant -%}\n\n{%- comment -%}\nVariant-first metafield logic, then product fallback\nMetafield keys (namespace: custom):\n- resalevalue (Integer)\n- quantity1 (Integer)\n- priceperpiece (Decimal)\n- productgrade1 (Single line text)\n{%- endcomment -%}\n\n{%- assign resale_value = variant.metafields.custom.resalevalue.value | default: product.metafields.custom.resalevalue.value -%}\n{%- assign units_value = variant.metafields.custom.quantity1.value | default: product.metafields.custom.quantity1.value -%}\n{%- assign price_per_piece = variant.metafields.custom.price_per_piece.value | default: product.metafields.custom.priceperpiece.value -%}\n{%- assign product_grade = variant.metafields.custom.productgrade.value | default: product.metafields.custom.productgrade.value | default: product.metafields.custom.productgrade1.value -%}\n{%- if product_grade == blank or product_grade == '\u2014' or product_grade == '-' -%}{%- if variant.title != 'Default Title' -%}{%- assign product_grade = variant.title -%}{%- else -%}{%- assign product_grade = '' -%}{%- endif -%}{%- endif -%}\n\n\n{% if resale_value %}\n\n<div data-na-summary\n     style=\"background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; color: #222; font-size: 14px; text-align: left; width: 100%; box-shadow: 0 2px 6px rgba(0,0,0,0.04);\">\n\n  <div style=\"font-weight: bold; text-align: center; margin-bottom: 8px; font-size: 18px;\">\n     Product Summary \ud83e\uddfe\n  </div>\n\n  <!-- Product Grade (variant-first, product fallback) -->\n  {% if product_grade %}\n  <div style=\"display: flex; justify-content: space-between; margin: 6px 0; align-items: center;\">\n    <span>\n      <a href=\"https://notanotherwholesale.com/pages/our-grading-system\"\n         style=\"font-size: 14px; color: #3a3a3a; text-decoration: none; font-weight: 600;\"\n         onmouseover=\"this.style.textDecoration='underline'; this.style.color='#000';\"\n         onmouseout=\"this.style.textDecoration='none'; this.style.color='#3a3a3a';\">\n        Product Grade \ud83d\udd0d\n      </a>:\n    </span>\n    <span data-na-grade style=\"flex: 1; text-align: right; font-weight: 600;\">\n      {{ product_grade }}\n    </span>\n  </div>\n  {% endif %}\n\n  <!-- Units -->\n  {% if units_value %}\n  <div style=\"display: flex; justify-content: space-between; margin: 6px 0;\">\n    <span>Units:</span>\n    <span data-na-units style=\"flex: 1; text-align: right;\">\n      {{ units_value }}\n    </span>\n  </div>\n  {% endif %}\n\n  <!-- Price Per Unit -->\n<div style=\"display: flex; justify-content: space-between; margin: 6px 0;\">\n  <span>Price Per Unit:</span>\n  <span data-na-price-per style=\"flex: 1; text-align: right;\">\n    {% if units_value != blank and units_value != 0 %}\n      {{ variant.price | divided_by: units_value | money }}\n    {% elsif price_per_piece != blank %}\n      {%- assign ppu_cents = price_per_piece | plus: 0 | times: 100 | round -%}\n      {{ ppu_cents | money }}\n    {% else %}\n      N/A\n    {% endif %}\n  </span>\n</div>\n\n\n  <!-- Estimated Resale Value -->\n  <div style=\"display: flex; justify-content: space-between; margin: 6px 0;\">\n    <span>Estimated Resale Value:</span>\n    <span data-na-resale-value style=\"flex: 1; text-align: right;\">\n      {{ resale_value | times: 100 | money }}\n    </span>\n  </div>\n\n  <!-- Estimated Resale Profit -->\n  <div style=\"display: flex; justify-content: space-between; margin: 6px 0; font-size: 16px; font-weight: bold; color: #2e7d32;\">\n    <span>Estimated Resale Profit:</span>\n    <span data-na-resale-profit style=\"flex: 1; text-align: right;\">\n      {{ resale_value | times: 100 | minus: variant.price | money }}\n    </span>\n  </div>\n\n  <!-- Disclaimer Box -->\n  <div style=\"background: #f2f2f2; border-radius: 5px; padding: 8px 10px; font-size: 11px; color: #777; margin-top: 10px; text-align: center;\">\n    Based on average reseller outcomes. Individual results may vary.\n  </div>\n\n</div>\n\n{% endif %}"
+          }
+        },
+        "custom_liquid_Y9D6Cy": {
+          "type": "custom_liquid",
+          "disabled": true,
+          "settings": {
+            "custom_liquid": ""
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "custom_liquid_nidDjc": {
+          "type": "custom_liquid",
+          "name": "Dispatch Bar",
+          "settings": {
+            "custom_liquid": "<div class=\"dispatch-bar\" id=\"dispatchBar\" role=\"status\" aria-live=\"polite\">\n  <span class=\"dispatch-icon\" aria-hidden=\"true\">\n    <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path d=\"M21 8.5L12 3.5L3 8.5L12 13.5L21 8.5Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/>\n      <path d=\"M3 8.5V15.5L12 20.5L21 15.5V8.5\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/>\n      <path d=\"M12 13.5V20.5\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/>\n    </svg>\n  </span>\n  <span class=\"dispatch-text\" id=\"dispatchText\">\n    Order now for dispatch <span class=\"dispatch-date\">Monday</span>\n  </span>\n</div>\n\n<style>\n.dispatch-bar {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: 9px 12px;\n  margin: 10px 0 10px;\n  background: #f2f2f2;\n  border-radius: 8px;\n  border: 1px solid #e0e0e0;\n  color: #222;\n  font-size: 13.5px;\n  line-height: 1.3;\n  font-weight: 400;\n  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);\n}\n.dispatch-icon {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  color: #444;\n  opacity: 0.9;\n  transform: translateY(0.5px);\n}\n.dispatch-text { text-align: center; font-weight: 400; }\n.dispatch-text strong { font-weight: 700; color: #111; }\n.dispatch-bar + .product-form__buttons,\n.dispatch-bar + .product-form { margin-top: 10px !important; }\n.dispatch-bar + .quantity,\n.dispatch-bar + .product-form__quantity { margin-top: 8px !important; }\n@media (min-width: 750px) {\n  .dispatch-bar { max-width: 420px; margin-left: auto; margin-right: auto; }\n}\n@media (max-width: 749px) {\n  .dispatch-bar { font-size: 13px; padding: 8px 11px; }\n}\n</style>\n\n<script>\n(function() {\n  function boldify(el) {\n    var t = el.textContent || '';\n    var bolded = t\n      .replace(/Order within (\\d+ hours?)/gi, 'Order within <strong>$1</strong>')\n      .replace(/(same day dispatch)/gi, '<strong>$1</strong>')\n      .replace(/Order now for dispatch (.+)/gi, 'Order now for dispatch <strong>$1</strong>');\n    if (el.innerHTML !== bolded) {\n      obs.disconnect();\n      el.innerHTML = bolded;\n      obs.observe(el, { childList: true, subtree: true, characterData: true });\n    }\n  }\n\n  var obs = new MutationObserver(function() {\n    var el = document.getElementById('dispatchText');\n    if (el) boldify(el);\n  });\n\n  function init() {\n    var el = document.getElementById('dispatchText');\n    if (!el) return setTimeout(init, 100);\n    boldify(el);\n    obs.observe(el, { childList: true, subtree: true, characterData: true });\n  }\n\n  init();\n})();\n</script>"
+          }
+        },
+        "b2267b08-ee10-46a5-bebd-4e1784ce45e3": {
+          "type": "inventory",
+          "settings": {
+            "text_style": "uppercase",
+            "inventory_threshold": 15,
+            "show_inventory_quantity": true
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": false
+          }
+        },
+        "custom_liquid_9dndKN": {
+          "type": "custom_liquid",
+          "disabled": true,
+          "settings": {
+            "custom_liquid": "<div class=\"collapsible\">\n  <button class=\"collapsible-btn\" aria-expanded=\"true\" aria-controls=\"pd-content\">\n    <span class=\"button-text\">PRODUCT DETAILS</span>\n    <img class=\"button-img rotate-90\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/next.png?v=1711120596\" alt=\"\" aria-hidden=\"true\">\n  </button>\n  <div id=\"pd-content\" class=\"collapsible-content active\">\n    {{ product.description }}\n  </div>\n</div>\n\n<div class=\"collapsible\">\n  <button class=\"collapsible-btn\" aria-expanded=\"false\" aria-controls=\"delivery-content\">\n    <span class=\"button-text\">DELIVERY & DISPATCH INFO</span>\n    <img class=\"button-img\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/next.png?v=1711120596\" alt=\"\" aria-hidden=\"true\">\n  </button>\n  <div id=\"delivery-content\" class=\"collapsible-content\">\n    <p><strong>Note:</strong> Dispatch is usually within 24 hours.</p>\n    <p>\n      <img src=\"https://cdn-icons-png.flaticon.com/512/1670/1670915.png\" style=\"height:25px;float:left;margin-right:10px;padding-bottom: 4px;\" alt=\"\">\n      Get it between <strong><span id=\"fromDate\"></span> - <span id=\"toDate\"></span></strong>\n    </p>\n    {{ '//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js' | script_tag }}\n    <script>\n      var fromDate = Date.today().addDays(2);\n      if (fromDate.is().saturday() || fromDate.is().sunday()) {\n        fromDate = fromDate.next().monday();\n      }\n      var toDate = Date.today().addDays(2);\n      if (toDate.is().saturday() || toDate.is().sunday()) {\n        toDate = toDate.next().tuesday();\n      }\n      document.getElementById('fromDate').innerHTML = fromDate.toString('dddd MMMM dS');\n      document.getElementById('toDate').innerHTML = toDate.toString('dddd MMMM dS');\n    </script>\n  </div>\n</div>\n\n<div class=\"collapsible\">\n  <button class=\"collapsible-btn\" aria-expanded=\"false\" aria-controls=\"wash-content\">\n    <span class=\"button-text\">\n      BUNDLE WASH SERVICE\n      <span class=\"recommended-badge\">\ud83e\udee7</span>\n    </span>\n    <img class=\"button-img\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/next.png?v=1711120596\" alt=\"\" aria-hidden=\"true\">\n  </button>\n  <div id=\"wash-content\" class=\"collapsible-content\">\n    <p>\n      \ud83e\uddfc <strong>Pre-Dispatch Bundle Wash Service</strong><br>\n      List your items straight out of the box \u2014 fresh, clean, and ready to resell.\n    </p>\n    <ul style=\"margin-left: 1em; padding-left: 0;\">\n      <li>\u2705 Items are washed with premium washing powder &amp; fabric softener</li>\n      <li>\u2705 Save time \u2014 list faster</li>\n      <li>\u2705 Trusted by 200+ resellers</li>\n    </ul>\n    <p>\n      <strong>\u00a330 per bundle</strong> \u2014 optional, add 1 per bundle.<br>\n      Adds 2\u20135 working days processing. Items will arrive boxed.\n    </p>\n    <p style=\"font-size: 13px; color: #777;\">\n      <em>Please note: While we ensure high standards, 100% stain removal is not guaranteed. Service is non-refundable.</em>\n    </p>\n    <!-- Add Bundle Wash Service to Cart Button -->\n    <div style=\"text-align: center; margin-top: 16px;\">\n      <button type=\"button\"\n              class=\"add-wash-service-btn\"\n              data-variant-id=\"48159249793303\"\n              style=\"background-color: #222; color: #fff; border: none; border-radius: 6px; padding: 12px 20px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease; position: relative;\">\n        \u2795 Add Bundle Wash Service to Cart\n        <span class=\"wash-spinner\" style=\"display: none; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;\"></span>\n      </button>\n    </div>\n  </div>\n</div>\n\n<!-- Collapsible Styles -->\n<style>\n  .collapsible-content {\n    max-height: 0;\n    overflow: hidden;\n    transition: max-height 0.4s ease, padding 0.4s ease;\n    margin: 0 14px;\n    border-top: 1px solid #eee;\n    padding: 0 0;\n    font-size: 14px;\n    line-height: 1.6;\n  }\n  .collapsible-content.active {\n    max-height: 1000px; /* large enough to handle content */\n    padding: 12px 0;\n  }\n\n  .collapsible-btn {\n    background-color: #fafafa;\n    color: #222;\n    cursor: pointer;\n    padding: 10px 16px;\n    border: 1px solid #ddd;\n    border-radius: 6px;\n    outline: none;\n    width: 100%;\n    text-align: left;\n    font-size: 1.2em;\n    font-weight: 700;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    margin-bottom: 10px;\n    transition: background-color 0.3s ease, box-shadow 0.3s ease;\n  }\n  .collapsible-btn:hover {\n    background-color: #f0f0f0;\n    box-shadow: 0 1px 4px rgba(0,0,0,0.06);\n  }\n\n  .button-text {\n    margin-right: 10px;\n    display: flex;\n    align-items: center;\n    gap: 6px;\n  }\n  .recommended-badge {\n    background-color: transparent;\n    color: inherit;\n    font-size: 16px;\n    font-weight: normal;\n    padding: 0;\n    border-radius: 0;\n    text-transform: none;\n    letter-spacing: normal;\n    line-height: 1;\n  }\n\n  .button-img {\n    max-width: 15px;\n    max-height: 15px;\n    transition: transform 0.3s ease;\n  }\n  .rotate-90 { transform: rotate(90deg); }\n\n  /* Spinner animation */\n  @keyframes spin { to { transform: rotate(360deg); } }\n</style>\n\n<!-- Collapsible JS -->\n<script>\n  document.addEventListener(\"DOMContentLoaded\", function() {\n    // Collapsible buttons logic with auto-collapse and ARIA updates\n    var buttons = document.querySelectorAll(\".collapsible-btn\");\n\n    buttons.forEach(function(button) {\n      button.addEventListener(\"click\", function() {\n        var content = this.nextElementSibling;\n        var image = this.querySelector('.button-img');\n        var isOpen = content.classList.contains('active');\n\n        // Close all panels\n        document.querySelectorAll(\".collapsible-content\").forEach(function(otherContent) {\n          otherContent.classList.remove('active');\n        });\n        document.querySelectorAll(\".collapsible-btn .button-img\").forEach(function(otherImage) {\n          otherImage.classList.remove('rotate-90');\n        });\n        document.querySelectorAll(\".collapsible-btn\").forEach(function(b) {\n          b.setAttribute('aria-expanded','false');\n        });\n\n        // Re-open the clicked one if it was closed\n        if (!isOpen) {\n          content.classList.add('active');\n          if (image) image.classList.add('rotate-90');\n          this.setAttribute('aria-expanded','true');\n        }\n      });\n    });\n\n    // Add to Cart AJAX logic\n    document.querySelectorAll('.add-wash-service-btn').forEach(function(button) {\n      button.addEventListener('click', function() {\n        var variantId = this.getAttribute('data-variant-id');\n        var originalText = '\u2795 Add Bundle Wash Service to Cart';\n        var spinner = this.querySelector('.wash-spinner');\n\n        // Set loading state\n        this.innerHTML = 'Adding...';\n        this.appendChild(spinner);\n        spinner.style.display = 'inline-block';\n        this.disabled = true;\n\n        fetch('/cart/add.js', {\n          method: 'POST',\n          headers: { 'Content-Type': 'application/json' },\n          body: JSON.stringify({ id: variantId, quantity: 1 })\n        })\n        .then(response => response.json())\n        .then(data => {\n          this.innerHTML = '\u2705 Added to Cart';\n          document.dispatchEvent(new CustomEvent('cart:updated'));\n        })\n        .catch(error => {\n          console.error('Error adding washing service to cart:', error);\n          this.innerHTML = 'Error - Try Again';\n        })\n        .finally(() => {\n          spinner.style.display = 'none';\n          setTimeout(() => {\n            this.innerHTML = originalText;\n            this.disabled = false;\n          }, 2000);\n        });\n      });\n    });\n  });\n</script>"
+          }
+        }
+      },
+      "block_order": [
+        "custom_liquid_XbDWbn",
+        "title",
+        "price",
+        "text_TCBWaB",
+        "variant_picker",
+        "quantity_selector",
+        "b2267b08-ee10-46a5-bebd-4e1784ce45e3",
+        "custom_liquid_nidDjc",
+        "custom_liquid_UaQbjX",
+        "buy_buttons",
+        "custom_liquid_Y9D6Cy",
+        "custom_liquid_9dndKN"
+      ],
+      "custom_css": [
+        ".product__tax {display: none !important; margin-top: -15px;}",
+        ".price--large {margin-bottom: -15px;}",
+        "h1 {font-size: 2em; font-weight: 700; letter-spacing: -2px;}",
+        ".product__pickup-availabilities {display: none;}",
+        ".product-form__quantity {width: 100% !important; max-width: 100% !important;}"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "background-2",
+        "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "mobile_thumbnails": "hide",
+        "hide_variants": false,
+        "enable_video_looping": true,
+        "padding_top": 12,
+        "padding_bottom": 0
+      }
+    },
+    "ss_payment_icons_hb8L4W": {
+      "type": "ss-payment-icons",
+      "blocks": {
+        "item_9M4ag7": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4628)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M107.472 103.386V87.4005H115.723C119.104 87.4005 121.957 86.2676 124.283 84.0334L124.842 83.467C129.091 78.8411 128.812 71.6349 124.283 67.3552C122.019 65.0895 118.917 63.8622 115.723 63.9252H102.478V103.386H107.472ZM107.473 82.5544V68.7713H115.849C117.648 68.7713 119.354 69.4636 120.626 70.7224C123.325 73.3657 123.387 77.7713 120.781 80.509C119.509 81.8621 117.71 82.6174 115.849 82.5544H107.473ZM148.136 78.4949C145.996 76.5124 143.08 75.5054 139.389 75.5054C134.643 75.5054 131.076 77.2676 128.719 80.7606L133.123 83.5613C134.736 81.1697 136.939 79.9739 139.73 79.9739C141.498 79.9739 143.204 80.6347 144.538 81.8305C145.841 82.9634 146.585 84.5997 146.585 86.3305V87.4948C144.662 86.4249 142.243 85.8585 139.265 85.8585C135.791 85.8585 132.999 86.6766 130.921 88.3445C128.843 90.0123 127.788 92.2151 127.788 95.0157C127.726 97.5647 128.812 99.9877 130.735 101.624C132.689 103.386 135.171 104.267 138.086 104.267C141.529 104.267 144.259 102.725 146.337 99.6416H146.554V103.386H151.331V86.7396C151.331 83.2466 150.276 80.4774 148.136 78.4949ZM134.582 98.4145C133.558 97.6592 132.938 96.432 132.938 95.1103C132.938 93.6313 133.62 92.404 134.954 91.4285C136.319 90.453 138.026 89.9495 140.042 89.9495C142.834 89.918 145.006 90.5474 146.557 91.8061C146.557 93.946 145.719 95.8026 144.075 97.376C142.586 98.8865 140.569 99.7361 138.46 99.7361C137.064 99.7676 135.699 99.2956 134.582 98.4145ZM162.063 115.25L178.75 76.3865H173.322L165.599 95.7709H165.506L157.596 76.3865H152.168L163.117 101.656L156.914 115.25H162.063Z\" fill=\"#3C4043\"></path><path d=\"M90.2316 83.9389C90.2316 82.3969 90.1075 80.855 89.8594 79.3445H68.7986V88.0612H80.8644C80.3681 90.8619 78.7552 93.3793 76.3978 94.9527V100.617H83.5939C87.8123 96.6835 90.2316 90.8619 90.2316 83.9389Z\" fill=\"#4285F4\"></path><path d=\"M68.7995 106.093C74.8169 106.093 79.9038 104.079 83.5948 100.617L76.3988 94.9528C74.3827 96.3374 71.8082 97.1242 68.7995 97.1242C62.9683 97.1242 58.0365 93.1277 56.2685 87.7781H48.8553V93.6312C52.6395 101.278 60.3628 106.093 68.7995 106.093Z\" fill=\"#34A853\"></path><path d=\"M56.2692 87.7781C55.3385 84.9774 55.3385 81.925 56.2692 79.0929V73.2712H48.8549C45.6595 79.6593 45.6595 87.2117 48.8549 93.5997L56.2692 87.7781Z\" fill=\"#FBBC04\"></path><path d=\"M68.7995 69.7469C71.9943 69.684 75.0651 70.9113 77.3603 73.1455L83.7499 66.663C79.6866 62.8239 74.3517 60.7155 68.7995 60.7785C60.3628 60.7785 52.6395 65.6246 48.8553 73.2714L56.2685 79.1245C58.0365 73.7434 62.9683 69.7469 68.7995 69.7469Z\" fill=\"#EA4335\"></path></g><defs><filter id=\"filter0_d_353_4628\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4628\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4628\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_zRUgGr": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4498)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M64.1654 67.2703C66.6527 67.4801 69.14 66.0114 70.6946 64.1493C72.2232 62.2347 73.2337 59.6645 72.9746 57.0417C70.7723 57.1467 68.0518 58.5105 66.4972 60.425C65.0722 62.0774 63.8545 64.7525 64.1654 67.2703ZM93.7539 101.051V60.163H108.911C116.735 60.163 122.202 65.6182 122.202 73.5913C122.202 81.5643 116.632 87.072 108.704 87.072H100.024V101.051H93.7539ZM72.9484 67.7685C70.7571 67.6409 68.7577 68.4356 67.1427 69.0776C66.1034 69.4907 65.2233 69.8405 64.5538 69.8405C63.8024 69.8405 62.886 69.472 61.857 69.0582C60.5088 68.516 58.9674 67.8962 57.351 67.9259C53.6459 67.9784 50.2 70.1028 48.3086 73.4861C44.4222 80.2526 47.2981 90.2714 51.055 95.7791C52.8946 98.5067 55.0968 101.497 57.9987 101.392C59.2753 101.343 60.1937 100.948 61.1441 100.54C62.2382 100.07 63.3749 99.582 65.1497 99.582C66.863 99.582 67.9499 100.058 68.9933 100.514C69.9854 100.948 70.9381 101.365 72.3525 101.339C75.358 101.287 77.2494 98.6116 79.0889 95.884C81.0741 92.9565 81.9465 90.0994 82.0789 89.6659C82.0865 89.6411 82.0916 89.6242 82.0944 89.6157C82.0912 89.6125 82.0667 89.6011 82.0235 89.5811L82.0235 89.5811C81.3598 89.2736 76.2875 86.923 76.2389 80.6198C76.1901 75.3292 80.2621 72.6487 80.9031 72.2267L80.9033 72.2266C80.9422 72.201 80.9684 72.1837 80.9803 72.1747C78.3894 68.2931 74.3475 67.8735 72.9484 67.7685ZM133.655 101.365C137.593 101.365 141.246 99.3459 142.904 96.1461H143.034V101.051H148.837V80.6984C148.837 74.7973 144.174 70.9944 136.997 70.9944C130.338 70.9944 125.415 74.8498 125.234 80.1476H130.882C131.349 77.6298 133.655 75.9775 136.816 75.9775C140.65 75.9775 142.801 77.7872 142.801 81.118V83.3736L134.976 83.8456C127.695 84.2915 123.757 87.3076 123.757 92.553C123.757 97.8509 127.825 101.365 133.655 101.365ZM135.338 96.5138C131.996 96.5138 129.871 94.8877 129.871 92.3961C129.871 89.8259 131.918 88.331 135.83 88.0949L142.8 87.6491V89.957C142.8 93.7862 139.587 96.5138 135.338 96.5138ZM168.088 102.65C165.575 109.81 162.699 112.171 156.584 112.171C156.118 112.171 154.563 112.118 154.2 112.014V107.109C154.589 107.162 155.548 107.214 156.04 107.214C158.812 107.214 160.367 106.034 161.325 102.965L161.895 101.156L151.273 71.3878H157.828L165.212 95.5429H165.341L172.726 71.3878H179.099L168.088 102.65ZM100.023 65.5128H107.252C112.693 65.5128 115.802 68.4502 115.802 73.617C115.802 78.7837 112.693 81.7474 107.226 81.7474H100.023V65.5128Z\" fill=\"black\"></path></g><defs><filter id=\"filter0_d_353_4498\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4498\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4498\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_EAddVT": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4698)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"#5A31F4\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path d=\"M124.269 78.5323C124.269 86.682 118.556 92.4997 110.571 92.4997H103.049C102.966 92.4997 102.884 92.5161 102.807 92.548C102.73 92.5799 102.661 92.6266 102.602 92.6855C102.543 92.7443 102.497 92.8142 102.466 92.891C102.434 92.9679 102.418 93.0502 102.418 93.1332V103.844C102.418 104.012 102.352 104.173 102.234 104.291C102.116 104.41 101.955 104.477 101.788 104.478H96.5242C96.399 104.477 96.2768 104.44 96.1729 104.37C96.0689 104.3 95.9878 104.202 95.9397 104.086C95.9079 104.011 95.8913 103.929 95.8907 103.847V65.1953C95.8903 65.1123 95.9063 65.03 95.9378 64.9531C95.9693 64.8763 96.0157 64.8064 96.0743 64.7476C96.1328 64.6887 96.2025 64.642 96.2792 64.6101C96.3559 64.5782 96.4381 64.5618 96.5211 64.5618H110.605C118.556 64.5527 124.269 70.3704 124.269 78.5323ZM117.705 78.5323C117.705 73.8469 114.51 70.4224 110.176 70.4224H103.049C102.966 70.4224 102.884 70.4388 102.807 70.4707C102.73 70.5026 102.661 70.5493 102.602 70.6081C102.543 70.667 102.497 70.7369 102.466 70.8137C102.434 70.8905 102.418 70.9728 102.418 71.0559V85.972C102.418 86.1392 102.485 86.2996 102.603 86.4178C102.721 86.536 102.882 86.6024 103.049 86.6024H110.176C114.51 86.633 117.705 83.2055 117.705 78.5323ZM125.83 97.0627C125.775 95.8128 126.034 94.569 126.582 93.4445C127.131 92.32 127.951 91.3504 128.97 90.6237C131.023 89.0783 134.234 88.2795 138.947 88.1143L143.966 87.9367V86.4555C143.966 83.487 141.976 82.2323 138.781 82.2323C135.586 82.2323 133.56 83.3646 133.095 85.2161C133.057 85.3463 132.977 85.4602 132.868 85.54C132.758 85.6198 132.625 85.6608 132.489 85.6568H127.532C127.44 85.6593 127.35 85.6416 127.266 85.6051C127.182 85.5685 127.108 85.514 127.047 85.4453C126.987 85.3766 126.943 85.2955 126.918 85.2078C126.892 85.12 126.887 85.0278 126.901 84.9376C127.636 80.5491 131.287 77.2133 139.008 77.2133C147.222 77.2133 150.187 81.0387 150.187 88.3407V103.844C150.186 104.014 150.117 104.175 149.997 104.294C149.876 104.413 149.714 104.479 149.545 104.478H144.547C144.38 104.477 144.22 104.412 144.1 104.294C144.042 104.236 143.995 104.166 143.964 104.089C143.932 104.013 143.916 103.93 143.917 103.847V102.688C143.918 102.592 143.891 102.498 143.838 102.418C143.786 102.338 143.71 102.275 143.621 102.239C143.532 102.203 143.435 102.195 143.341 102.215C143.247 102.236 143.162 102.284 143.097 102.354C141.597 103.985 139.176 105.163 135.299 105.163C129.594 105.163 125.83 102.195 125.83 97.0627ZM143.966 93.7024V92.4997L137.465 92.8425C134.041 93.0169 132.049 94.44 132.049 96.8362C132.049 99.003 133.876 100.203 137.068 100.203C141.404 100.203 143.966 97.8614 143.966 93.7024ZM155.206 116.193V111.7C155.207 111.606 155.229 111.513 155.27 111.428C155.311 111.343 155.37 111.269 155.443 111.209C155.516 111.149 155.601 111.107 155.692 111.084C155.784 111.061 155.879 111.058 155.971 111.076C156.736 111.22 157.517 111.293 158.297 111.296C159.639 111.362 160.964 110.975 162.059 110.198C163.155 109.421 163.959 108.299 164.341 107.012L164.666 105.977C164.713 105.839 164.713 105.688 164.666 105.549L154.251 78.8016C154.214 78.7047 154.2 78.6 154.212 78.4966C154.224 78.3933 154.26 78.2943 154.319 78.2082C154.377 78.1222 154.456 78.0515 154.547 78.0024C154.639 77.9533 154.741 77.9272 154.845 77.9264H159.895C160.024 77.9277 160.149 77.9678 160.255 78.0415C160.361 78.1152 160.442 78.219 160.488 78.3395L167.561 97.2035C167.605 97.3288 167.687 97.4373 167.796 97.514C167.904 97.5908 168.034 97.632 168.167 97.632C168.3 97.632 168.429 97.5908 168.538 97.514C168.646 97.4373 168.729 97.3288 168.773 97.2035L174.915 78.3915C174.957 78.263 175.04 78.1511 175.149 78.072C175.259 77.9928 175.392 77.9504 175.527 77.9508H180.751C180.856 77.9515 180.959 77.9774 181.051 78.0265C181.143 78.0755 181.223 78.1462 181.282 78.2325C181.341 78.3187 181.379 78.4181 181.391 78.522C181.404 78.6259 181.391 78.7313 181.354 78.8292L170.214 108.533C167.65 115.437 163.252 117.203 158.41 117.203C157.492 117.227 156.574 117.117 155.687 116.875C155.539 116.836 155.41 116.746 155.322 116.622C155.234 116.497 155.193 116.345 155.206 116.193ZM62.0647 62.3339C55.4301 62.2866 49.0297 64.7837 44.1801 69.3115C43.9727 69.5014 43.8434 69.7617 43.8174 70.0418C43.7913 70.3218 43.8704 70.6015 44.0393 70.8264L47.0415 74.9272C47.1388 75.0638 47.2649 75.1773 47.4108 75.2599C47.5567 75.3425 47.719 75.3921 47.8861 75.4052C48.0533 75.4183 48.2213 75.3947 48.3783 75.3359C48.5354 75.2771 48.6776 75.1846 48.7951 75.0649C50.5389 73.3216 52.6127 71.9433 54.8953 71.0106C57.1779 70.0779 59.6235 69.6095 62.0892 69.6328C72.3842 69.6328 77.7612 77.3816 77.7612 85.0325C77.7612 93.3505 72.1118 99.2019 63.9927 99.3182C57.719 99.3182 52.9908 95.1592 52.9908 89.6658C52.9973 88.2781 53.3117 86.909 53.9113 85.6574C54.5109 84.4058 55.3808 83.3029 56.4582 82.4281C56.6859 82.2379 56.8299 81.9658 56.8591 81.6705C56.8883 81.3751 56.8004 81.0802 56.6142 80.849L53.459 76.8644C53.3636 76.7439 53.245 76.6438 53.1103 76.5699C52.9755 76.4959 52.8273 76.4498 52.6744 76.4341C52.5215 76.4184 52.367 76.4335 52.22 76.4785C52.073 76.5235 51.9366 76.5975 51.8187 76.6961C49.8809 78.2573 48.3172 80.2325 47.2422 82.4767C46.1672 84.721 45.6082 87.1774 45.6062 89.6658C45.6062 99.1223 53.6426 106.541 63.9376 106.602H64.0754C76.2984 106.443 85.1367 97.3902 85.1367 85.0172C85.1367 74.0305 77.0451 62.3339 62.0678 62.3339H62.0647Z\" fill=\"white\"></path></g><defs><filter id=\"filter0_d_353_4698\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4698\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4698\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_DYaVDr": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4587)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M72.3875 100.65H64.1557C63.5924 100.65 63.1133 101.059 63.0255 101.615L59.6961 122.724C59.63 123.141 59.9525 123.516 60.375 123.516H64.305C64.8683 123.516 65.3474 123.107 65.4352 122.55L66.3332 116.856C66.4198 116.299 66.9001 115.89 67.4622 115.89H70.0681C75.4907 115.89 78.62 113.266 79.4377 108.066C79.8059 105.791 79.4533 104.004 78.3877 102.752C77.218 101.377 75.1425 100.65 72.3875 100.65ZM73.3372 108.36C72.8872 111.313 70.6303 111.313 68.448 111.313H67.2058L68.0773 105.797C68.129 105.464 68.4179 105.218 68.7549 105.218H69.3243C70.8108 105.218 72.2132 105.218 72.9379 106.065C73.3696 106.571 73.5021 107.322 73.3372 108.36ZM96.9944 108.265H93.0524C92.7165 108.265 92.4263 108.511 92.3745 108.844L92.2001 109.947L91.9244 109.547C91.0711 108.308 89.1683 107.894 87.2689 107.894C82.9124 107.894 79.1921 111.194 78.4674 115.822C78.0909 118.13 78.6261 120.338 79.9357 121.877C81.1372 123.293 82.8561 123.883 84.901 123.883C88.4107 123.883 90.3575 121.626 90.3575 121.626L90.1815 122.721C90.1152 123.14 90.4377 123.516 90.8577 123.516H94.4087C94.9735 123.516 95.4498 123.106 95.5389 122.549L97.6695 109.057C97.7369 108.642 97.4155 108.265 96.9944 108.265ZM91.4994 115.937C91.119 118.189 89.3315 119.701 87.0522 119.701C85.9075 119.701 84.9923 119.334 84.4052 118.638C83.8226 117.948 83.6009 116.964 83.7864 115.869C84.1417 113.636 85.9593 112.075 88.2041 112.075C89.3231 112.075 90.2333 112.446 90.8327 113.148C91.4331 113.857 91.6715 114.847 91.4994 115.937ZM114.027 108.264H117.989C118.544 108.264 118.867 108.887 118.552 109.342L105.377 128.359C105.164 128.667 104.812 128.851 104.437 128.851H100.48C99.9232 128.851 99.5979 128.223 99.9204 127.767L104.023 121.976L99.6597 109.172C99.5088 108.727 99.8374 108.264 100.311 108.264H104.203C104.709 108.264 105.155 108.596 105.301 109.08L107.617 116.814L113.081 108.766C113.294 108.452 113.65 108.264 114.027 108.264Z\" fill=\"#253B80\"></path><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M156.977 122.724L160.356 101.229C160.407 100.895 160.696 100.65 161.032 100.649H164.836C165.256 100.649 165.578 101.025 165.512 101.442L162.18 122.55C162.093 123.107 161.614 123.516 161.05 123.516H157.653C157.233 123.516 156.911 123.141 156.977 122.724ZM131.104 100.65H122.871C122.309 100.65 121.83 101.059 121.742 101.615L118.413 122.724C118.346 123.141 118.669 123.516 119.089 123.516H123.314C123.706 123.516 124.042 123.23 124.104 122.84L125.048 116.856C125.135 116.299 125.615 115.89 126.177 115.89H128.782C134.206 115.89 137.334 113.266 138.153 108.066C138.522 105.791 138.167 104.004 137.102 102.751C135.933 101.377 133.859 100.65 131.104 100.65ZM132.054 108.359C131.605 111.313 129.348 111.313 127.164 111.313H125.923L126.796 105.797C126.848 105.464 127.134 105.218 127.472 105.218H128.042C129.527 105.218 130.931 105.218 131.655 106.065C132.087 106.571 132.219 107.322 132.054 108.359ZM155.709 108.265H151.77C151.431 108.265 151.144 108.51 151.093 108.844L150.918 109.946L150.642 109.547C149.788 108.308 147.887 107.894 145.987 107.894C141.631 107.894 137.912 111.194 137.187 115.822C136.811 118.13 137.344 120.338 138.654 121.877C139.858 123.293 141.574 123.882 143.619 123.882C147.129 123.882 149.075 121.625 149.075 121.625L148.9 122.721C148.834 123.14 149.156 123.515 149.579 123.515H153.128C153.69 123.515 154.169 123.106 154.257 122.549L156.389 109.057C156.454 108.642 156.132 108.265 155.709 108.265ZM150.214 115.937C149.836 118.189 148.046 119.701 145.767 119.701C144.624 119.701 143.707 119.334 143.12 118.638C142.537 117.947 142.318 116.964 142.501 115.869C142.858 113.636 144.674 112.075 146.919 112.075C148.038 112.075 148.948 112.446 149.548 113.148C150.15 113.857 150.389 114.847 150.214 115.937Z\" fill=\"#179BD7\"></path><path d=\"M102.852 93.0986L103.864 86.6706L101.61 86.6182H90.8452L98.3259 39.1846C98.3488 39.0414 98.4245 38.9079 98.5348 38.8131C98.6451 38.7183 98.7866 38.666 98.9336 38.666H117.084C123.11 38.666 127.268 39.9199 129.439 42.3948C130.457 43.5559 131.105 44.7691 131.419 46.1043C131.748 47.5053 131.754 49.1791 131.432 51.2205L131.409 51.3696V52.6776L132.427 53.2543C133.284 53.709 133.965 54.2295 134.488 54.8255C135.359 55.8182 135.922 57.0798 136.16 58.5756C136.405 60.114 136.324 61.9445 135.922 64.0169C135.457 66.4009 134.706 68.4772 133.693 70.1762C132.76 71.7416 131.572 73.0398 130.161 74.0463C128.814 75.0021 127.214 75.7279 125.405 76.1925C123.651 76.6487 121.653 76.8793 119.46 76.8793H118.048C117.038 76.8793 116.056 77.243 115.287 77.8953C114.515 78.5609 114.003 79.47 113.847 80.4648L113.74 81.0436L111.952 92.3728L111.871 92.7889C111.85 92.9209 111.813 92.9866 111.759 93.0312C111.711 93.0713 111.641 93.0986 111.573 93.0986H102.852Z\" fill=\"#253B80\"></path><path d=\"M133.391 51.5212C133.337 51.8676 133.275 52.2217 133.205 52.5855C130.811 64.8749 122.623 69.1204 112.163 69.1204H106.838C105.559 69.1204 104.482 70.0492 104.282 71.3108L101.556 88.6025L100.784 93.5037C100.654 94.332 101.293 95.079 102.128 95.079H111.574C112.692 95.079 113.642 94.2663 113.818 93.1634L113.911 92.6833L115.689 81.3981L115.804 80.7792C115.977 79.6724 116.929 78.8597 118.048 78.8597H119.46C128.611 78.8597 135.775 75.1444 137.869 64.3931C138.743 59.9019 138.29 56.1518 135.976 53.5143C135.276 52.719 134.407 52.0592 133.391 51.5212Z\" fill=\"#179BD7\"></path><path d=\"M130.886 50.5232C130.52 50.4168 130.143 50.32 129.756 50.2329C129.367 50.1478 128.968 50.0724 128.558 50.0066C127.122 49.7744 125.549 49.6641 123.864 49.6641H109.637C109.287 49.6641 108.954 49.7434 108.656 49.8866C108 50.202 107.513 50.8232 107.395 51.5836L104.368 70.7521L104.281 71.3113C104.48 70.0497 105.558 69.1208 106.837 69.1208H112.162C122.621 69.1208 130.811 64.8735 133.204 52.586C133.276 52.2222 133.336 51.8681 133.39 51.5217C132.784 51.2005 132.128 50.9257 131.422 50.6915C131.248 50.6335 131.068 50.5774 130.886 50.5232Z\" fill=\"#222D65\"></path><path d=\"M107.395 51.5834C107.513 50.8229 108.001 50.2018 108.657 49.8883C108.957 49.7451 109.288 49.6658 109.637 49.6658H123.864C125.55 49.6658 127.123 49.776 128.558 50.0083C128.969 50.0741 129.368 50.1495 129.756 50.2346C130.144 50.3218 130.521 50.4185 130.887 50.5249C131.068 50.5791 131.248 50.6352 131.424 50.6913C132.13 50.9255 132.787 51.2022 133.392 51.5215C134.105 46.9799 133.387 43.8877 130.931 41.0877C128.224 38.0052 123.338 36.6855 117.086 36.6855H98.9349C97.6577 36.6855 96.5687 37.6143 96.3709 38.8779L88.8111 86.7991C88.6618 87.7472 89.3932 88.6028 90.349 88.6028H101.555L104.369 70.7519L107.395 51.5834Z\" fill=\"#253B80\"></path></g><defs><filter id=\"filter0_d_353_4587\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4587\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4587\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_N7tDPr": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4479)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M113.927 110.789C107.622 116.23 99.4425 119.515 90.5049 119.515C70.5624 119.515 54.3958 103.161 54.3958 82.9865C54.3958 62.8125 70.5624 46.4583 90.5049 46.4583C99.4425 46.4583 107.622 49.7431 113.927 55.1844C120.232 49.7431 128.412 46.4583 137.349 46.4583C157.292 46.4583 173.458 62.8126 173.458 82.9866C173.458 103.161 157.292 119.515 137.349 119.515C128.412 119.515 120.232 116.23 113.927 110.789Z\" fill=\"#ED0006\"></path><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M113.927 110.789C121.691 104.089 126.614 94.1193 126.614 82.9865C126.614 71.8538 121.691 61.8843 113.927 55.1843C120.232 49.743 128.412 46.4583 137.349 46.4583C157.292 46.4583 173.458 62.8125 173.458 82.9865C173.458 103.161 157.292 119.515 137.349 119.515C128.412 119.515 120.232 116.23 113.927 110.789Z\" fill=\"#F9A000\"></path><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M113.927 110.789C121.691 104.089 126.614 94.1193 126.614 82.9866C126.614 71.854 121.691 61.8845 113.927 55.1846C106.163 61.8845 101.24 71.854 101.24 82.9866C101.24 94.1193 106.163 104.089 113.927 110.789Z\" fill=\"#FF5E00\"></path></g><defs><filter id=\"filter0_d_353_4479\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4479\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4479\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_AMRV6Q": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4566)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M76.2253 106.033H65.0053L56.5916 73.9349C56.1923 72.4584 55.3444 71.153 54.0971 70.5378C50.9844 68.9917 47.5543 67.7613 43.8125 67.1407V65.9049H61.8871C64.3816 65.9049 66.2526 67.7613 66.5644 69.9172L70.9299 93.071L82.1444 65.9049H93.0526L76.2253 106.033ZM99.2891 106.033H88.6927L97.4182 65.9049H108.015L99.2891 106.033ZM121.724 77.0216C122.035 74.8603 123.906 73.6245 126.089 73.6245C129.519 73.3142 133.256 73.9348 136.374 75.4755L138.245 66.8356C135.126 65.5998 131.696 64.9792 128.584 64.9792C118.299 64.9792 110.815 70.5377 110.815 78.252C110.815 84.1207 116.116 87.2022 119.858 89.0585C123.906 90.9095 125.466 92.1453 125.154 93.9964C125.154 96.7729 122.035 98.0087 118.923 98.0087C115.181 98.0087 111.439 97.0832 108.015 95.5371L106.144 104.182C109.885 105.723 113.934 106.344 117.675 106.344C129.207 106.649 136.374 101.095 136.374 92.7606C136.374 82.2643 121.724 81.6491 121.724 77.0216ZM173.458 106.033L165.045 65.9049H156.007C154.136 65.9049 152.266 67.1407 151.642 68.9917L136.062 106.033H146.97L149.147 100.17H162.55L163.797 106.033H173.458ZM157.566 76.7111L160.679 91.8349H151.954L157.566 76.7111Z\" fill=\"#172B85\"></path></g><defs><filter id=\"filter0_d_353_4566\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4566\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4566\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_fgMUYf": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4785)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"#FEB4C7\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M48.7028 101.384H41.1666V67.625H48.7028V101.384ZM67.5176 67.625H60.1448C60.1448 73.8375 57.3665 79.5396 52.5225 83.2701L49.6016 85.519L60.9193 101.385H70.2247L59.8109 86.7858C64.7472 81.7323 67.5176 74.9335 67.5176 67.625ZM79.5379 101.375H72.4209V67.6315H79.5379V101.375ZM101.041 78.0331V79.5263C99.1207 78.1795 96.8028 77.388 94.3029 77.388C87.6864 77.388 82.3227 82.9022 82.3227 89.7044C82.3227 96.5066 87.6864 102.021 94.3029 102.021C96.8028 102.021 99.1207 101.229 101.041 99.8829V101.375H107.839V78.0331H101.041ZM101.021 89.7046C101.021 93.0213 98.2628 95.7102 94.8609 95.7102C91.4593 95.7102 88.7015 93.0213 88.7015 89.7046C88.7015 86.3878 91.4593 83.6996 94.8609 83.6996C98.2628 83.6996 101.021 86.3878 101.021 89.7046ZM172.755 79.5263V78.0331H179.553V101.375H172.755V99.8829C170.835 101.229 168.517 102.021 166.016 102.021C159.4 102.021 154.036 96.5066 154.036 89.7044C154.036 82.9022 159.4 77.388 166.016 77.388C168.517 77.388 170.835 78.1795 172.755 79.5263ZM166.575 95.7102C169.976 95.7102 172.734 93.0213 172.734 89.7046C172.734 86.3878 169.976 83.6996 166.575 83.6996C163.173 83.6996 160.415 86.3878 160.415 89.7046C160.415 93.0213 163.173 95.7102 166.575 95.7102ZM141.957 77.4054C139.242 77.4054 136.672 78.2721 134.954 80.6632V78.0346H128.185V101.375H135.037V89.1087C135.037 85.5592 137.352 83.821 140.14 83.821C143.127 83.821 144.845 85.6558 144.845 89.0603V101.375H151.634V86.5314C151.634 81.0995 147.433 77.4054 141.957 77.4054ZM118.354 78.0333V81.0733C119.717 79.2498 122.256 78.0346 125.016 78.0346V84.8266C125.004 84.8265 124.991 84.8258 124.979 84.8251L124.955 84.824C124.949 84.8237 124.942 84.8236 124.936 84.8236C122.246 84.8236 118.37 86.7999 118.37 90.4766V101.374H111.395V78.0333H118.354ZM182.503 97.4813C182.503 95.059 184.412 93.0957 186.768 93.0957C189.124 93.0957 191.034 95.059 191.034 97.4813C191.034 99.9029 189.124 101.867 186.768 101.867C184.412 101.867 182.503 99.9029 182.503 97.4813Z\" fill=\"#17120F\"></path></g><defs><filter id=\"filter0_d_353_4785\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4785\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4785\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_GKh36p": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4768)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path d=\"M120.78 123.187C141.404 123.287 160.229 106.213 160.229 85.4422C160.229 62.7302 141.404 47.0294 120.78 47.0378H103.03C82.1593 47.0294 64.9791 62.7345 64.9791 85.4422C64.9791 106.217 82.1593 123.287 103.03 123.187H120.78Z\" fill=\"#0079BE\"></path><path d=\"M103.114 50.1848C84.0415 50.1912 68.5886 65.7903 68.5823 85.0433C68.5886 104.294 84.0415 119.893 103.114 119.9C122.189 119.893 137.649 104.294 137.651 85.0433C137.649 65.7903 122.192 50.1912 103.114 50.1848ZM81.2269 85.0433C81.2229 80.5919 82.5619 76.2427 85.0688 72.5643C87.5758 68.8859 91.1341 66.0494 95.2788 64.4254V105.659C91.1338 104.036 87.575 101.2 85.0679 97.5221C82.5608 93.8439 81.2221 89.4947 81.2269 85.0433ZM110.948 105.668V64.4232C115.096 66.0449 118.657 68.8812 121.166 72.5609C123.675 76.2405 125.014 80.5919 125.008 85.0455C125.013 89.4988 123.673 93.8498 121.165 97.5293C118.656 101.209 115.095 104.045 110.948 105.668Z\" fill=\"white\"></path><path d=\"M120.78 123.187C141.404 123.287 160.229 106.213 160.229 85.4422C160.229 62.7302 141.404 47.0294 120.78 47.0378H103.03C82.1593 47.0294 64.9791 62.7345 64.9791 85.4422C64.9791 106.217 82.1593 123.287 103.03 123.187H120.78Z\" fill=\"#0079BE\"></path><path d=\"M103.114 50.1848C84.0415 50.1912 68.5886 65.7903 68.5823 85.0433C68.5886 104.294 84.0415 119.893 103.114 119.9C122.189 119.893 137.649 104.294 137.651 85.0433C137.649 65.7903 122.192 50.1912 103.114 50.1848ZM81.2269 85.0433C81.2229 80.5919 82.5619 76.2427 85.0688 72.5643C87.5758 68.8859 91.1341 66.0494 95.2788 64.4254V105.659C91.1338 104.036 87.575 101.2 85.0679 97.5221C82.5608 93.8439 81.2221 89.4947 81.2269 85.0433ZM110.948 105.668V64.4232C115.096 66.0449 118.657 68.8812 121.166 72.5609C123.675 76.2405 125.014 80.5919 125.008 85.0455C125.013 89.4988 123.673 93.8498 121.165 97.5293C118.656 101.209 115.095 104.045 110.948 105.668Z\" fill=\"white\"></path></g><defs><filter id=\"filter0_d_353_4768\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4768\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4768\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_MnFQdx": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4717)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"white\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M131.676 109.138C132.719 106.49 135.039 100.557 133.936 99.1198H133.944C132.845 97.6791 126.679 98.4351 123.905 98.7752L123.899 98.7759C123.055 98.8795 122.925 98.1296 123.684 97.5869C128.609 94.0529 136.678 95.0638 137.615 96.257C138.553 97.4502 137.36 105.711 132.747 109.655C132.037 110.26 131.36 109.937 131.676 109.138ZM98.5349 113.223C109.261 113.223 121.753 109.763 130.357 103.28V103.292C131.781 102.198 130.56 100.591 129.108 101.221C119.715 105.266 109.633 107.378 99.4395 107.435C85.2971 107.435 71.6172 103.474 60.5499 96.8995C59.5803 96.3236 58.8582 97.3386 59.6696 98.0802C70.3242 107.897 84.1846 113.298 98.5349 113.223Z\" fill=\"#FF9900\"></path><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M168.675 93.8089H173.243H173.247C173.725 93.818 174.122 93.4347 174.139 92.9469V80.0167C174.139 78.3926 174.225 76.926 174.866 75.4594C175.306 74.3437 176.342 73.5926 177.519 73.537C180.441 73.537 180.413 76.8069 180.391 79.3758C180.389 79.5924 180.387 79.8041 180.387 80.0084V93.0546C180.444 93.4732 180.785 93.7906 181.199 93.8089H185.807C186.244 93.8181 186.621 93.4957 186.688 93.0546V77.9369C186.688 75.6127 186.688 72.377 185.491 70.4547C184.197 68.3832 182.192 67.625 180.14 67.625C176.975 67.625 175.178 69.191 173.896 72.4764H173.807V68.8016C173.714 68.4174 173.383 68.1431 172.995 68.1304H168.744C168.295 68.1192 167.912 68.4614 167.863 68.9176V92.9469C167.869 93.4077 168.224 93.7847 168.675 93.8089ZM164.375 81.2055C164.375 73.6238 160.695 67.6579 153.892 67.6579C147.263 67.6579 143.583 73.5244 143.583 80.9528C143.583 88.3812 147.218 94.3471 153.892 94.3471C160.318 94.3471 164.375 88.5344 164.375 81.2055ZM150.342 80.1947C150.342 77.2615 150.557 72.5633 153.936 72.5633C155.388 72.5633 156.415 73.2303 156.93 74.8875C157.53 76.8057 157.616 79.2335 157.616 81.2553C157.616 84.3377 157.482 89.3921 153.891 89.3921C150.34 89.3921 150.341 83.2639 150.342 80.2919L150.342 80.1947ZM64.6192 93.8587H69.1994H69.2035C69.4334 93.864 69.6559 93.7758 69.8219 93.6133C69.9879 93.4508 70.0836 93.2274 70.0879 92.9926V80.2612L70.0878 80.0619C70.0859 77.2937 70.0834 73.6324 73.2523 73.6324C76.1818 73.6324 76.1365 76.8493 76.0999 79.447C76.096 79.7272 76.0921 80.0002 76.0921 80.2612V92.9967C76.0999 93.4566 76.4538 93.8325 76.9035 93.8587H81.4959C81.7251 93.8629 81.9467 93.7742 82.1118 93.6118C82.2769 93.4494 82.372 93.2267 82.3763 92.9926V80.2612L82.3762 80.115L82.3759 79.9585V79.9585C82.3731 78.6095 82.3694 76.7893 82.8063 75.6583C83.2518 74.5023 84.3288 73.7284 85.5447 73.6904C86.8714 73.6904 87.8978 74.1462 88.2385 75.7619C88.4125 76.5396 88.39 78.3423 88.375 79.5377V79.5378C88.3715 79.8199 88.3684 80.0682 88.3684 80.2612V92.9967C88.3742 93.4575 88.7292 93.8345 89.1797 93.8587H93.76C93.9899 93.864 94.2125 93.7758 94.3785 93.6133C94.5445 93.4508 94.6402 93.2274 94.6444 92.9926V77.8334C94.6444 77.4638 94.6507 77.0861 94.657 76.7042C94.6945 74.4408 94.7344 72.0314 93.4882 70.3015C91.9775 68.3392 89.5481 67.3613 87.1326 67.7434C84.7172 68.1255 82.6912 69.8081 81.8327 72.1451C80.5466 69.1083 78.7088 67.6955 75.8852 67.6955C73.0616 67.6955 70.9642 69.1083 69.8526 72.1451H69.7674V69.0089C69.7432 68.5618 69.3937 68.2049 68.956 68.1803H64.6841C64.2123 68.1755 63.8232 68.5563 63.8078 69.0379V93.0672C63.8493 93.4996 64.1943 93.836 64.6192 93.8587ZM56.6472 94.0405C56.3455 94.3077 55.912 94.3525 55.564 94.1524C54.2659 93.0495 53.8746 92.4533 53.2736 91.5378C53.1702 91.3803 53.0606 91.2133 52.9392 91.0327C50.4198 93.6511 48.6388 94.4341 45.3811 94.4341C41.523 94.4341 38.5209 92.0022 38.5209 87.1383C38.5209 83.3392 40.5493 80.7581 43.3892 79.4904C45.4862 78.5506 48.2841 78.259 50.703 78.0068C51.1528 77.9599 51.5895 77.9144 52.0061 77.8663V77.2615C52.0061 77.146 52.007 77.0283 52.0079 76.9091C52.0159 75.8778 52.0249 74.7295 51.4503 73.8642C50.8904 73.0025 49.8275 72.6503 48.8782 72.6503C47.1297 72.6503 45.5718 73.5659 45.1905 75.4593C45.1421 75.9009 44.8093 76.2544 44.3791 76.321L39.9733 75.828C39.7534 75.7958 39.5561 75.673 39.4273 75.4883C39.2985 75.3035 39.2495 75.0729 39.2917 74.8502C40.31 69.3483 45.1783 67.687 49.5395 67.687C51.7708 67.687 54.6836 68.2919 56.4362 70.0154C58.4936 71.9825 58.4809 74.5576 58.467 77.3718C58.4659 77.6041 58.4647 77.8381 58.4647 78.0735V85.361C58.4647 87.3237 59.1778 88.2999 59.9289 89.3283C60.0181 89.4505 60.1078 89.5733 60.197 89.6987C60.4891 90.113 60.554 90.6309 60.197 90.9416C59.2599 91.7412 57.5965 93.2161 56.6837 94.0488L56.6472 94.0405ZM52.0263 82.6309L52.0264 82.8577C52.028 84.581 52.0294 86.0423 51.1703 87.6025C50.44 88.9199 49.2838 89.732 47.9937 89.732C46.2371 89.732 45.2107 88.3648 45.2107 86.3347C45.2107 82.3492 48.7118 81.6241 52.0263 81.6241V82.6309ZM119.995 89.3116L119.996 89.3129L119.997 89.3139C120.086 89.4354 120.175 89.5578 120.264 89.6825C120.572 90.1134 120.637 90.6189 120.244 90.9047C119.307 91.7043 117.643 93.1834 116.73 94.012C116.427 94.2755 115.995 94.3184 115.647 94.1197C114.344 93.012 113.957 92.4246 113.348 91.4971L113.348 91.4971L113.348 91.4968C113.246 91.342 113.138 91.1777 113.018 91C110.503 93.6184 108.71 94.4014 105.464 94.4014C101.606 94.4014 98.6041 91.9695 98.6041 87.1097C98.6041 83.3065 100.62 80.7254 103.493 79.4577C105.594 78.5143 108.408 78.224 110.834 77.9737C111.274 77.9283 111.701 77.8842 112.11 77.8377V77.2453C112.11 77.1304 112.11 77.0133 112.111 76.8947C112.119 75.863 112.128 74.7143 111.55 73.8522C111.006 72.9905 109.923 72.6342 108.978 72.6342C107.229 72.6342 105.679 73.5498 105.294 75.4431C105.244 75.8841 104.912 76.2369 104.483 76.3048L100.04 75.816C99.8188 75.7849 99.6197 75.662 99.4899 75.4761C99.3601 75.2903 99.3112 75.058 99.3546 74.8341C100.377 69.3281 105.245 67.6709 109.606 67.6709C111.834 67.6709 114.747 68.2757 116.503 69.9992C118.565 71.9561 118.55 74.5113 118.534 77.3111C118.533 77.5581 118.532 77.8069 118.532 78.0573V85.349C118.532 87.3076 119.244 88.2835 119.995 89.3116ZM108.085 89.7071C109.371 89.7071 110.531 88.8951 111.258 87.5818C112.12 86.0131 112.119 84.5449 112.118 82.8001L112.118 82.6143V81.6034C108.803 81.6034 105.302 82.3243 105.302 86.314C105.302 88.3399 106.328 89.7071 108.085 89.7071ZM124.142 68.9547V72.3768C124.14 72.6115 124.232 72.837 124.397 73.0007C124.561 73.1643 124.785 73.2518 125.014 73.2427H132.901L123.858 86.5002C123.445 87.2114 123.25 88.0324 123.298 88.8576V92.3584C123.298 92.8639 123.846 93.4397 124.369 93.1539C129.357 90.513 135.288 90.5021 140.285 93.1249C140.857 93.4273 141.396 92.8431 141.396 92.3377V88.6587C141.381 88.0962 141.071 87.5853 140.585 87.3205C137.952 85.8084 134.889 85.3651 131.992 85.4355L139.798 74.0589C140.524 73.0397 140.93 72.3934 140.93 71.9004V68.9547C140.932 68.7207 140.841 68.4959 140.677 68.3324C140.513 68.1689 140.291 68.0809 140.062 68.0888H124.998C124.769 68.0757 124.545 68.1624 124.382 68.3274C124.218 68.4925 124.131 68.7204 124.142 68.9547Z\" fill=\"black\"></path></g><defs><filter id=\"filter0_d_353_4717\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4717\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4717\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        },
+        "item_NEVcx3": {
+          "type": "item",
+          "settings": {
+            "icon": "<svg width=\"226\" height=\"167\" viewbox=\"0 0 226 167\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g filter=\"url(#filter0_d_353_4458)\"><rect x=\"21.3229\" y=\"21.3229\" width=\"182.562\" height=\"124.354\" rx=\"14.5521\" fill=\"#1F72CD\" stroke=\"#D9D9D9\" stroke-width=\"2.64583\"></rect><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M53.2035 64.9792L35.875 103.327H56.6196L59.1913 97.2124H65.0697L67.6415 103.327H90.4755V98.6601L92.5101 103.327H104.322L106.356 98.5614V103.327H153.845L159.619 97.3712L165.026 103.327L189.417 103.376L172.034 84.26L189.417 64.9792H165.404L159.783 70.8246L154.547 64.9792H102.885L98.4493 74.877L93.909 64.9792H73.2077V69.487L70.9048 64.9792H53.2035ZM124.118 70.4246H151.388L159.729 79.434L168.338 70.4246H176.679L164.006 84.2545L176.679 97.9251H167.96L159.619 88.811L150.966 97.9251H124.118V70.4246ZM130.852 81.1454V76.1222V76.1174H147.868L155.293 84.1507L147.539 92.228H130.852V86.7441H145.729V81.1454H130.852ZM57.2174 70.4246H67.3293L78.8233 96.4281V70.4246H89.9005L98.7782 89.069L106.96 70.4246H117.982V97.9413H111.275L111.221 76.3794L101.443 97.9413H95.4439L85.6117 76.3794V97.9413H71.8148L69.1992 91.7724H55.0679L52.4577 97.9359H45.0655L57.2174 70.4246ZM57.4809 86.0693L62.1366 75.08L66.7869 86.0693H57.4809Z\" fill=\"white\"></path></g><defs><filter id=\"filter0_d_353_4458\" x=\"0\" y=\"0\" width=\"225.208\" height=\"167\" filterunits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\"><feflood flood-opacity=\"0\" result=\"BackgroundImageFix\"></feflood><fecolormatrix in=\"SourceAlpha\" type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0\" result=\"hardAlpha\"></fecolormatrix><feoffset></feoffset><fegaussianblur stddeviation=\"10\"></fegaussianblur><fecomposite in2=\"hardAlpha\" operator=\"out\"></fecomposite><fecolormatrix type=\"matrix\" values=\"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0\"></fecolormatrix><feblend mode=\"normal\" in2=\"BackgroundImageFix\" result=\"effect1_dropShadow_353_4458\"></feblend><feblend mode=\"normal\" in=\"SourceGraphic\" in2=\"effect1_dropShadow_353_4458\" result=\"shape\"></feblend></filter></defs></svg>"
+          }
+        }
+      },
+      "block_order": [
+        "item_9M4ag7",
+        "item_zRUgGr",
+        "item_EAddVT",
+        "item_DYaVDr",
+        "item_N7tDPr",
+        "item_AMRV6Q",
+        "item_fgMUYf",
+        "item_GKh36p",
+        "item_MnFQdx",
+        "item_NEVcx3"
+      ],
+      "settings": {
+        "payment_position": "below_buy",
+        "use_payments_store": false,
+        "payment_title": "",
+        "color": "",
+        "text_size": 10,
+        "icon_size": 42,
+        "icon_size_mobile": 34,
+        "icon_gap": 0,
+        "icon_gap_mobile": 0,
+        "mt": 0,
+        "mb": 1,
+        "bg_color": ""
+      }
+    },
+    "custom_liquid_6T6z8t": {
+      "type": "custom-liquid",
+      "name": "TRUST BAR",
+      "settings": {
+        "custom_liquid": "<section class=\"na-trustbar\" aria-label=\"Store assurances\">\n  <div class=\"na-trustbar__inner\">\n\n <!-- Rating bar -->\n<a href=\"/pages/reviews\" class=\"na-trustbar__rating\" style=\"text-decoration: none;\">\n  <div class=\"na-trustbar__stars\">\n    <span>\u2605</span><span>\u2605</span><span>\u2605</span><span>\u2605</span><span class=\"na-trustbar__star-half\">\u2605</span>\n  </div>\n  <span class=\"na-trustbar__rating-text\">4.8/5 from <strong> HUNDREDS OF RESELLERS</strong></span>\n</a>\n\n    <div class=\"na-trustbar__grid\">\n\n      <div class=\"na-trustbar__item\" style=\"--accent: #222;\">\n        <div class=\"na-trustbar__icon-wrap\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n            <path d=\"M14 16H4a2 2 0 0 1-2-2V7h12v4h3l3 3v0a2 2 0 0 1-2 2h-1\"/>\n            <circle cx=\"7.5\" cy=\"17.5\" r=\"1.5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"1.5\"/>\n          </svg>\n        </div>\n        <div class=\"na-trustbar__text\">\n          <div class=\"na-trustbar__eyebrow\">\u26a1 Dispatch Speed</div>\n          <div class=\"na-trustbar__stat\">99% SAME DAY</div>\n          <div class=\"na-trustbar__sub\">Order before <strong>11am</strong> Mon\u2013Fri</div>\n        </div>\n      </div>\n\n      <div class=\"na-trustbar__item\" style=\"--accent: #222;\">\n        <div class=\"na-trustbar__icon-wrap\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n            <path d=\"M21 16V8a2 2 0 0 0-1-1.73L12 2 4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73L12 22l8-4.27A2 2 0 0 0 21 16Z\"/>\n            <path d=\"M3.27 6.96 12 11l8.73-4.04M12 22V11\"/>\n          </svg>\n        </div>\n        <div class=\"na-trustbar__text\">\n          <div class=\"na-trustbar__eyebrow\"><span class=\"na-trustbar__dot\" style=\"background:#16a34a;\"></span> In Stock</div>\n          <div class=\"na-trustbar__stat\">200+ VINTAGE BUNDLES</div>\n          <div class=\"na-trustbar__sub\"><strong>In stock \u2014</strong> ready to ship</div>\n        </div>\n      </div>\n\n      <div class=\"na-trustbar__item\" style=\"--accent: #222;\">\n        <div class=\"na-trustbar__icon-wrap\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n            <circle cx=\"12\" cy=\"12\" r=\"10\"/>\n            <path d=\"M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20\"/>\n          </svg>\n        </div>\n        <div class=\"na-trustbar__text\">\n          <div class=\"na-trustbar__eyebrow\"><span class=\"na-trustbar__dot na-trustbar__dot--pulse\" style=\"background:#e63535;\"></span> Live</div>\n          <div class=\"na-trustbar__stat\">7500+ ORDERS COMPLETED</div>\n          <div class=\"na-trustbar__sub\">Trusted by resellers worldwide</div>\n        </div>\n      </div>\n\n      <div class=\"na-trustbar__item\" style=\"--accent: #222;\">\n        <div class=\"na-trustbar__icon-wrap\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n            <circle cx=\"11\" cy=\"11\" r=\"8\"/>\n            <path d=\"m21 21-4.35-4.35\"/>\n            <path d=\"M11 8v6M8 11h6\"/>\n          </svg>\n        </div>\n        <div class=\"na-trustbar__text\">\n          <div class=\"na-trustbar__eyebrow\">\ud83d\udd0d Quality Control</div>\n          <div class=\"na-trustbar__stat\">100% HANDGRADED</div>\n          <div class=\"na-trustbar__sub\">Every item checked before dispatch</div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n\n<style>\n  .na-trustbar {\n    background: #fff;\n    border-top: 1px solid #efefed;\n    border-bottom: 1px solid #efefed;\n    padding: 16px 0 20px;\n  }\n  .na-trustbar__inner {\n    max-width: 100%;\n    margin: 0 auto;\n    padding: 0 32px;\n  }\n\n  /* Rating bar \u2014 glass pill */\n  .na-trustbar__rating {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin-bottom: 16px;\n  }\n  .na-trustbar__rating-pill {\n    display: inline-flex;\n    align-items: center;\n    gap: 10px;\n    padding: 8px 20px;\n    background: rgba(255,255,255,0.55);\n    backdrop-filter: blur(8px);\n    -webkit-backdrop-filter: blur(8px);\n    border: 1px solid rgba(0,0,0,0.08);\n    border-radius: 999px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.06);\n  }\n  .na-trustbar__stars {\n    display: flex;\n    gap: 1px;\n    font-size: 16px;\n    color: #111;\n    line-height: 1;\n  }\n  .na-trustbar__star-half {\n    position: relative;\n    color: #ddd;\n  }\n  .na-trustbar__star-half::before {\n    content: '\u2605';\n    position: absolute;\n    left: 0;\n    color: #111;\n    width: 50%;\n    overflow: hidden;\n  }\n  .na-trustbar__rating-text {\n    font-size: 12.5px;\n    color: #555;\n    font-family: 'Poppins', sans-serif;\n    letter-spacing: 0.2px;\n  }\n  .na-trustbar__rating-text strong { color: #111; font-weight: 700; }\n\n  /* Grid */\n  .na-trustbar__grid {\n    display: grid !important;\n    grid-template-columns: repeat(4, 1fr) !important;\n    gap: 16px;\n  }\n  .na-trustbar__item {\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    gap: 14px;\n    padding: 0 18px 16px;\n    border: 1px solid #e0e0e0;\n    border-radius: 12px;\n    overflow: hidden;\n    background: #fafafa;\n    transition: box-shadow 0.2s, background 0.2s;\n    position: relative;\n  }\n  /* Dark grey hood */\n  .na-trustbar__item::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 5px;\n    background: #222;\n    border-radius: 12px 12px 0 0;\n  }\n  .na-trustbar__item:hover {\n    background: #fff;\n    box-shadow: 0 4px 20px rgba(0,0,0,0.08);\n  }\n  /* Push content below the hood */\n  .na-trustbar__icon-wrap,\n  .na-trustbar__text {\n    margin-top: 16px;\n  }\n  .na-trustbar__icon-wrap {\n    width: 52px;\n    height: 52px;\n    border-radius: 10px;\n    background: #efefef;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    color: #333;\n    flex-shrink: 0;\n  }\n  .na-trustbar__icon-wrap svg { width: 26px; height: 26px; }\n  .na-trustbar__text {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n  }\n  .na-trustbar__eyebrow {\n    font-size: 9px;\n    font-weight: 700;\n    letter-spacing: 1.5px;\n    text-transform: uppercase;\n    color: #888;\n    display: flex;\n    align-items: center;\n    gap: 5px;\n  }\n  .na-trustbar__dot {\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    flex-shrink: 0;\n    display: inline-block;\n  }\n  .na-trustbar__dot--pulse {\n    animation: na-tb-pulse 1.4s ease-in-out infinite;\n  }\n  @keyframes na-tb-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }\n  .na-trustbar__stat {\n    font-size: 18px;\n    font-weight: 800;\n    color: #111;\n    letter-spacing: -0.03em;\n    line-height: 1.15;\n    font-family: 'Poppins', sans-serif;\n  }\n  .na-trustbar__sub {\n    font-size: 11px;\n    color: #999;\n    line-height: 1.4;\n  }\n  .na-trustbar__sub strong { color: #555; font-weight: 600; }\n\n @media (max-width: 520px) {\n\n  /* Grid layout (2x2 cards) */\n  .na-trustbar__grid {\n    grid-template-columns: 1fr 1fr !important;\n    gap: 10px;\n  }\n\n  /* Card layout */\n  .na-trustbar__item {\n    flex-direction: column;\n    align-items: flex-start;\n    padding: 12px 14px 14px;\n    gap: 8px;\n    border-radius: 10px;\n  }\n\n  /* Icon container */\n  .na-trustbar__icon-wrap {\n    margin-top: 0;\n    width: 34px;\n    height: 34px;\n  }\n\n  /* Icon size */\n  .na-trustbar__icon-wrap svg {\n    width: 18px;\n    height: 18px;\n  }\n\n  /* Text block */\n  .na-trustbar__text {\n    margin-top: 0;\n  }\n\n  /* Main stat */\n  .na-trustbar__stat {\n    font-size: 14px;\n    line-height: 1.2;\n  }\n\n  /* Sub text */\n  .na-trustbar__sub {\n    font-size: 10px;\n    line-height: 1.3;\n    opacity: 0.75;\n  }\n\n  /* Section spacing */\n  .na-trustbar {\n    padding: 12px 0 16px;\n  }\n\n  /* Inner container */\n  .na-trustbar__inner {\n    padding: 0 16px;\n  }\n\n}\n</style>",
+        "color_scheme": "",
+        "padding_top": 4,
+        "padding_bottom": 0
+      }
+    },
+    "na_pdp_tabs_AkbMqU": {
+      "type": "na-pdp-tabs",
+      "blocks": {
+        "tab_cAVUxP": {
+          "type": "tab",
+          "settings": {
+            "title": "Details & Grading",
+            "source": "custom",
+            "content": "<p>Every piece is hand-graded. Allow ~10% grading variance. See our grading system for full details.</p>",
+            "learn_more_link": "",
+            "learn_more_text": "Learn more",
+            "is_addon": false,
+            "pill_text": "Add-on",
+            "addon_link": "",
+            "addon_cta": "Add this service"
+          }
+        },
+        "tab_heRrT8": {
+          "type": "tab",
+          "settings": {
+            "title": "Shipping & Dispatch",
+            "source": "custom",
+            "content": "<p>We dispatch Monday - Friday anytime after 11am. Free UK delivery when you buy 2+ bundles. VAT included in the listing price.</p>",
+            "learn_more_link": "",
+            "learn_more_text": "Learn more",
+            "is_addon": false,
+            "pill_text": "Add-on",
+            "addon_link": "",
+            "addon_cta": "Add this service"
+          }
+        },
+        "tab_GKkxPK": {
+          "type": "tab",
+          "settings": {
+            "title": "Need the items washed?",
+            "source": "custom",
+            "content": "<p>Want it ready to list out the box? Add our washing service so your bundle arrives fresh, pressed and ready to photograph.</p>",
+            "learn_more_link": "",
+            "learn_more_text": "Learn more",
+            "is_addon": true,
+            "pill_text": "Add-on",
+            "addon_link": "/collections/washing-services",
+            "addon_cta": "Add washing"
+          }
+        },
+        "tab_product_details": {
+          "type": "tab",
+          "settings": {
+            "title": "Product details",
+            "source": "description"
+          }
+        }
+      },
+      "block_order": [
+        "tab_product_details",
+        "tab_cAVUxP",
+        "tab_heRrT8",
+        "tab_GKkxPK"
+      ],
+      "name": "PDP Tabs",
+      "settings": {
+        "spacer_top": 48,
+        "heading": "WHAT TO EXPECT FROM THIS BOX?",
+        "subheading": ""
+      }
+    },
+    "ss_product_coupon_hwftA8": {
+      "type": "ss-product-coupon",
+      "blocks": {
+        "coupon_Lza4jk": {
+          "type": "coupon",
+          "settings": {
+            "header": "BUNDLE OFFER: BUY ONE, GET ONE 25% OFF",
+            "text": ""
+          }
+        },
+        "coupon_PH4xiQ": {
+          "type": "coupon",
+          "settings": {
+            "header": "NEW CUSTOMER? GET 10% OFF!  CODE - GIVEME10",
+            "text": ""
+          }
+        }
+      },
+      "block_order": [
+        "coupon_Lza4jk",
+        "coupon_PH4xiQ"
+      ],
+      "disabled": true,
+      "name": "SS - Product Coupon",
+      "settings": {
+        "coupon_position": "above_buy",
+        "body_padding_horizontal": 32,
+        "body_padding_vertical": 12,
+        "body_radius": 10,
+        "body_border_thickness": 2,
+        "body_bg_animation": true,
+        "items_gap": 28,
+        "items_gap_mobile": 26,
+        "items_border": true,
+        "heading_custom": true,
+        "heading_font": "sans_serif_n4",
+        "heading_size": 12,
+        "heading_size_mobile": 16,
+        "heading_height": 140,
+        "heading_align": "center",
+        "text_custom": true,
+        "text_font": "poppins_n4",
+        "text_size": 12,
+        "text_size_mobile": 12,
+        "text_height": 130,
+        "text_align": "center",
+        "text_mt": 16,
+        "body_bg_color": "#ffffff",
+        "body_border_color": "#747474",
+        "body_circle_color": "#ffffff",
+        "items_border_color": "#636060",
+        "heading_color": "#000000",
+        "text_color": "#000000",
+        "background_color": "#ffffff",
+        "background_gradient": "",
+        "border_color": "#282525",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "padding_horizontal": 0,
+        "padding_horizontal_mobile": 0,
+        "content_width": 200,
+        "border_thickness": 0
+      }
+    },
+    "na_pdp_recommended_XGDeG6": {
+      "type": "na-pdp-recommended",
+      "name": "PDP Recommended",
+      "settings": {
+        "spacer_top": 0,
+        "heading": "RECOMMENDED FOR YOU",
+        "subheading": "Check out what others are pairing with this bundle.",
+        "products_to_show": 10
+      }
+    },
+    "na_pdp_compare_jEyhNP": {
+      "type": "na-pdp-compare",
+      "name": "PDP Comparison",
+      "settings": {
+        "spacer_top": 0,
+        "logo": "https://cdn.shopify.com/s/files/1/0810/4090/0375/files/logo_transparent_black.png?v=1773070899",
+        "heading_suffix": "vs. Other Suppliers",
+        "heading": "NOT ANOTHER VS OTHER SUPPLIERS",
+        "subheading": "We aim to provide real value for our resellers, no matter the size \u2014 whether you order 20 items or 1000.",
+        "us_title": "Not Another",
+        "us_points": "Reliable, consistent grade\nEasy-to-understand margins\nVAT & UK Shipping included\nIn stock, ready to dispatch\nExpress delivery\nReal, fast customer support",
+        "them_title": "Other wholesalers",
+        "them_points": "Unreliable grading\nNo reseller experience\nHidden costs at checkout\nSlow dispatch\nPre-order lead times\nGeneric automated replies"
+      }
+    },
+    "na_pdp_explore_cRQgrg": {
+      "type": "na-pdp-explore",
+      "name": "PDP Explore Button",
+      "settings": {
+        "spacer_top": 0,
+        "label": "Explore More Bundles",
+        "link": ""
+      }
+    },
+    "1780055141a0bfa95c": {
+      "type": "apps",
+      "blocks": {
+        "klaviyo_reviews_featured_reviews_carousel_QBae78": {
+          "type": "shopify://apps/klaviyo-reviews/blocks/featured-reviews-carousel/db20e365-d984-4ac4-9655-e1588d951ca9",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "klaviyo_reviews_featured_reviews_carousel_QBae78"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "custom_liquid_Rn7xWc": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "custom_css": [
+        "div {text-align: center; display: flex; align-items: center; justify-content: center;}",
+        "@media only screen and (max-width: px) {div {display: flex; flex-direction: column-reverse; }}",
+        "h2 {font-weight: 700; letter-spacing: -1px;}",
+        "img {height: 50px; padding-left: 0px;}"
+      ],
+      "name": "AS SEEN ON INSTAGRAM",
+      "settings": {
+        "custom_liquid": "<div>\n<h2>\nAS SEEN ON OUR INSTAGRAM\n</h2>\n<img src=\"https://static.vecteezy.com/system/resources/previews/014/414/683/non_2x/instagram-black-logo-on-transparent-background-free-vector.jpg\">\n</div>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "1710188944f42fa077": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_kfpkbY": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "disabled": true,
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_kfpkbY"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "disabled": true,
+      "custom_css": [
+        "h2 {font-size: 2em; text-align: center; font-weight: 700; letter-spacing: -1px;}"
+      ],
+      "settings": {
+        "heading": "People Also Liked:",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "background-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": true,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 40
+      }
+    },
+    "custom_liquid_pFCgNT": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div class=\"collapsible\">\n  <button class=\"collapsible-btn\" aria-expanded=\"true\" aria-controls=\"pd-content\">\n    <span class=\"button-text\">PRODUCT DETAILS</span>\n    <img class=\"button-img rotate-90\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/next.png?v=1711120596\" alt=\"\" aria-hidden=\"true\">\n  </button>\n  <div id=\"pd-content\" class=\"collapsible-content active\">\n    {{ product.description }}\n  </div>\n</div>\n\n<div class=\"collapsible\">\n  <button class=\"collapsible-btn\" aria-expanded=\"false\" aria-controls=\"delivery-content\">\n    <span class=\"button-text\">DELIVERY & DISPATCH INFO</span>\n    <img class=\"button-img\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/next.png?v=1711120596\" alt=\"\" aria-hidden=\"true\">\n  </button>\n  <div id=\"delivery-content\" class=\"collapsible-content\">\n    <p><strong>Note:</strong> Dispatch is usually within 24 hours.</p>\n    <p>\n      <img src=\"https://cdn-icons-png.flaticon.com/512/1670/1670915.png\" style=\"height:25px;float:left;margin-right:10px;padding-bottom: 4px;\" alt=\"\">\n      Get it between <strong><span id=\"fromDate\"></span> - <span id=\"toDate\"></span></strong>\n    </p>\n    {{ '//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js' | script_tag }}\n    <script>\n      var fromDate = Date.today().addDays(2);\n      if (fromDate.is().saturday() || fromDate.is().sunday()) {\n        fromDate = fromDate.next().monday();\n      }\n      var toDate = Date.today().addDays(2);\n      if (toDate.is().saturday() || toDate.is().sunday()) {\n        toDate = toDate.next().tuesday();\n      }\n      document.getElementById('fromDate').innerHTML = fromDate.toString('dddd MMMM dS');\n      document.getElementById('toDate').innerHTML = toDate.toString('dddd MMMM dS');\n    </script>\n  </div>\n</div>\n\n<div class=\"collapsible\">\n  <button class=\"collapsible-btn\" aria-expanded=\"false\" aria-controls=\"wash-content\">\n    <span class=\"button-text\">\n      BUNDLE WASH SERVICE\n      <span class=\"recommended-badge\">\ud83e\udee7</span>\n    </span>\n    <img class=\"button-img\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/next.png?v=1711120596\" alt=\"\" aria-hidden=\"true\">\n  </button>\n  <div id=\"wash-content\" class=\"collapsible-content\">\n    <p>\n      \ud83e\uddfc <strong>Pre-Dispatch Bundle Wash Service</strong><br>\n      List your items straight out of the box \u2014 fresh, clean, and ready to resell.\n    </p>\n    <ul style=\"margin-left: 1em; padding-left: 0;\">\n      <li>\u2705 Items are washed with premium washing powder &amp; fabric softener</li>\n      <li>\u2705 Save time \u2014 list faster</li>\n      <li>\u2705 Trusted by 200+ resellers</li>\n    </ul>\n    <p>\n      <strong>\u00a330 per bundle</strong> \u2014 optional, add 1 per bundle.<br>\n      Adds 2\u20135 working days processing. Items will arrive boxed.\n    </p>\n    <p style=\"font-size: 13px; color: #777;\">\n      <em>Please note: While we ensure high standards, 100% stain removal is not guaranteed. Service is non-refundable.</em>\n    </p>\n\n    <div style=\"text-align: center; margin-top: 16px;\">\n      <button type=\"button\"\n              class=\"add-wash-service-btn\"\n              data-variant-id=\"48159249793303\"\n              style=\"background-color: #222; color: #fff; border: none; border-radius: 6px; padding: 12px 20px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease; position: relative;\">\n        \u2795 Add Bundle Wash Service to Cart\n        <span class=\"wash-spinner\" style=\"display: none; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;\"></span>\n      </button>\n    </div>\n  </div>\n</div>\n\n<style>\n  .collapsible-content {\n    max-height: 0;\n    overflow: hidden;\n    transition: max-height 0.4s ease, padding 0.4s ease;\n    margin: 0 14px;\n    border-top: 1px solid #eee;\n    padding: 0 0;\n    font-size: 14px;\n    line-height: 1.6;\n  }\n  .collapsible-content.active {\n    max-height: 1000px;\n    padding: 12px 0;\n  }\n\n  .collapsible-btn {\n    background-color: #fafafa;\n    color: #222;\n    cursor: pointer;\n    padding: 10px 16px;\n    border: 1px solid #ddd;\n    border-radius: 6px;\n    outline: none;\n    width: 100%;\n    text-align: left;\n    font-size: 1.2em;\n    font-weight: 700;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    margin-bottom: 10px;\n    transition: background-color 0.3s ease, box-shadow 0.3s ease;\n  }\n\n  .collapsible-btn:hover {\n    background-color: #f0f0f0;\n    box-shadow: 0 1px 4px rgba(0,0,0,0.06);\n  }\n\n  .button-text {\n    margin-right: 10px;\n    display: flex;\n    align-items: center;\n    gap: 6px;\n  }\n\n  .recommended-badge {\n    font-size: 16px;\n  }\n\n  .button-img {\n    max-width: 15px;\n    max-height: 15px;\n    transition: transform 0.3s ease;\n  }\n  .rotate-90 { transform: rotate(90deg); }\n\n  /* Spinner animation */\n  @keyframes spin { to { transform: rotate(360deg); } }\n\n  /* \u2705 MOBILE SHRINKING BELOW */\n  @media (max-width: 768px) {\n    .collapsible-btn {\n      font-size: 1em !important;\n      padding: 8px 14px !important;\n      margin-bottom: 6px !important;\n    }\n    .collapsible-content {\n      font-size: 13px !important;\n      line-height: 1.35 !important;\n      padding: 6px 0 !important;\n    }\n    .collapsible-content p {\n      margin: 6px 0 !important;\n    }\n    .collapsible-content ul li {\n      margin: 4px 0 !important;\n      padding-left: 12px !important;\n    }\n  }\n</style>\n\n<script>\n  document.addEventListener(\"DOMContentLoaded\", function() {\n    var buttons = document.querySelectorAll(\".collapsible-btn\");\n\n    buttons.forEach(function(button) {\n      button.addEventListener(\"click\", function() {\n        var content = this.nextElementSibling;\n        var image = this.querySelector('.button-img');\n        var isOpen = content.classList.contains('active');\n\n        document.querySelectorAll(\".collapsible-content\").forEach(function(otherContent) {\n          otherContent.classList.remove('active');\n        });\n        document.querySelectorAll(\".collapsible-btn .button-img\").forEach(function(otherImage) {\n          otherImage.classList.remove('rotate-90');\n        });\n        document.querySelectorAll(\".collapsible-btn\").forEach(function(b) {\n          b.setAttribute('aria-expanded','false');\n        });\n\n        if (!isOpen) {\n          content.classList.add('active');\n          if (image) image.classList.add('rotate-90');\n          this.setAttribute('aria-expanded','true');\n        }\n      });\n    });\n\n    document.querySelectorAll('.add-wash-service-btn').forEach(function(button) {\n      button.addEventListener('click', function() {\n        var variantId = this.getAttribute('data-variant-id');\n        var originalText = '\u2795 Add Bundle Wash Service to Cart';\n        var spinner = this.querySelector('.wash-spinner');\n\n        this.innerHTML = 'Adding...';\n        this.appendChild(spinner);\n        spinner.style.display = 'inline-block';\n        this.disabled = true;\n\n        fetch('/cart/add.js', {\n          method: 'POST',\n          headers: { 'Content-Type': 'application/json' },\n          body: JSON.stringify({ id: variantId, quantity: 1 })\n        })\n        .then(response => response.json())\n        .then(data => {\n          this.innerHTML = '\u2705 Added to Cart';\n          document.dispatchEvent(new CustomEvent('cart:updated'));\n        })\n        .catch(error => {\n          console.error('Error adding washing service to cart:', error);\n          this.innerHTML = 'Error - Try Again';\n        })\n        .finally(() => {\n          spinner.style.display = 'none';\n          setTimeout(() => {\n            this.innerHTML = originalText;\n            this.disabled = false;\n          }, 2000);\n        });\n      });\n    });\n  });\n</script>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "custom_liquid_kBNhiG",
+    "main",
+    "ss_payment_icons_hb8L4W",
+    "custom_liquid_6T6z8t",
+    "na_pdp_tabs_AkbMqU",
+    "ss_product_coupon_hwftA8",
+    "na_pdp_recommended_XGDeG6",
+    "na_pdp_compare_jEyhNP",
+    "na_pdp_explore_cRQgrg",
+    "1780055141a0bfa95c",
+    "custom_liquid_Rn7xWc",
+    "1710188944f42fa077",
+    "related-products",
+    "custom_liquid_pFCgNT"
+  ]
+}
