@@ -1,0 +1,1303 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+    {%- if settings.animations_reveal_on_scroll -%}
+      <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+
+
+    {%- liquid
+      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+    %}
+
+    {% style %}
+      {{ settings.type_body_font | font_face: font_display: 'swap' }}
+      {{ body_font_bold | font_face: font_display: 'swap' }}
+      {{ body_font_italic | font_face: font_display: 'swap' }}
+      {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+
+      {% for scheme in settings.color_schemes -%}
+        {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
+        {% if forloop.index == 1 -%}
+          :root,
+        {%- endif %}
+        .color-{{ scheme.id }} {
+          --color-background: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+        {% if scheme.settings.background_gradient != empty %}
+          --gradient-background: {{ scheme.settings.background_gradient }};
+        {% else %}
+          --gradient-background: {{ scheme.settings.background }};
+        {% endif %}
+
+        {% liquid
+          assign background_color = scheme.settings.background
+          assign background_color_brightness = background_color | color_brightness
+          if background_color_brightness <= 26
+            assign background_color_contrast = background_color | color_lighten: 50
+          elsif background_color_brightness <= 65
+            assign background_color_contrast = background_color | color_lighten: 5
+          else
+            assign background_color_contrast = background_color | color_darken: 25
+          endif
+        %}
+
+        --color-foreground: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+        --color-background-contrast: {{ background_color_contrast.red }},{{ background_color_contrast.green }},{{ background_color_contrast.blue }};
+        --color-shadow: {{ scheme.settings.shadow.red }},{{ scheme.settings.shadow.green }},{{ scheme.settings.shadow.blue }};
+        --color-button: {{ scheme.settings.button.red }},{{ scheme.settings.button.green }},{{ scheme.settings.button.blue }};
+        --color-button-text: {{ scheme.settings.button_label.red }},{{ scheme.settings.button_label.green }},{{ scheme.settings.button_label.blue }};
+        --color-secondary-button: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+        --color-secondary-button-text: {{ scheme.settings.secondary_button_label.red }},{{ scheme.settings.secondary_button_label.green }},{{ scheme.settings.secondary_button_label.blue }};
+        --color-link: {{ scheme.settings.secondary_button_label.red }},{{ scheme.settings.secondary_button_label.green }},{{ scheme.settings.secondary_button_label.blue }};
+        --color-badge-foreground: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+        --color-badge-background: {{ scheme.settings.background.red }},{{ scheme.settings.background.green }},{{ scheme.settings.background.blue }};
+        --color-badge-border: {{ scheme.settings.text.red }},{{ scheme.settings.text.green }},{{ scheme.settings.text.blue }};
+        --payment-terms-background-color: rgb({{ scheme.settings.background.rgb }});
+      }
+      {% endfor %}
+
+      {{ scheme_classes | prepend: 'body' }} {
+        color: rgba(var(--color-foreground), 0.75);
+        background-color: rgb(var(--color-background));
+      }
+
+      :root {
+        --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-style: {{ settings.type_body_font.style }};
+        --font-body-weight: {{ settings.type_body_font.weight }};
+        --font-body-weight-bold: {{ settings.type_body_font.weight | plus: 300 | at_most: 1000 }};
+
+        --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-style: {{ settings.type_header_font.style }};
+        --font-heading-weight: {{ settings.type_header_font.weight }};
+
+        --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+        --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
+
+        --media-padding: {{ settings.media_padding }}px;
+        --media-border-opacity: {{ settings.media_border_opacity | divided_by: 100.0 }};
+        --media-border-width: {{ settings.media_border_thickness }}px;
+        --media-radius: {{ settings.media_radius }}px;
+        --media-shadow-opacity: {{ settings.media_shadow_opacity | divided_by: 100.0 }};
+        --media-shadow-horizontal-offset: {{ settings.media_shadow_horizontal_offset }}px;
+        --media-shadow-vertical-offset: {{ settings.media_shadow_vertical_offset }}px;
+        --media-shadow-blur-radius: {{ settings.media_shadow_blur }}px;
+        --media-shadow-visible: {% if settings.media_shadow_opacity > 0 %}1{% else %}0{% endif %};
+
+        --page-width: {{ settings.page_width | divided_by: 10 }}rem;
+        --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
+
+        --product-card-image-padding: {{ settings.card_image_padding | divided_by: 10.0 }}rem;
+        --product-card-corner-radius: {{ settings.card_corner_radius | divided_by: 10.0 }}rem;
+        --product-card-text-alignment: {{ settings.card_text_alignment }};
+        --product-card-border-width: {{ settings.card_border_thickness | divided_by: 10.0 }}rem;
+        --product-card-border-opacity: {{ settings.card_border_opacity | divided_by: 100.0 }};
+        --product-card-shadow-opacity: {{ settings.card_shadow_opacity | divided_by: 100.0 }};
+        --product-card-shadow-visible: {% if settings.card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --product-card-shadow-horizontal-offset: {{ settings.card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+        --product-card-shadow-vertical-offset: {{ settings.card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+        --product-card-shadow-blur-radius: {{ settings.card_shadow_blur | divided_by: 10.0 }}rem;
+
+        --collection-card-image-padding: {{ settings.collection_card_image_padding | divided_by: 10.0 }}rem;
+        --collection-card-corner-radius: {{ settings.collection_card_corner_radius | divided_by: 10.0 }}rem;
+        --collection-card-text-alignment: {{ settings.collection_card_text_alignment }};
+        --collection-card-border-width: {{ settings.collection_card_border_thickness | divided_by: 10.0 }}rem;
+        --collection-card-border-opacity: {{ settings.collection_card_border_opacity | divided_by: 100.0 }};
+        --collection-card-shadow-opacity: {{ settings.collection_card_shadow_opacity | divided_by: 100.0 }};
+        --collection-card-shadow-visible: {% if settings.collection_card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --collection-card-shadow-horizontal-offset: {{ settings.collection_card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+        --collection-card-shadow-vertical-offset: {{ settings.collection_card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+        --collection-card-shadow-blur-radius: {{ settings.collection_card_shadow_blur | divided_by: 10.0 }}rem;
+
+        --blog-card-image-padding: {{ settings.blog_card_image_padding | divided_by: 10.0 }}rem;
+        --blog-card-corner-radius: {{ settings.blog_card_corner_radius | divided_by: 10.0 }}rem;
+        --blog-card-text-alignment: {{ settings.blog_card_text_alignment }};
+        --blog-card-border-width: {{ settings.blog_card_border_thickness | divided_by: 10.0 }}rem;
+        --blog-card-border-opacity: {{ settings.blog_card_border_opacity | divided_by: 100.0 }};
+        --blog-card-shadow-opacity: {{ settings.blog_card_shadow_opacity | divided_by: 100.0 }};
+        --blog-card-shadow-visible: {% if settings.blog_card_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --blog-card-shadow-horizontal-offset: {{ settings.blog_card_shadow_horizontal_offset | divided_by: 10.0 }}rem;
+        --blog-card-shadow-vertical-offset: {{ settings.blog_card_shadow_vertical_offset | divided_by: 10.0 }}rem;
+        --blog-card-shadow-blur-radius: {{ settings.blog_card_shadow_blur | divided_by: 10.0 }}rem;
+
+        --badge-corner-radius: {{ settings.badge_corner_radius | divided_by: 10.0 }}rem;
+
+        --popup-border-width: {{ settings.popup_border_thickness }}px;
+        --popup-border-opacity: {{ settings.popup_border_opacity | divided_by: 100.0 }};
+        --popup-corner-radius: {{ settings.popup_corner_radius }}px;
+        --popup-shadow-opacity: {{ settings.popup_shadow_opacity | divided_by: 100.0 }};
+        --popup-shadow-horizontal-offset: {{ settings.popup_shadow_horizontal_offset }}px;
+        --popup-shadow-vertical-offset: {{ settings.popup_shadow_vertical_offset }}px;
+        --popup-shadow-blur-radius: {{ settings.popup_shadow_blur }}px;
+
+        --drawer-border-width: {{ settings.drawer_border_thickness }}px;
+        --drawer-border-opacity: {{ settings.drawer_border_opacity | divided_by: 100.0 }};
+        --drawer-shadow-opacity: {{ settings.drawer_shadow_opacity | divided_by: 100.0 }};
+        --drawer-shadow-horizontal-offset: {{ settings.drawer_shadow_horizontal_offset }}px;
+        --drawer-shadow-vertical-offset: {{ settings.drawer_shadow_vertical_offset }}px;
+        --drawer-shadow-blur-radius: {{ settings.drawer_shadow_blur }}px;
+
+        --spacing-sections-desktop: {{ settings.spacing_sections }}px;
+        --spacing-sections-mobile: {% if settings.spacing_sections < 24 %}{{ settings.spacing_sections }}{% else %}{{ settings.spacing_sections | times: 0.7 | round | at_least: 20 }}{% endif %}px;
+
+        --grid-desktop-vertical-spacing: {{ settings.spacing_grid_vertical }}px;
+        --grid-desktop-horizontal-spacing: {{ settings.spacing_grid_horizontal }}px;
+        --grid-mobile-vertical-spacing: {{ settings.spacing_grid_vertical | divided_by: 2 }}px;
+        --grid-mobile-horizontal-spacing: {{ settings.spacing_grid_horizontal | divided_by: 2 }}px;
+
+        --text-boxes-border-opacity: {{ settings.text_boxes_border_opacity | divided_by: 100.0 }};
+        --text-boxes-border-width: {{ settings.text_boxes_border_thickness }}px;
+        --text-boxes-radius: {{ settings.text_boxes_radius }}px;
+        --text-boxes-shadow-opacity: {{ settings.text_boxes_shadow_opacity | divided_by: 100.0 }};
+        --text-boxes-shadow-visible: {% if settings.text_boxes_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --text-boxes-shadow-horizontal-offset: {{ settings.text_boxes_shadow_horizontal_offset }}px;
+        --text-boxes-shadow-vertical-offset: {{ settings.text_boxes_shadow_vertical_offset }}px;
+        --text-boxes-shadow-blur-radius: {{ settings.text_boxes_shadow_blur }}px;
+
+        --buttons-radius: {{ settings.buttons_radius }}px;
+        --buttons-radius-outset: {% if settings.buttons_radius > 0 %}{{ settings.buttons_radius | plus: settings.buttons_border_thickness }}{% else %}0{% endif %}px;
+        --buttons-border-width: {% if settings.buttons_border_opacity > 0 %}{{ settings.buttons_border_thickness }}{% else %}0{% endif %}px;
+        --buttons-border-opacity: {{ settings.buttons_border_opacity | divided_by: 100.0 }};
+        --buttons-shadow-opacity: {{ settings.buttons_shadow_opacity | divided_by: 100.0 }};
+        --buttons-shadow-visible: {% if settings.buttons_shadow_opacity > 0 %}1{% else %}0{% endif %};
+        --buttons-shadow-horizontal-offset: {{ settings.buttons_shadow_horizontal_offset }}px;
+        --buttons-shadow-vertical-offset: {{ settings.buttons_shadow_vertical_offset }}px;
+        --buttons-shadow-blur-radius: {{ settings.buttons_shadow_blur }}px;
+        --buttons-border-offset: {% if settings.buttons_radius > 0 or settings.buttons_shadow_opacity > 0 %}0.3{% else %}0{% endif %}px;
+
+        --inputs-radius: {{ settings.inputs_radius }}px;
+        --inputs-border-width: {{ settings.inputs_border_thickness }}px;
+        --inputs-border-opacity: {{ settings.inputs_border_opacity | divided_by: 100.0 }};
+        --inputs-shadow-opacity: {{ settings.inputs_shadow_opacity | divided_by: 100.0 }};
+        --inputs-shadow-horizontal-offset: {{ settings.inputs_shadow_horizontal_offset }}px;
+        --inputs-margin-offset: {% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_opacity > 0 %}{{ settings.inputs_shadow_vertical_offset | abs }}{% else %}0{% endif %}px;
+        --inputs-shadow-vertical-offset: {{ settings.inputs_shadow_vertical_offset }}px;
+        --inputs-shadow-blur-radius: {{ settings.inputs_shadow_blur }}px;
+        --inputs-radius-outset: {% if settings.inputs_radius > 0 %}{{ settings.inputs_radius | plus: settings.inputs_border_thickness }}{% else %}0{% endif %}px;
+
+        --variant-pills-radius: {{ settings.variant_pills_radius }}px;
+        --variant-pills-border-width: {{ settings.variant_pills_border_thickness }}px;
+        --variant-pills-border-opacity: {{ settings.variant_pills_border_opacity | divided_by: 100.0 }};
+        --variant-pills-shadow-opacity: {{ settings.variant_pills_shadow_opacity | divided_by: 100.0 }};
+        --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
+        --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
+        --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+
+      html {
+        box-sizing: border-box;
+        font-size: calc(var(--font-body-scale) * 62.5%);
+        height: 100%;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-columns: 100%;
+        min-height: 100%;
+        margin: 0;
+        font-size: 1.5rem;
+        letter-spacing: 0.06rem;
+        line-height: calc(1 + 0.8 / var(--font-body-scale));
+        font-family: var(--font-body-family);
+        font-style: var(--font-body-style);
+        font-weight: var(--font-body-weight);
+      }
+
+      @media screen and (min-width: 750px) {
+        body {
+          font-size: 1.6rem;
+        }
+      }
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'custom-product.css' | asset_url | stylesheet_tag }}
+    {{ 'na-product-card.css' | asset_url | stylesheet_tag }}
+
+    {%- comment -%}
+      NAW mobile viewport lock — two fixes for the "loose" page on phones:
+      1. overflow-x clamp: any element that momentarily renders wider than the
+         screen (sliders, marquees, app embeds) un-anchors the whole page on iOS.
+         overflow:clip preferred (doesn't break position:sticky); hidden fallback.
+      2. 16px minimum on form fields at mobile widths: iOS Safari force-zooms the
+         page when a field under 16px is focused (search 12px, footer email 13px,
+         cart qty 10.8px all triggered it) and the page stays zoomed after.
+    {%- endcomment -%}
+    <style id="naw-mobile-lock">
+      html,body{overflow-x:hidden}
+      @supports (overflow:clip){html,body{overflow-x:clip}}
+      @media screen and (max-width:749px){
+        input[type="text"],input[type="search"],input[type="email"],input[type="tel"],
+        input[type="number"],input[type="password"],textarea,select{font-size:16px !important}
+      }
+    </style>
+
+
+    {%- unless settings.type_body_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+      {{ 'component-localization-form.css' | asset_url | stylesheet_tag: preload: true }}
+      <script src="{{ 'localization-form.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- if settings.predictive_search_enabled -%}
+      <link
+        rel="stylesheet"
+        href="{{ 'component-predictive-search.css' | asset_url }}"
+        media="print"
+        onload="this.media='all'"
+      >
+    {%- endif -%}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+
+
+  {% render 'gp-head' %}
+
+</head>
+
+  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_text' | t }}
+    </a>
+
+    {% render 'amp-slidecar-edits' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {%- render 'cart-drawer' -%}
+    {%- endif -%}
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}',
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
+      };
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+        unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`,
+      };
+
+      window.quickOrderListStrings = {
+        itemsAdded: `{{ 'sections.quick_order_list.items_added.other' | t: quantity: '[quantity]' }}`,
+        itemAdded: `{{ 'sections.quick_order_list.items_added.one' | t: quantity: '[quantity]' }}`,
+        itemsRemoved: `{{ 'sections.quick_order_list.items_removed.other' | t: quantity: '[quantity]' }}`,
+        itemRemoved: `{{ 'sections.quick_order_list.items_removed.one' | t: quantity: '[quantity]' }}`,
+        viewCart: `{{- 'sections.quick_order_list.view_cart' | t -}}`,
+        each: `{{- 'sections.quick_order_list.each' | t: money: '[money]' }}`,
+      };
+
+      window.accessibilityStrings = {
+        imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
+        shareSuccess: `{{ 'general.share.success_message' | t }}`,
+        pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
+        playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
+        recipientFormExpanded: `{{ 'recipient.form.expanded' | t }}`,
+        recipientFormCollapsed: `{{ 'recipient.form.collapsed' | t }}`,
+      };
+    </script>
+
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+  <!--  AOD_OrderLimit Start  --> 
+{% include 'aodLimitValidator' %}
+ <!--  AOD_OrderLimit End  -->
+ <!-- ✅ NA Variant + Quantity Live Update Script -->
+<script>
+document.addEventListener('product:variant-change', function(event) {
+  const variant = event.detail.variant;
+  if (!variant) return;
+
+  /* ✅ Pull variant metafields from namespace `custom` */
+  const mv = variant.metafields && variant.metafields.custom ? variant.metafields.custom : {};
+
+  const resaleValue   = mv.resalevalue;
+  const pricePerPiece = mv.price_per_piece || mv.priceperpiece || null;
+  const units         = mv.quantity1;
+  const productGrade  = mv.grade || mv.productgrade1 || null;
+
+  const price = variant.price;
+
+  /* ✅ DOM update helper */
+  const update = (selector, value) => {
+    const el = document.querySelector(selector); 
+    if (el && value !== null && value !== undefined && value !== '') {
+      el.textContent = value;
+    }
+  };
+
+  /* ✅ Format money */
+  const money = (val) => {
+    if (val == null || isNaN(val)) return null;
+    return Shopify.formatMoney
+      ? Shopify.formatMoney(val * 100)
+      : '£' + Number(val).toFixed(2);
+  };
+
+  /* ✅ Update resale value */
+  if (resaleValue) {
+    update('[data-na-resale-value]', money(resaleValue));
+    const profitCalc = (resaleValue * 100 - price) / 100;
+    update('[data-na-resale-profit]', money(profitCalc));
+  }
+
+  /* ✅ Update units */
+  if (units) {
+    update('[data-na-units]', units);
+  }
+
+  /* ✅ Update price per piece */
+  if (pricePerPiece) {
+    update('[data-na-price-per]', '£' + pricePerPiece);
+  }
+
+  /* ✅ Update grade */
+  if (productGrade) {
+    update('[data-na-grade]', productGrade);
+  }
+
+  /* ✅ Update "X LEFT" pill if present */
+  if (units) {
+    update('[data-na-qty-left]', units + ' LEFT');
+  }
+});
+</script>
+
+<!-- ✅ NA Quantity Selector Reset on Variant Change -->
+<script>
+document.addEventListener('product:variant-change', function(event) {
+  const variant = event.detail.variant;
+  if (!variant) return;
+
+  const qtyInput = document.querySelector('input[name="quantity"]');
+  if (!qtyInput) return;
+
+  /* ✅ Reset to min quantity */
+  qtyInput.value = variant.quantity_rule?.min || 1;
+
+  /* ✅ Apply max restriction if exists */
+  if (variant.quantity_rule?.max) {
+    qtyInput.setAttribute('max', variant.quantity_rule.max);
+  } else {
+    qtyInput.removeAttribute('max');
+  }
+});
+</script>
+<script>
+document.addEventListener('variant:change', function (event) {
+  const variant = event.detail.variant;
+  if (!variant) return;
+
+  // --- Metafields ---
+  const mv = variant.metafields?.custom || {};
+
+  const resaleValue = mv.resalevalue;
+  const units = mv.quantity1;
+  const pricePerPiece = mv.priceperpiece;
+  const grade = mv.productgrade1 || (variant.title && variant.title !== 'Default Title' ? variant.title : '');
+
+  const price = variant.price;
+
+  // --- DOM targets in your Custom Liquid block ---
+  const elProfit = document.querySelector('[data-na-resale-profit]');
+  const elValue = document.querySelector('[data-na-resale-value]');
+  const elUnits = document.querySelector('[data-na-units]');
+  const elPricePer = document.querySelector('[data-na-price-per]');
+  const elGrade = document.querySelector('[data-na-grade]');
+
+  const formatMoney = (cents) => {
+    return Shopify.formatMoney
+      ? Shopify.formatMoney(cents)
+      : (cents / 100).toFixed(2);
+  };
+
+  if (resaleValue && elValue) {
+    elValue.textContent = formatMoney(resaleValue * 100);
+  }
+
+  if (resaleValue && elProfit) {
+    const profit = (resaleValue * 100) - price;
+    elProfit.textContent = formatMoney(profit);
+  }
+
+  if (units && elUnits) {
+    elUnits.textContent = units;
+  }
+
+  if (pricePerPiece && elPricePer) {
+    elPricePer.textContent = `£${pricePerPiece}`;
+  }
+
+  if (grade && elGrade) {
+    elGrade.textContent = grade;
+  }
+
+  // --- Stock pill ---
+  const stockEl = document.querySelector('[data-na-qty-left]');
+  const qty = variant.inventory_quantity;
+
+  if (stockEl) {
+    const pill = stockEl.closest('.stock-pill');
+    if (qty > 5) {
+      pill.className = 'stock-pill stock-high';
+      stockEl.textContent = `${qty} LEFT`;
+    } else if (qty > 0) {
+      pill.className = 'stock-pill stock-low';
+      stockEl.textContent = `${qty} LEFT`;
+    } else {
+      pill.className = 'stock-pill stock-out';
+      stockEl.textContent = `OUT OF STOCK`;
+    }
+  }
+
+  // --- Quantity box min/max reset ---
+  const qtyInput = document.querySelector('input[name="quantity"]');
+  if (qtyInput) {
+    qtyInput.value = variant.quantity_rule?.min || 1;
+    if (variant.quantity_rule?.max) {
+      qtyInput.setAttribute('max', variant.quantity_rule.max);
+    } else {
+      qtyInput.removeAttribute('max');
+    }
+  }
+
+});
+</script>
+
+<script>
+(function () {
+  const KEY = "__dispatchTimerInterval";
+
+  function startDispatchTimer() {
+    const textEl = document.getElementById("dispatchText");
+    if (!textEl) return;
+
+    // Prevent multiple timers if theme re-renders / loads twice
+    if (window[KEY]) clearInterval(window[KEY]);
+
+    const CUTOFF_HOUR = 11;
+
+    const isMonFri = d => d.getDay() >= 1 && d.getDay() <= 5;
+    const isSunThu = d => d.getDay() === 0 || (d.getDay() >= 1 && d.getDay() <= 4);
+
+    const setTime = (d, h, m = 0) => {
+      const x = new Date(d);
+      x.setHours(h, m, 0, 0);
+      return x;
+    };
+
+    const addDays = (d, days) => {
+      const x = new Date(d);
+      x.setDate(x.getDate() + days);
+      return x;
+    };
+
+    const ordinal = n => {
+      const s = ["th","st","nd","rd"];
+      const v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+
+    const weekdayName = d =>
+      new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(d);
+
+    const nextMonday = now => {
+      const day = now.getDay();
+      const daysUntil = (8 - day) % 7 || 7;
+      return addDays(now, daysUntil);
+    };
+
+    // Helpers
+    const setText = (str) => { textEl.textContent = str; };
+    const setDispatchHtml = (dayLabel, dateNum) => {
+      textEl.innerHTML = `Order now for dispatch <span class="dispatch-date">${dayLabel} ${dateNum}</span>`;
+    };
+
+    function render() {
+      const now = new Date();
+      const day = now.getDay();
+      const hour = now.getHours();
+      const cutoff = setTime(now, CUTOFF_HOUR);
+
+      const isFriday = day === 5;
+      const isSaturday = day === 6;
+      const isSunday = day === 0;
+
+      // STATE 4 — Fri 11:00 → Sun 10:59 (dispatch Monday)
+      if ((isFriday && now >= cutoff) || isSaturday || (isSunday && hour < 11)) {
+        const monday = nextMonday(now);
+        setDispatchHtml("Monday", ordinal(monday.getDate()));
+        return;
+      }
+
+      // STATE 1 — Sun–Thu 11:00–23:59 (dispatch next day)
+      if (isSunThu(now) && now >= cutoff) {
+        const dispatch = addDays(now, 1);
+        setDispatchHtml(weekdayName(dispatch), ordinal(dispatch.getDate()));
+        return;
+      }
+
+      // STATE 2 — Mon–Fri 00:00–07:59 (hours only)
+      if (isMonFri(now) && hour < 8) {
+        const msLeft = cutoff - now;
+        const hours = Math.max(1, Math.ceil(msLeft / 3600000));
+        setText(`Order within ${hours} hour${hours === 1 ? "" : "s"} and get same day dispatch`);
+        return;
+      }
+
+      // STATE 3 — Mon–Fri 08:00–10:59 (live timer)
+      if (isMonFri(now) && now < cutoff && hour >= 8) {
+        const msLeft = cutoff - now;
+        const totalMinutes = Math.floor(msLeft / 60000);
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        if (h > 0) {
+          setText(`Order within ${h} hour${h === 1 ? "" : "s"}: ${String(m).padStart(2,"0")} minutes and get same day dispatch`);
+        } else {
+          setText(`Order within ${m} minute${m === 1 ? "" : "s"} and get same day dispatch`);
+        }
+        return;
+      }
+
+      // Fallback (dispatch tomorrow)
+      const tomorrow = addDays(now, 1);
+      setDispatchHtml(weekdayName(tomorrow), ordinal(tomorrow.getDate()));
+    }
+
+    render();
+    window[KEY] = setInterval(render, 1000);
+  }
+
+  // Run on initial load
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startDispatchTimer);
+  } else {
+    startDispatchTimer();
+  }
+
+  // Re-run when Shopify sections re-render
+  document.addEventListener("shopify:section:load", startDispatchTimer);
+})();
+</script>
+
+<script>
+(function () {
+  // whenever Shopify cart changes, broadcast a couple common events
+  function notifyCartUpdated() {
+    document.dispatchEvent(new Event('cart:updated'));
+    window.dispatchEvent(new Event('cart:updated'));
+    document.dispatchEvent(new Event('cart:refresh'));
+    window.dispatchEvent(new Event('cart:refresh'));
+  }
+
+  // If your theme uses fetch('/cart/add.js'), hook into fetch and detect it
+  const _fetch = window.fetch;
+  window.fetch = function () {
+    return _fetch.apply(this, arguments).then(function (res) {
+      try {
+        const url = arguments[0];
+        if (typeof url === 'string' && (url.includes('/cart/add') || url.includes('/cart/change') || url.includes('/cart/update'))) {
+          // give the cart app a moment, then notify
+          setTimeout(notifyCartUpdated, 50);
+        }
+      } catch (e) {}
+      return res;
+    });
+  };
+})();
+</script>
+{% if request.path == '/policies/refund-policy' %}
+  <style>
+    .shopify-policy__container { display: none !important; }
+    .na-returns-page { margin-top: 0; }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var section = document.getElementById('na-returns-inject');
+      var main = document.querySelector('main');
+      if (section && main) {
+        main.prepend(section);
+        section.style.display = 'block';
+      }
+    });
+  </script>
+  <div id="na-returns-inject" style="display:none;">
+    {% section 'na-returns' %}
+  </div>
+{% endif %}
+{% if request.path == '/policies/shipping-policy' %}
+  <style>
+    .shopify-policy__container { display: none !important; }
+    .na-shipping-page { margin-top: 0; }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var section = document.getElementById('na-shipping-inject');
+      var main = document.querySelector('main');
+      if (section && main) {
+        main.prepend(section);
+        section.style.display = 'block';
+      }
+    });
+  </script>
+  <script>
+function applyBlackBox() {
+  document.querySelectorAll('h2.title.inline-richtext.h1').forEach(function(el) {
+    if (el.querySelector('span.naw-tagged')) return;
+    var words = el.textContent.trim().replace(/\s+/g, ' ').split(' ');
+    if (words.length >= 2) {
+      el.innerHTML = words[0] + ' <span class="naw-tagged" style="background:#000;color:#fff;padding:0 0.3em">' + words[1] + '</span>';
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', applyBlackBox);
+setTimeout(applyBlackBox, 800);
+</script>
+
+  <div id="na-shipping-inject" style="display:none;">
+    {% section 'na-shipping' %}
+  </div>
+{% endif %}
+
+<script>
+(function() {
+
+  function randomBetween(a, b) {
+    return Math.floor(Math.random() * (b - a + 1)) + a;
+  }
+
+  function initUrgency() {
+    const WORKER = 'https://notanother-views.notanotherwholesale.workers.dev';
+
+    document.querySelectorAll('.na-product-card').forEach(card => {
+      const v = card.querySelector('.na-urgency-viewers');
+      if (!v) return;
+
+      const productId = card.dataset.productId;
+      if (!productId) return;
+
+      const allPills = card.querySelectorAll('.na-grade-pill--btn');
+      const activePill = card.querySelector('.na-grade-pill--btn.na-grade-pill--active');
+      const isOutOfStock = card.classList.contains('na-product-card--sold-out')
+        || (allPills.length === 0)
+        || (activePill ? activePill.dataset.available === 'false'
+            : [...allPills].every(p => p.dataset.available === 'false'));
+
+      if (isOutOfStock) return;
+
+      function fetchAndUpdate() {
+        fetch(`${WORKER}?id=${productId}`)
+          .then(r => r.json())
+          .then(data => {
+            const views = data.views || 0;
+            const bar = v.closest('.na-urgency');
+            if (views === 0) {
+              if (bar) bar.style.display = 'none';
+            } else {
+ if (bar) bar.style.display = 'flex';
+              v.textContent = views;
+              const label = bar.querySelector('.na-urgency-label');
+              if (label) label.textContent = views === 1 ? ' person viewed recently' : ' people viewed recently';
+            }
+          })
+          .catch(() => {
+            const bar = v.closest('.na-urgency');
+            if (bar) bar.style.display = 'none';
+          });
+      }
+
+      fetchAndUpdate();
+      setInterval(fetchAndUpdate, 180000);
+
+      allPills.forEach(pill => {
+        pill.addEventListener('click', function() {
+          const bar = v.closest('.na-urgency');
+          if (this.dataset.available === 'false') {
+            if (bar) bar.style.display = 'none';
+          } else {
+            fetchAndUpdate();
+          }
+        });
+      });
+    });
+  }
+function naUpdateUsp(card, price, compare, available) {
+    const uspIcon = card.querySelector('.na-usp__icon');
+    const uspText = card.querySelector('.na-usp__text');
+    const uspEl = card.querySelector('.na-usp');
+    if (!uspIcon || !uspText) return;
+
+    const p = parseInt(price) || 0;
+    const c = parseInt(compare) || 0;
+    const resaleV = parseFloat(card.dataset.resale) || 0;
+
+    const NA_ICONS = {
+      tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+      trend: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+      layers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+      zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H4a1 1 0 0 1-1-1V4h11v12zM14 8h4l3 3v5h-7V8z"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg>',
+      search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+      rotate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
+      snow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="3.3" y1="7" x2="20.7" y2="17"/><line x1="3.3" y1="17" x2="20.7" y2="7"/></svg>'
+    };
+    function setUsp(icon, text, tier) {
+      uspIcon.innerHTML = NA_ICONS[icon] || '';
+      uspText.textContent = text;
+      if (uspEl) {
+        uspEl.classList.remove('na-usp--value', 'na-usp--demand', 'na-usp--logistics', 'na-usp--fresh', 'na-usp--grade');
+        uspEl.classList.add('na-usp--' + tier);
+      }
+    }
+    function naTitleHash(s) {
+      let h = 0;
+      for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+      return h;
+    }
+
+    if (!available) {
+      setUsp('rotate', 'Back soon', 'logistics');
+      return;
+    }
+
+    // 0. DEMAND — real weekly sales velocity (nightly metafield sync, self-expiring)
+    const sold7 = parseInt(card.dataset.sold7 || '0', 10);
+    if (sold7 >= 3) {
+      setUsp('zap', 'Sold ' + sold7 + '\u00d7 this week', 'value');
+      return;
+    }
+
+    // 1. VALUE — Discount ≥ 20%
+    if (c > p && p > 0) {
+      const saving = c - p;
+      const pct = Math.round(saving * 100 / c);
+      if (pct >= 20) {
+        setUsp('tag', pct + '% off \u2014 save ' + formatMoney(saving), 'value');
+        return;
+      }
+    }
+
+    // 2. VALUE — ROI flip ≥ 2.5x
+    if (resaleV > 0 && p > 0) {
+      const roi = (resaleV * 100 * 100) / p;
+      if (roi >= 250) {
+        setUsp('trend', formatMoney(p) + ' \u2192 \u00a3' + Math.floor(resaleV) + '+', 'value');
+        return;
+      }
+    }
+
+    // 3. VALUE — Price per piece ≤ £5 (single variant only)
+    const isMultiVariant = card.querySelectorAll('.na-grade-pill--btn').length > 1;
+    if (!isMultiVariant) {
+      const titleEl = card.querySelector('.na-product-title a');
+      if (titleEl) {
+        const match = titleEl.textContent.match(/x(\d+)/i);
+        const qty = match ? parseInt(match[1]) : 0;
+        if (qty >= 5 && p > 0) {
+          const ppp = p / qty;
+          if (ppp <= 500) {
+            setUsp('layers', formatMoney(ppp) + ' per piece', 'value');
+            return;
+          }
+        }
+      }
+    }
+
+    // 4. Rotating default — stable per product so the grid feels varied, not random
+    const titleTextEl = card.querySelector('.na-product-title a');
+    const titleText = titleTextEl ? titleTextEl.textContent : '';
+    const POOL = [
+      ['star', 'Reseller favourite', 'fresh'],
+      ['truck', 'Ships from the UK', 'logistics'],
+      ['search', 'Handgraded & checked', 'grade'],
+      ['rotate', 'Restocked regularly', 'demand']
+    ];
+    if (card.dataset.winter === '1') POOL.push(['snow', 'Winter essential', 'fresh']);
+    const pick = POOL[naTitleHash(titleText) % POOL.length];
+    setUsp(pick[0], pick[1], pick[2]);
+  }
+
+  function naApplyPct(priceEl) {
+    if (!priceEl) return;
+    const oldTag = priceEl.querySelector('.na-pct-off');
+    if (oldTag) oldTag.remove();
+    let cv = 0, sv = 0;
+    const comp = priceEl.querySelector('.na-price-compare');
+    const sale = priceEl.querySelector('.na-price-sale');
+    if (comp && sale) {
+      cv = parseFloat((comp.textContent || '').replace(/[^\d.]/g, '')) || 0;
+      sv = parseFloat((sale.textContent || '').replace(/[^\d.]/g, '')) || 0;
+    } else {
+      const nums = (priceEl.textContent || '').match(/[\d,]+(?:\.\d+)?/g) || [];
+      if (nums.length >= 2) {
+        cv = parseFloat(nums[0].replace(/,/g, '')) || 0;
+        sv = parseFloat(nums[1].replace(/,/g, '')) || 0;
+      }
+    }
+    if (cv > sv && sv > 0) {
+      const pct = Math.round((cv - sv) * 100 / cv);
+      if (pct >= 5) {
+        const b = document.createElement('span');
+        b.className = 'na-pct-off';
+        b.textContent = pct + '% OFF';
+        priceEl.appendChild(b);
+      }
+    }
+  }
+
+  function initGradePills() {
+    document.querySelectorAll('.na-product-card').forEach(card => {
+      const pills = card.querySelectorAll('.na-grade-pill--btn');
+      const priceEl = card.querySelector('.na-product-price');
+      const atcBtn = card.querySelector('.na-atc-btn');
+      naApplyPct(priceEl);
+      // re-evaluate the chip at load too — the server-rendered one may carry retired claims
+      (function(){
+        if (!priceEl) return;
+        let cv = 0, sv = 0;
+        const comp = priceEl.querySelector('.na-price-compare');
+        const sale = priceEl.querySelector('.na-price-sale');
+        if (comp) cv = parseFloat((comp.textContent || '').replace(/[^\d.]/g, '')) || 0;
+        if (sale) sv = parseFloat((sale.textContent || '').replace(/[^\d.]/g, '')) || 0;
+        if (!sv) {
+          const nums = (priceEl.textContent || '').match(/[\d,]+(?:\.\d+)?/g) || [];
+          if (nums.length >= 2) { cv = parseFloat(nums[0].replace(/,/g, '')) || 0; sv = parseFloat(nums[1].replace(/,/g, '')) || 0; }
+          else if (nums.length === 1) { sv = parseFloat(nums[0].replace(/,/g, '')) || 0; }
+        }
+        if (sv > 0) naUpdateUsp(card, Math.round(sv * 100), Math.round(cv * 100), !atcBtn || !atcBtn.disabled);
+      })();
+
+      pills.forEach(pill => {
+        pill.addEventListener('click', function() {
+          if (this.disabled) return;
+          pills.forEach(p => p.classList.remove('na-grade-pill--active'));
+          this.classList.add('na-grade-pill--active');
+
+          const price = parseInt(this.dataset.price, 10);
+          const compare = parseInt(this.dataset.compare, 10);
+          const available = this.dataset.available === 'true';
+          const variantId = this.dataset.variantId;
+
+          if (priceEl) {
+            if (compare && compare > price) {
+              priceEl.innerHTML = '<span class="na-price-compare">' + formatMoney(compare) + '</span> <span class="na-price-sale">' + formatMoney(price) + '</span>';
+            } else {
+              priceEl.innerHTML = '<span class="na-price-sale">' + formatMoney(price) + '</span>';
+            }
+          }
+
+if (atcBtn) {
+            atcBtn.dataset.variantId = variantId;
+            if (available) {
+              atcBtn.disabled = false;
+              atcBtn.classList.remove('na-atc-btn--disabled');
+              atcBtn.textContent = 'Quick Add';
+            } else {
+              atcBtn.disabled = true;
+              atcBtn.classList.add('na-atc-btn--disabled');
+              atcBtn.textContent = 'Sold out';
+            }
+          }
+
+          naApplyPct(priceEl);
+          naUpdateUsp(card, price, compare, available);
+        });
+      });
+    });
+  }
+
+function formatMoney(cents) {
+    const val = cents / 100;
+    return '£' + (val % 1 === 0 ? Math.round(val) : val.toFixed(2));
+  }
+
+  function initATC() {
+    document.querySelectorAll('.na-atc-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.disabled) return;
+        const variantId = this.dataset.variantId;
+        if (!variantId) return;
+
+        const original = this.textContent;
+        this.textContent = 'Adding...';
+        this.disabled = true;
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: 1 })
+        })
+        .then(r => r.json())
+        .then(() => {
+          this.textContent = 'Added!';
+          this.classList.add('na-atc-btn--added');
+          fetch('/cart.js')
+            .then(r => r.json())
+            .then(cart => {
+              const bubble = document.querySelector('.cart-count-bubble, [data-cart-count], .na-cart-count');
+              if (bubble) bubble.textContent = cart.item_count;
+            });
+          setTimeout(() => {
+            this.textContent = 'Quick Add';
+            this.classList.remove('na-atc-btn--added');
+            this.disabled = false;
+          }, 2000);
+        })
+        .catch(() => {
+          this.textContent = original;
+          this.disabled = false;
+        });
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    initUrgency();
+    initGradePills();
+    initATC();
+  });
+
+})();
+</script>
+
+<!-- ✅ NA Real Product View Tracker -->
+<script>
+(function() {
+  const meta = window.ShopifyAnalytics && window.ShopifyAnalytics.meta;
+  const productId = meta && meta.product && meta.product.id;
+  if (!productId) return;
+  fetch('https://notanother-views.notanotherwholesale.workers.dev?id=' + productId, {
+    method: 'POST'
+  }).catch(() => {});
+})();
+</script>
+      {% render 'naw-atc-morph' %}
+    {% render 'naw-shipping-meter-kaching' %}
+    {% comment %} naw-pdp-detail-sheet retired 22/09: it relocated the Product Summary into a drop-up; summary now stays above the ATC and its detail content lives in the "What to expect from this box" tabs {% endcomment %}
+    {%- comment -%}{% render 'naw-pdp-detail-sheet' %}{%- endcomment -%}
+    {% render 'naw-quiz-return' %}
+      {% render 'naw-klaviyo-atc' %}
+    {% comment %} NAW bundle-and-save PDP strip — multi-buy ladder in the old sale-strip spot under the price {% endcomment %}
+    <style>
+      .naw-bundle-strip{display:block;background:#FBFBFA;border:1px solid #E6E6E3;border-radius:12px;padding:12px 14px 11px;margin:14px 0 6px;font-family:'Poppins',sans-serif}
+      .naw-bundle-strip .naw-bs-head{display:block;font-size:10.5px;font-weight:700;color:#111;letter-spacing:.14em;text-transform:uppercase}
+      .naw-bundle-strip .naw-bs-sub{display:block;font-size:10.5px;font-weight:500;color:#8A867E;margin:3px 0 10px;letter-spacing:.01em}
+      .naw-bundle-strip .naw-bs-grid{display:flex;justify-content:space-between;align-items:stretch;gap:6px}
+      .naw-bundle-strip .naw-bs-cell{flex:1;background:#fff;border:1px solid #EAEAE7;border-radius:8px;padding:7px 4px 6px;text-align:center}
+      .naw-bundle-strip .naw-bs-pct{display:block;font-size:13px;font-weight:700;color:#15803D;line-height:1.15;white-space:nowrap;font-variant-numeric:tabular-nums}
+      .naw-bundle-strip .naw-bs-qty{display:block;font-size:8.5px;font-weight:600;color:#9A968E;letter-spacing:.04em;text-transform:uppercase;line-height:1.3;margin-top:2px;white-space:nowrap}
+      .naw-bundle-strip .naw-bs-cell--best{background:#F2FAF5;border-color:#BFE3CD}
+      .naw-bundle-strip .naw-bs-cell--best .naw-bs-pct{color:#0F7A44}
+      .naw-bundle-strip .naw-bs-cell--best .naw-bs-qty{color:#5C8A6E}
+      product-info variant-radios, .product__info-container variant-radios, product-info variant-selects, .product__info-container variant-selects, product-info [data-naw-solo-grade], .product__info-container [data-naw-solo-grade]{display:inline-block;vertical-align:top !important;margin:4px 24px 0 0}
+    .naw-solo-grade__label{display:block}
+    .naw-solo-grade__row{display:flex;gap:8px}
+    .naw-solo-grade__pill{height:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;padding:0 18px;font-size:12px;font-weight:700;font-family:inherit;letter-spacing:.2px;border:1px solid #111;border-radius:10px;background:#111;color:#fff;cursor:default;box-sizing:border-box;pointer-events:none}
+    @media screen and (max-width: 749px){
+      html [id^="MainProduct-"].naw-has-grade variant-radios, html [id^="MainProduct-"].naw-has-grade variant-selects, html [id^="MainProduct-"].naw-has-grade [data-naw-solo-grade]{margin:4px 10px 0 0 !important}
+      html [id^="MainProduct-"] .naw-solo-grade__pill{height:40px !important;min-height:40px !important;padding:0 14px !important;font-size:11.5px !important}
+      html [id^="MainProduct-"].naw-has-grade variant-radios .product-form__input label{height:40px !important;min-height:40px !important;display:inline-flex !important;align-items:center !important;padding:0 14px !important;margin:0 8px 0 0 !important;box-sizing:border-box !important;font-size:11.5px !important}
+    }
+    @media screen and (min-width: 750px){
+      product-info variant-radios legend.form__label, .product__info-container variant-radios legend.form__label, .product__info-container variant-radios .form__label{font-size:10px !important;font-weight:700 !important;letter-spacing:.8px !important;text-transform:uppercase !important;color:#666 !important;margin:0 0 8px !important;padding:0 !important;line-height:1.4 !important}
+      .product-form__quantity .quantity__label.form__label, .naw-solo-grade__label.form__label{margin:0 0 8px !important;line-height:1.4 !important}
+      product-info variant-radios .product-form__input label, .product__info-container variant-radios .product-form__input label{height:40px !important;min-height:40px !important;display:inline-flex !important;align-items:center !important;padding:0 18px !important;font-size:12px !important;box-sizing:border-box !important;margin:0 8px 0 0 !important}
+    }
+    .product__info-container variant-radios .product-form__input, product-info variant-radios .product-form__input{margin:0;padding:0;border:0;min-width:0}
+    .product__info-container .form__label, product-info .form__label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#666;margin:0 0 6px;padding:0}
+    [id^="MainProduct-"].naw-has-grade .product-form__input.product-form__quantity{display:inline-block !important;vertical-align:bottom;width:auto !important;max-width:100% !important;min-width:0 !important;margin:4px 0 0}
+    .product-form__quantity .quantity__label.form__label{display:block !important;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#666;margin:0 0 6px}
+    .product-form__quantity .quantity__label .quantity__rules-cart{display:none !important}
+    product-info variant-radios .product-form__input label, .product__info-container variant-radios .product-form__input label{padding:8px 16px;font-size:12px;min-width:0;min-height:0}
+    .naw-bundle-strip .naw-bs-ship{display:block;margin-top:9px;padding-top:8px;border-top:1px solid #F0F0ED;font-size:10px;font-weight:600;color:#6B6B66;letter-spacing:.02em}
+    .naw-bundle-strip .naw-bs-note{display:block;font-size:9.5px;font-weight:500;color:#A8A49C;margin-top:3px;letter-spacing:.01em}
+      @media(max-width:399px){.naw-bundle-strip .naw-bs-grid{gap:4px}.naw-bundle-strip .naw-bs-pct{font-size:12px}.naw-bundle-strip .naw-bs-qty{font-size:7.5px;letter-spacing:.02em}}
+    </style>
+    <script>
+    (function(){
+      function stripHtml(){
+        return '<span class="naw-bs-head">Bundle &amp; Save</span>'
+          +'<span class="naw-bs-sub">Mix &amp; match &mdash; the more you stack, the more you save.</span>'
+          +'<span class="naw-bs-grid">'
+          +'<span class="naw-bs-cell"><span class="naw-bs-pct">10%</span><span class="naw-bs-qty">2 bundles</span></span>'
+          +'<span class="naw-bs-cell naw-bs-cell--best"><span class="naw-bs-pct">12%</span><span class="naw-bs-qty">3 bundles</span></span>'
+          +'<span class="naw-bs-cell"><span class="naw-bs-pct">15%</span><span class="naw-bs-qty">5 bundles</span></span>'
+          +'<span class="naw-bs-cell"><span class="naw-bs-pct">20%</span><span class="naw-bs-qty">10+ bundles</span></span>'
+          +'</span>'
+          +'<span class="naw-bs-ship">2+ bundles ship free to the UK</span>'
+          +'<span class="naw-bs-note">Discount applied automatically at checkout &mdash; no code needed.</span>';
+      }
+      function decorate(){
+        if(document.querySelector('.naw-bundle-strip'))return;
+        var scope=document.querySelector('product-info, .product__info-container')||document;
+        // Place the strip directly UNDER the add-to-cart form (buy buttons)
+        var pf=scope.querySelector('product-form') || scope.querySelector('.product-form__buttons');
+        if(!pf)return; // buy-buttons not in DOM yet — observer will retry
+        var anchor=pf.closest('product-form')||pf;
+        var d=document.createElement('div');
+        d.className='naw-bundle-strip';
+        d.innerHTML=stripHtml();
+        anchor.parentNode.insertBefore(d, anchor.nextSibling);
+      }
+      decorate();
+      document.addEventListener('DOMContentLoaded', decorate);
+      new MutationObserver(decorate).observe(document.documentElement,{childList:true,subtree:true});
+    })();
+    </script>
+    {% comment %} NAW Klarna pay-in-3 (PDP + carts) + region gate. GBP: Klarna lines everywhere incl. Kaching drawer. Non-GBP: scrubs on-page free-shipping mentions instead. Throttled observer (never a trailing debounce). {% endcomment %}
+    <style>
+      .naw-klarna{display:flex;align-items:center;gap:8px;margin:10px 0 16px;font-family:'Poppins',sans-serif;font-size:12px;color:#111;line-height:1.4}
+      .naw-klarna .kbadge{flex:none;background:#FFA8CD;color:#17120F;font-weight:700;font-size:10.5px;padding:3px 9px;border-radius:4px;letter-spacing:.2px}
+      .naw-klarna b{font-weight:700}
+      @media(max-width:749px){.naw-klarna{font-size:11px}}
+      .naw-klarna--cart{margin:2px 0 10px;padding-top:8px;border-top:1px solid #eee}
+      .naw-klarna--kcart{margin:2px 14px 10px;background:#fff;border:1px solid rgba(17,17,17,.08);border-radius:10px;padding:9px 12px}
+    </style>
+    <script>
+    (function(){
+      var GBP=(((window.Shopify||{}).currency||{}).active||'GBP')==='GBP';
+      function firstPrice(scope){
+        var els=scope.querySelectorAll('.price-item--sale, .price-item--regular, .price-item--last');
+        for(var i=0;i<els.length;i++){
+          var m=(els[i].textContent||'').match(/\u00a3\s?([\d,]+(?:\.\d{2})?)/);
+          if(m){var v=parseFloat(m[1].replace(/,/g,''));if(v>0)return v;}
+        }
+        var m2=(scope.textContent||'').match(/\u00a3\s?([\d,]+(?:\.\d{2})?)/);
+        return m2?parseFloat(m2[1].replace(/,/g,'')):0;
+      }
+      function upsertLine(cls,parent,refNode,after,each,html){
+        var line=(parent||document).querySelector('.'+cls);
+        if(each===null){if(line)line.remove();return;}
+        if(line){if(line.getAttribute('data-k')!==each){line.innerHTML=html;line.setAttribute('data-k',each);}return;}
+        line=document.createElement('div');
+        line.className='naw-klarna '+cls;
+        line.setAttribute('data-k',each);
+        line.innerHTML=html;
+        refNode.parentNode.insertBefore(line,after?refNode.nextSibling:refNode);
+      }
+      function payHtml(each){return '<span class="kbadge">Klarna.</span><span>Or 3 interest-free payments of <b>\u00a3'+each+'</b> \u2014 choose Klarna at checkout.</span>';}
+      function splitHtml(each){return '<span class="kbadge">Klarna.</span><span>Split it \u2014 3 payments of <b>\u00a3'+each+'</b>, 0% interest. Choose Klarna at checkout.</span>';}
+      function naOOS(){
+        var pill=document.querySelector('[id^="MainProduct-"] .inline-inventory .stock-pill');
+        var inp=document.querySelector('[id^="MainProduct-"] .na-qty-input, [id^="MainProduct-"] .na-qty-selector input');
+        if(!pill||!inp)return false;
+        var wrap=inp.closest('.quantity-and-inventory-wrapper');
+        var oos=pill.classList.contains('stock-out');
+        if(oos){
+          if(inp.value!=='0')inp.value='0';
+          if(!inp.disabled)inp.disabled=true;
+          if(wrap&&!wrap.classList.contains('naw-oos'))wrap.classList.add('naw-oos');
+          var k=document.querySelector('.naw-klarna--pdp');
+          if(k)k.remove();
+        }else{
+          if(inp.disabled)inp.disabled=false;
+          if(inp.value==='0')inp.value='1';
+          if(wrap&&wrap.classList.contains('naw-oos'))wrap.classList.remove('naw-oos');
+        }
+        return oos;
+      }
+      function decorate(){
+        if(document.querySelector('[id^="MainProduct-"] .inline-inventory .stock-pill.stock-out')){
+          var kk=document.querySelector('.naw-klarna--pdp');
+          if(kk)kk.remove();
+          return;
+        }
+        var scope=document.querySelector('product-info, .product__info-container')||document;
+        var priceEl=scope.querySelector('.price__container');
+        var pf=scope.querySelector('product-form')||scope.querySelector('.product-form__buttons');
+        if(!priceEl||!pf)return;
+        var anchor=pf.closest('product-form')||pf; /* Klarna sits BELOW the checkout buttons, not next to the price */
+        var strip=scope.querySelector('.naw-bundle-strip');
+        if(strip)anchor=strip;
+        var p=firstPrice(priceEl);
+        if(!p||p<30||p>1000){upsertLine('naw-klarna--pdp',anchor.parentNode,anchor,true,null,'');return;}
+        var each=(Math.round(p/3*100)/100).toFixed(2);
+        upsertLine('naw-klarna--pdp',anchor.parentNode,anchor,true,each,payHtml(each));
+      }
+      function decorateCart(){
+        var foot=document.querySelector('#CartDrawer .drawer__footer, cart-drawer .drawer__footer, .cart__footer');
+        if(!foot)return;
+        var totEl=foot.querySelector('.totals__total-value, .totals__subtotal-value');
+        var cta=foot.querySelector('.cart__ctas, #CartDrawer-Checkout');
+        if(!totEl||!cta){upsertLine('naw-klarna--cart',foot,cta||foot,false,null,'');return;}
+        var m=(totEl.textContent||'').match(/([\d,]+(?:\.\d{2})?)/);
+        var t=m?parseFloat(m[1].replace(/,/g,'')):0;
+        if(!t||t<30||t>1000){upsertLine('naw-klarna--cart',foot,cta,false,null,'');return;}
+        var each=(Math.round(t/3*100)/100).toFixed(2);
+        upsertLine('naw-klarna--cart',foot,cta,false,each,splitHtml(each));
+      }
+      var kTotal=null,kFetched=0;
+      function decorateKaching(){
+        var kc=document.querySelector('kaching-cart');if(!kc)return;
+        var btn=kc.querySelector('.kaching-cart__checkout-button');
+        if(!btn){var el=kc.querySelector('.naw-klarna--kcart');if(el)el.remove();return;}
+        var now=Date.now();
+        if(now-kFetched>1500){
+          kFetched=now;
+          fetch('/cart.js').then(function(r){return r.json();}).then(function(cart){kTotal=(cart.total_price||0)/100;}).catch(function(){});
+        }
+        if(kTotal===null)return;
+        if(kTotal<30||kTotal>1000){upsertLine('naw-klarna--kcart',kc,btn,false,null,'');return;}
+        var each=(Math.round(kTotal/3*100)/100).toFixed(2);
+        upsertLine('naw-klarna--kcart',kc,btn,false,each,splitHtml(each));
+      }
+      function scrub(){
+        [].slice.call(document.querySelectorAll('.naw-klarna, .naw-bs-ship')).forEach(function(e){e.remove();});
+        [].slice.call(document.querySelectorAll('p.product__text')).forEach(function(e){
+          if(/FREE UK SHIPPING/i.test(e.textContent||''))e.remove();
+        });
+        [].slice.call(document.querySelectorAll('p')).forEach(function(e){
+          if(e.children.length===0&&/Free UK delivery when you buy 2\+ bundles\.\s*/i.test(e.textContent||'')){
+            e.textContent=e.textContent.replace(/Free UK delivery when you buy 2\+ bundles\.\s*/i,'');
+          }
+        });
+      }
+      var styledQty=(typeof WeakSet!=='undefined')?new WeakSet():null;
+      function fixQty(){
+        var q=document.querySelector('.product-form__input.product-form__quantity');
+        if(!q)return;
+        var picker=document.querySelector('product-info variant-radios, product-info variant-selects, .product__info-container variant-radios, .product__info-container variant-selects, product-info [data-naw-solo-grade], .product__info-container [data-naw-solo-grade]');
+        var sec=q.closest('[id^="MainProduct-"]');
+        if(!picker){if(sec&&sec.classList.contains('naw-has-grade'))sec.classList.remove('naw-has-grade');return;}
+        if(sec&&!sec.classList.contains('naw-has-grade'))sec.classList.add('naw-has-grade');
+        if(styledQty){if(styledQty.has(q))return;styledQty.add(q);}
+        else{if(q.getAttribute('data-naw-oneline'))return;q.setAttribute('data-naw-oneline','1');}
+        q.style.setProperty('width','auto','important');
+        q.style.setProperty('display','inline-block','important');
+        q.style.setProperty('vertical-align','top','important');
+        q.style.setProperty('margin','4px 0 0','important');
+      }
+      function run(){fixQty();naOOS();if(GBP){decorate();decorateCart();decorateKaching();}else{scrub();}}
+      var t=null;
+      function schedule(){
+        if(t)return;
+        t=setTimeout(function(){t=null;run();},400);
+      }
+      schedule();
+      document.addEventListener('DOMContentLoaded',schedule);
+      new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+    })();
+    </script>
+    {% comment %} NAW header: wordmark condenses into NA monogram on scroll + seamless banner (no divider) {% endcomment %}
+    <style>
+      .section-header .header-wrapper, .header-wrapper--border-bottom{border-bottom:none !important;box-shadow:none !important}
+      a.na-logo, .header__heading-link{position:relative;display:inline-block}
+      a.na-logo > img:not(.naw-mark), .header__heading-logo{transition:opacity .32s ease, transform .32s ease;transform-origin:center}
+      .naw-mark{position:absolute;left:50%;top:50%;height:70%;width:auto;opacity:0;transform:translate(-50%,-50%) scale(.72);transition:opacity .32s ease, transform .32s ease;pointer-events:none}
+      body.naw-scrolled a.na-logo > img:not(.naw-mark), body.naw-scrolled .header__heading-logo{opacity:0;transform:scaleX(.55)}
+      body.naw-scrolled .naw-mark{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    </style>
+    <script>
+    (function(){
+      var MARK='https://cdn.shopify.com/s/files/1/0810/4090/0375/files/na-mark-black-transparent.png?v=1782988318';
+      function initLogoSwap(){
+        var link=document.querySelector('a.na-logo')||document.querySelector('.header__heading-link');
+        if(!link||link.querySelector('.naw-mark'))return;
+        var img=document.createElement('img');
+        img.className='naw-mark';
+        img.src=MARK;
+        img.alt='';
+        img.setAttribute('aria-hidden','true');
+        link.appendChild(img);
+      }
+      var ticking=false;
+      function onScroll(){
+        if(ticking)return;
+        ticking=true;
+        requestAnimationFrame(function(){
+          ticking=false;
+          document.body.classList.toggle('naw-scrolled', window.scrollY>60);
+        });
+      }
+      function arm(){initLogoSwap();onScroll();}
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
+      setTimeout(arm,1200);
+      window.addEventListener('scroll',onScroll,{passive:true});
+    })();
+    </script>
+    {% section 'na-unlock-popup' %}
+    {% section 'naw-wash-data' %}
+  {% render 'naw-kaching-wash' %}
+</body>
+</html>
