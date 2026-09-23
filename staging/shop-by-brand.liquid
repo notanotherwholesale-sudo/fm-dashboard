@@ -1,0 +1,105 @@
+{% comment %}
+  Shop By Brand grid for the burger menu.
+  2-up on mobile / 3-up on desktop. Tiles mirror the homepage "Shop Our Brands" strip, smaller.
+
+  IMAGE PER TILE: shows the collection's featured image if one is set
+  (Shopify admin > Products > Collections > [brand] > add an Image),
+  otherwise falls back to that brand's first product photo so it's never empty.
+  To match the homepage cutouts exactly, set each brand collection's image in admin.
+
+  Order is by prominence / best-sellers. Edit the brand_pairs list to add/remove/reorder.
+  Format: "collection-handle|Display Name".
+{% endcomment %}
+{%- liquid
+  assign brand_pairs = 'carhartt|Carhartt,ralph-lauren|Ralph Lauren,levis|Levis,the-north-face-1|The North Face,tommy-hilfiger|Tommy Hilfiger,nike|Nike,dickies|Dickies,patagonia|Patagonia,lacoste|Lacoste,adidas|Adidas,wrangler|Wrangler,columbia|Columbia,champion|Champion,nautica|Nautica,lee|Lee,eddie-bauer|Eddie Bauer,realtree|Realtree,harley-davidson|Harley Davidson' | split: ','
+-%}
+<div class="sbb">
+  <div class="sbb__grid">
+    {%- for pair in brand_pairs -%}
+      {%- assign parts = pair | split: '|' -%}
+      {%- assign h = parts[0] -%}
+      {%- assign label = parts[1] -%}
+      {%- assign coll = collections[h] -%}
+      {%- if coll != blank and coll.products_count > 0 -%}
+        {%- assign img = coll.image | default: coll.products.first.featured_image -%}
+        <a href="{{ coll.url }}" class="sbb__tile" aria-label="{{ label | escape }}">
+          <span class="sbb__imgwrap">
+            {%- if img != blank -%}
+              {{ img | image_url: width: 300 | image_tag: loading: 'lazy', widths: '120,180,240,300', sizes: '(min-width: 750px) 20vw, 40vw', class: 'sbb__img', alt: label }}
+            {%- else -%}
+              <span class="sbb__placeholder" aria-hidden="true">{{ label | slice: 0 }}</span>
+            {%- endif -%}
+          </span>
+          <span class="sbb__name">{{ label }}</span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+<style>
+  .sbb {
+    padding: 4px 2px 24px;
+  }
+  .sbb__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 12px;
+  }
+  @media screen and (min-width: 750px) {
+    .sbb__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px 16px;
+    }
+  }
+  .sbb__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: #111;
+    transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .sbb__tile:active {
+    transform: scale(0.97);
+  }
+  .sbb__imgwrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .sbb__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6px;
+  }
+  .sbb__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f4f4f2;
+    border: 1px dashed #dddddd;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #b8b8b8;
+  }
+  .sbb__name {
+    margin-top: 9px;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: #111;
+  }
+</style>
