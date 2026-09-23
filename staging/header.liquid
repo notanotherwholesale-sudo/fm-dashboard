@@ -1,0 +1,714 @@
+{{ 'component-list-menu.css' | asset_url | stylesheet_tag }}
+{{ 'component-search.css' | asset_url | stylesheet_tag }}
+{{ 'component-menu-drawer.css' | asset_url | stylesheet_tag }}
+
+<style>
+/* ============================================
+   NA CUSTOM HEADER
+   ============================================ */
+.header-wrapper {
+  position: fixed !important; top: 0 !important; left: 0; right: 0;
+  z-index: 100; background: transparent !important; border-bottom: none !important;
+  transition: background 0.35s ease, box-shadow 0.35s ease;
+}
+.header-wrapper.scrolled {
+  background: #fff !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08) !important;
+}
+.shopify-section-group-header-group { height: 0 !important; overflow: visible !important; }
+.na-header-main {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 12px 40px !important; height: auto !important; max-width: 1700px;
+  margin: 0 auto; width: 100%; box-sizing: border-box;
+}
+.na-header-left { display: flex; align-items: center; gap: 4px; }
+.na-burger {
+  width: 38px; height: 38px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px; cursor: pointer;
+  border-radius: 6px; border: none; background: transparent; padding: 0;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.na-burger:hover { background: rgba(255,255,255,0.1); }
+.header-wrapper.scrolled .na-burger:hover { background: rgba(0,0,0,0.06); }
+.na-burger-line {
+  width: 20px; height: 1.5px; background: rgba(255,255,255,0.9); border-radius: 2px;
+  transition: background 0.35s, transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+  transform-origin: center; display: block;
+}
+.header-wrapper.scrolled .na-burger-line { background: #111; }
+.na-burger.open .na-burger-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.na-burger.open .na-burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.na-burger.open .na-burger-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.na-explore-link {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: rgba(255,255,255,0.9); text-decoration: none; padding: 8px 12px;
+  border-radius: 5px; white-space: nowrap; transition: color 0.2s, background 0.2s;
+}
+.na-explore-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.header-wrapper.scrolled .na-explore-link { color: #111; }
+.header-wrapper.scrolled .na-explore-link:hover { background: rgba(0,0,0,0.05); }
+.na-logo { justify-self: center; display: flex; align-items: center; text-decoration: none; }
+.na-logo img {
+  height: 30px; width: auto; max-width: 200px; display: block;
+  transition: filter 0.35s; filter: brightness(0) invert(1);
+}
+.header-wrapper.scrolled .na-logo img { filter: none; }
+.na-logo-text {
+  font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+  color: #fff; text-decoration: none; white-space: nowrap; transition: color 0.35s;
+}
+.header-wrapper.scrolled .na-logo-text { color: #000; }
+.na-header-right { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+.na-search-wrap { position: relative; width: 175px; transition: width 0.3s ease; }
+.na-search-wrap:focus-within { width: 230px; }
+.na-search-input {
+  width: 100%; height: 34px; background: rgba(255,255,255,0.11);
+  border: 1px solid rgba(255,255,255,0.17); border-radius: 6px;
+  padding: 0 34px 0 13px; font-size: 12px; color: #fff; outline: none;
+  font-family: inherit; transition: background 0.2s, border-color 0.2s;
+}
+.na-search-input::placeholder { color: rgba(255,255,255,0.38); }
+.na-search-input:focus { background: rgba(255,255,255,0.17); border-color: rgba(255,255,255,0.32); }
+.header-wrapper.scrolled .na-search-input { background: #f4f4f0; border-color: #e0e0da; color: #000; }
+.header-wrapper.scrolled .na-search-input::placeholder { color: rgba(0,0,0,0.33); }
+.na-search-icon {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; opacity: 0.4; color: #fff; transition: filter 0.35s;
+}
+.header-wrapper.scrolled .na-search-icon { filter: invert(1); }
+.na-icon-btn {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; cursor: pointer; background: transparent; border: none; padding: 0;
+  transition: background 0.2s; position: relative; flex-shrink: 0; text-decoration: none;
+}
+.na-icon-btn:hover { background: rgba(255,255,255,0.1); }
+.header-wrapper.scrolled .na-icon-btn:hover { background: rgba(0,0,0,0.06); }
+.na-icon-btn svg { stroke: rgba(255,255,255,0.9); transition: stroke 0.35s; display: block; }
+.header-wrapper.scrolled .na-icon-btn svg { stroke: #111; }
+.na-cart-count {
+  position: absolute; top: 3px; right: 3px; width: 15px; height: 15px;
+  background: #fff; color: #000; font-size: 8px; font-weight: 700; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.35s, color 0.35s; font-family: inherit;
+}
+.header-wrapper.scrolled .na-cart-count { background: #000; color: #fff; }
+#naHeaderWrapper[data-static] { background: #fff !important; box-shadow: 0 1px 0 rgba(0,0,0,0.08) !important; }
+#naHeaderWrapper[data-static] .na-burger-line { background: #111; }
+#naHeaderWrapper[data-static] .na-explore-link { color: #111; }
+#naHeaderWrapper[data-static] .na-logo img { filter: none; }
+#naHeaderWrapper[data-static] .na-logo-text { color: #000; }
+#naHeaderWrapper[data-static] .na-icon-btn svg { stroke: #111; }
+#naHeaderWrapper[data-static] .na-search-input { background: #f4f4f0; border-color: #e0e0da; color: #000; }
+#naHeaderWrapper[data-static] .na-search-input::placeholder { color: rgba(0,0,0,0.33); }
+#naHeaderWrapper[data-static] .na-search-icon { filter: invert(1); }
+#naHeaderWrapper[data-static] .na-cart-count { background: #000; color: #fff; }
+#naHeaderWrapper[data-static] .na-burger:hover { background: rgba(0,0,0,0.06); }
+body #MainContent { padding-top: var(--header-offset, 0px) !important; }
+
+/* Mobile search hidden on desktop */
+/* Mobile search — visually hidden on desktop but in DOM for Snap Search to bind */
+.na-search-mobile {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}
+@media (max-width: 767px) {
+ .na-header-main {
+padding: 10px 16px 8px !important;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "left logo right"
+      "search search search";
+row-gap: 8px;
+  }
+  .na-header-left { grid-area: left; }
+  .na-logo { grid-area: logo; justify-self: center; }
+  .na-header-right { grid-area: right; }
+.na-search-mobile {
+    grid-area: search;
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    padding-bottom: 2px;
+    opacity: 1 !important;
+    clip: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+  }
+.na-search-mobile .na-search-input { width: 100%; height: 36px; font-size: 13px; }
+  .na-header-right .na-search-wrap { display: none; }
+  .na-explore-link { display: none; }
+  .na-logo img { height: 24px; }
+  .na-logo-text { font-size: 17px; }
+  .na-header-right .na-icon-btn[aria-label="Account"] { display: none; }
+}
+@media (max-width: 380px) { .na-explore-link { display: none; } }
+
+/* ============================================
+   DRAWER
+   ============================================ */
+.na-drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 150;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s;
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+}
+.na-drawer-overlay.open { opacity: 1; pointer-events: all; }
+.na-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(400px, 100vw); background: #fff;
+  z-index: 160; transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column; overflow-y: auto;
+  font-family: 'Poppins', sans-serif;
+}
+.na-drawer.open { transform: translateX(0); }
+.na-drawer-head {
+  display: flex; align-items: center; padding: 16px 28px;
+  border-bottom: 1px solid #efefed; flex-shrink: 0; position: relative; min-height: 62px;
+}
+.na-drawer-head-logo {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  height: 38px; width: auto; display: block;
+}
+.na-drawer-close {
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #999; border: 1px solid #e5e5e5; background: transparent;
+  border-radius: 50%; padding: 0; font-family: inherit; transition: all 0.15s;
+  font-size: 16px; line-height: 1; margin-left: auto;
+}
+.na-drawer-close:hover { color: #111; border-color: #111; }
+.na-drawer-tabs {
+  display: flex; border-bottom: 1px solid #efefed; flex-shrink: 0; padding: 0;
+}
+.na-drawer-tab {
+  flex: 1; text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: #aaa; padding: 14px 0; margin-right: 0;
+  border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap; cursor: pointer; background: none; border-top: none;
+  border-left: none; border-right: none; font-family: 'Poppins', sans-serif;
+}
+.na-drawer-tab:hover { color: #111; }
+.na-drawer-tab.active { color: #111; border-bottom: 2px solid #111; }
+.na-drawer-panel { display: none; flex: 1; flex-direction: column; }
+.na-drawer-panel.active { display: flex; flex-direction: column; }
+.na-drawer-shop-grid { display: grid; grid-template-columns: 1fr 1fr; flex-shrink: 0; }
+.na-drawer-shop-col { padding: 20px 16px 20px 28px; }
+.na-drawer-shop-col + .na-drawer-shop-col { padding-left: 16px; border-left: 1px solid #efefed; }
+.na-drawer-col-title {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: #888; margin-bottom: 10px; display: block; padding-bottom: 8px; border-bottom: 2px solid #111;
+}
+.na-drawer-shop-col a {
+  display: block; font-size: 13px; font-weight: 500; color: #222;
+  text-decoration: none; padding: 5px 0; transition: color 0.12s; letter-spacing: 0.1px;
+}
+.na-drawer-shop-col a:hover { color: #000; }
+.na-drawer-shop-col a.na-sale { color: #cc0000; font-weight: 600; }
+.na-drawer-welcome {
+  display: flex; align-items: center; gap: 14px;
+  margin: 18px 28px 4px; padding: 16px 18px;
+  background: #f7f7f5; border: 1px solid #efefed; border-left: 4px solid #111;
+  border-radius: 10px; text-decoration: none; transition: background 0.18s, transform 0.18s;
+}
+.na-drawer-welcome:hover { background: #f0f0ec; transform: translateX(2px); }
+.na-drawer-welcome-text { flex: 1; min-width: 0; }
+.na-drawer-welcome-eyebrow {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #999; display: block; margin-bottom: 3px;
+}
+.na-drawer-welcome-title { font-size: 14px; font-weight: 700; color: #111; line-height: 1.2; margin: 0 0 3px; }
+.na-drawer-welcome-sub { font-size: 11px; color: #777; line-height: 1.4; margin: 0; }
+.na-drawer-welcome-arrow {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #111;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  font-size: 13px; transition: transform 0.18s;
+}
+.na-drawer-welcome:hover .na-drawer-welcome-arrow { transform: translateX(2px); }
+@media (max-width: 400px) { .na-drawer-welcome { margin: 14px 16px 4px; } }
+.na-drawer-trust-block {
+  margin: 16px 28px; border: 1px solid #efefed; border-radius: 16px;
+  overflow: hidden; flex-shrink: 0; background: #fff;
+}
+.na-drawer-trust-top {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 18px; border-bottom: 1px solid #efefed; background: #fafaf9;
+}
+.na-drawer-trust-stars { display: flex; gap: 3px; }
+.na-drawer-trust-star {
+  width: 22px; height: 22px; background: #00b67a; display: flex;
+  align-items: center; justify-content: center; border-radius: 3px; flex-shrink: 0;
+}
+.na-drawer-trust-star.half { background: linear-gradient(90deg, #00b67a 50%, #ddd 50%); }
+.na-drawer-trust-star svg { width: 12px; height: 12px; fill: #fff; }
+.na-drawer-trust-rating-text { font-size: 12px; font-weight: 500; color: #666; white-space: nowrap; }
+.na-drawer-trust-stats { display: flex; flex-direction: column; }
+.na-drawer-trust-stat {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 13px 18px; border-bottom: 1px solid #efefed;
+}
+.na-drawer-trust-stat:last-child { border-bottom: none; }
+.na-drawer-stat-eyebrow {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px;
+}
+.na-drawer-stat-eyebrow.live { color: #e63535; }
+.na-drawer-stat-eyebrow.stock { color: #1a9e5c; }
+.na-drawer-stat-eyebrow.dispatch { color: #555; }
+.na-drawer-live-dot {
+  width: 5px; height: 5px; background: #e63535; border-radius: 50%; flex-shrink: 0;
+  animation: na-pulse 1.4s ease-in-out infinite;
+}
+.na-drawer-stock-dot { width: 5px; height: 5px; background: #1a9e5c; border-radius: 50%; flex-shrink: 0; }
+@keyframes na-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.na-drawer-stat-num {
+  font-size: 19px; font-weight: 800; color: #111; letter-spacing: -0.02em;
+  font-family: 'Poppins', sans-serif; line-height: 1.1;
+}
+.na-drawer-stat-label { font-size: 10.5px; color: #999; line-height: 1.3; }
+.na-drawer-stat-label strong { color: #555; font-weight: 600; }
+.na-drawer-help-nudge {
+  margin: 16px 28px 0; padding: 12px 16px; background: #f7f7f5; border-radius: 6px;
+  border: 1px solid #efefed; font-size: 11.5px; color: #555; line-height: 1.5;
+  text-align: center; flex-shrink: 0;
+}
+.na-drawer-help-nudge strong { color: #111; }
+.na-drawer-contact-cta {
+  display: block; margin: 10px 28px 20px; padding: 14px 20px;
+  background: #111; color: #fff; text-decoration: none;
+  font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  text-align: center; border-radius: 4px; transition: background 0.2s;
+  font-family: 'Poppins', sans-serif; flex-shrink: 0;
+}
+.na-drawer-contact-cta:hover { background: #333; color: #fff; }
+.na-drawer-info-links { padding: 8px 0; flex: 1; }
+.na-drawer-info-links a {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 28px; font-size: 13px; font-weight: 400; color: #333;
+  text-decoration: none; border-bottom: 1px solid #f5f5f3;
+  transition: background 0.12s, color 0.12s;
+}
+.na-drawer-info-links a:hover { background: #f7f7f5; color: #111; }
+.na-drawer-info-arrow { font-size: 10px; color: #ccc; }
+.na-currency-wrap { padding: 16px 28px; border-top: 1px solid #f5f5f3; }
+.na-currency-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #bbb; display: block; margin-bottom: 8px;
+}
+.na-currency-select {
+  width: 100%; padding: 10px 14px; font-size: 13px; font-family: 'Poppins', sans-serif;
+  border: 1px solid #e5e5e5; border-radius: 4px; color: #111; background: #fff;
+  cursor: pointer; appearance: auto;
+}
+.na-drawer-footer { margin-top: auto; padding: 28px 28px 40px; border-top: 1px solid #efefed; flex-shrink: 0; }
+.na-drawer-footer-tagline {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  color: #111; margin-bottom: 18px; line-height: 1.4;
+}
+.na-drawer-socials { display: flex; gap: 10px; align-items: center; margin-bottom: 22px; }
+.na-drawer-social {
+  width: 36px; height: 36px; border-radius: 50%; background: #111;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; transition: background 0.2s;
+}
+.na-drawer-social:hover { background: #444; }
+.na-drawer-social svg { width: 16px; height: 16px; fill: #fff; }
+.na-drawer-footer-links { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.na-drawer-footer-links a {
+  font-size: 10px; color: #bbb; text-decoration: none;
+  transition: color 0.15s; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.na-drawer-footer-links a:hover { color: #333; }
+@media (max-width: 400px) {
+  .na-drawer-trust-block { margin: 14px 16px; }
+  .na-drawer-help-nudge { margin: 12px 16px 0; }
+  .na-drawer-contact-cta { margin: 10px 16px 16px; }
+}
+@media (max-width: 360px) {
+  .na-drawer-shop-grid { grid-template-columns: 1fr; }
+  .na-drawer-shop-col + .na-drawer-shop-col { border-left: none; border-top: 1px solid #efefed; padding-left: 28px; }
+}
+kaching-cart div.kaching-cart:not(.active) { display: none !important; }
+.cart-count-bubble { display: none !important; }
+cart-notification, .cart-notification { display: none !important; }
+.kaching-cart-button, [class*="kaching-cart-button"], kaching-cart-button { display: none !important; }
+#kaching-cart:not(.active) { display: none !important; }
+</style>
+
+<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+{%- if settings.cart_type == "drawer" -%}
+  <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- liquid
+  assign logo = section.settings.logo
+  assign logo_alt = section.settings.logo.alt | default: shop.name | escape
+-%}
+
+<div class="na-drawer-overlay" id="naOverlay" onclick="naToggleDrawer()"></div>
+
+<div class="na-drawer" id="naDrawer" aria-hidden="true">
+  <div class="na-drawer-head">
+    <img src="https://cdn.shopify.com/s/files/1/0810/4090/0375/files/Short_Logo_2_dd85eee9-6ddf-43ca-909f-a400d88426ed.jpg?v=1773141782" alt="{{ shop.name }}" class="na-drawer-head-logo">
+    <button class="na-drawer-close" onclick="naToggleDrawer()" aria-label="Close menu">&#x2715;</button>
+  </div>
+  <div class="na-drawer-tabs">
+    <button class="na-drawer-tab active" onclick="naDrawerTab(this, 'panel-shop')">Shop</button>
+    <button class="na-drawer-tab" onclick="naDrawerTab(this, 'panel-brands')">Brands</button>
+    <button class="na-drawer-tab" onclick="naDrawerTab(this, 'panel-services')">Services</button>
+    <button class="na-drawer-tab" onclick="naDrawerTab(this, 'panel-info')">Info</button>
+  </div>
+  <div class="na-drawer-panel active" id="panel-shop">
+    <div class="na-drawer-shop-grid">
+      <div class="na-drawer-shop-col">
+        <span class="na-drawer-col-title">Collections</span>
+        <a href="/collections/best-sellers">Best Sellers</a>
+        <a href="/collections/under-150">Under £150</a>
+        <a href="/collections/reseller-bundles">Reseller Bundles</a>
+        <a href="/collections/autumn-collection">Autumn / Winter</a>
+        <a href="/collections/spring-summer">Spring / Summer</a>
+        <a href="/collections/sportswear">Sportswear</a>
+        <a href="/collections/workwear">Workwear</a>
+        <a href="/collections/premium">Premium</a>
+        <a href="/collections/unbranded">Unbranded</a>
+        <a href="/collections/bales">Bales</a>
+        <a href="/collections/all-bundles">Bundles</a>
+        <a href="/collections/sale" class="na-sale">Sale</a>
+      </div>
+      <div class="na-drawer-shop-col">
+        <span class="na-drawer-col-title">Categories</span>
+        <a href="/collections/jackets">Jackets &amp; Coats</a>
+        <a href="/collections/knitwear">Knitwear &amp; Fleeces</a>
+        <a href="/collections/hoodies">Sweatshirts &amp; Hoodies</a>
+        <a href="/collections/t-shirts">T-Shirts</a>
+        <a href="/collections/trousers">Trousers</a>
+        <a href="/collections/shorts">Shorts</a>
+        <a href="/collections/shirts-polo-shirts">Shirts &amp; Polos</a>
+        <a href="/collections/accessories">Accessories</a>
+      </div>
+    </div>
+    <a href="/pages/new-to-reselling" class="na-drawer-welcome">
+      <div class="na-drawer-welcome-text">
+        <span class="na-drawer-welcome-eyebrow">New here?</span>
+        <p class="na-drawer-welcome-title">New to reselling?</p>
+        <p class="na-drawer-welcome-sub">Start with our quick guide — how bundles work, profit per piece &amp; where to begin.</p>
+      </div>
+      <span class="na-drawer-welcome-arrow">&#8250;</span>
+    </a>
+    <div class="na-drawer-trust-block">
+      <div class="na-drawer-trust-top">
+        <div class="na-drawer-trust-stars">
+          <span class="na-drawer-trust-star"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+          <span class="na-drawer-trust-star"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+          <span class="na-drawer-trust-star"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+          <span class="na-drawer-trust-star"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+          <span class="na-drawer-trust-star half"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+        </div>
+        <span class="na-drawer-trust-rating-text">4.8/5 Rating | 7500+ Orders</span>
+      </div>
+      <div class="na-drawer-trust-stats">
+        <div class="na-drawer-trust-stat">
+          <div class="na-drawer-stat-eyebrow live"><span class="na-drawer-live-dot"></span> Live</div>
+          <span class="na-drawer-stat-num" id="naOrderCount">7500+ Orders Complete</span>
+          <div class="na-drawer-stat-label">Trusted by resellers worldwide.</div>
+        </div>
+        <div class="na-drawer-trust-stat">
+          <div class="na-drawer-stat-eyebrow stock"><span class="na-drawer-stock-dot"></span> In Stock</div>
+          <span class="na-drawer-stat-num">200+ Vintage Bundles</span>
+          <div class="na-drawer-stat-label">Explore our huge SKU collection.</div>
+        </div>
+        <div class="na-drawer-trust-stat">
+          <div class="na-drawer-stat-eyebrow dispatch">&#9889; Dispatch Speed</div>
+          <span class="na-drawer-stat-num">99% Ship Same Day</span>
+          <div class="na-drawer-stat-label">Before <strong>11am</strong> weekdays.</div>
+        </div>
+      </div>
+    </div>
+    <div class="na-drawer-help-nudge"><strong>Need help with something specific?</strong><br>Our team is ready — get in touch below.</div>
+    <a href="/pages/contact" class="na-drawer-contact-cta">Contact Us</a>
+  </div>
+  <div class="na-drawer-panel" id="panel-brands">
+    {% render 'shop-by-brand' %}
+    <a href="/pages/contact" class="na-drawer-contact-cta">Contact Us</a>
+  </div>
+  <div class="na-drawer-panel" id="panel-services">
+    <div class="na-drawer-info-links">
+      <a href="/pages/find-your-bundle">Find Your Bundle <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/collections/washing-services">Washing Service <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/pages/profit-calculator">Profit Calculator <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}">Account <span class="na-drawer-info-arrow">&#8250;</span></a>
+    </div>
+    {%- if localization.available_countries.size > 1 -%}
+      {% form 'localization' %}
+        <div class="na-currency-wrap">
+          <label class="na-currency-label">Currency &amp; Region</label>
+          <select name="country_code" class="na-currency-select" onchange="this.form.submit()">
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}" {%- if country.iso_code == localization.country.iso_code %} selected{%- endif %}>
+                {{ country.flag_emoji }} {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {% endform %}
+    {%- endif -%}
+    <div class="na-drawer-help-nudge"><strong>Need help with something specific?</strong><br>Our team is ready — get in touch below.</div>
+    <a href="/pages/contact" class="na-drawer-contact-cta">Contact Us</a>
+  </div>
+  <div class="na-drawer-panel" id="panel-info">
+    <div class="na-drawer-info-links">
+      <a href="/pages/faqs">FAQs <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/policies/privacy-policy">Privacy Policy <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/policies/refund-policy">Return / Refund Policy <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/policies/shipping-policy">Shipping Policy <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/policies/terms-of-service">Terms of Service <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/pages/grading-system">Our Grading System <span class="na-drawer-info-arrow">&#8250;</span></a>
+      <a href="/pages/reviews">Customer Reviews <span class="na-drawer-info-arrow">›</span></a>
+
+    </div>
+    <div class="na-drawer-help-nudge"><strong>Need help with something specific?</strong><br>Our team is ready — get in touch below.</div>
+    <a href="/pages/contact" class="na-drawer-contact-cta">Contact Us</a>
+  </div>
+  <div class="na-drawer-footer">
+    <p class="na-drawer-footer-tagline">Not Another — Built for Resellers.<br> Trusted by Thousands.</p>
+    <div class="na-drawer-socials">
+      <a href="https://www.facebook.com/p/Not-Another-Wholesale-61553269331450/" target="_blank" rel="noopener" class="na-drawer-social" aria-label="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/notanotherwholesale/" target="_blank" rel="noopener" class="na-drawer-social" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="#fff"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="#fff" stroke-width="2"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@notanotherwholesale" target="_blank" rel="noopener" class="na-drawer-social" aria-label="TikTok">
+        <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+      </a>
+    </div>
+    <div class="na-drawer-footer-links">
+      <a href="/policies/privacy-policy">Privacy</a>
+      <a href="/policies/refund-policy">Returns</a>
+      <a href="/policies/shipping-policy">Shipping</a>
+      <a href="/policies/terms-of-service">Terms</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header-wrapper color-background-1 gradient" id="naHeaderWrapper">
+  <div class="na-header-main">
+    <div class="na-header-left">
+      <button class="na-burger" id="naBurger" onclick="naToggleDrawer()" aria-label="Open menu" aria-expanded="false">
+        <span class="na-burger-line"></span>
+        <span class="na-burger-line"></span>
+        <span class="na-burger-line"></span>
+      </button>
+      <a href="/collections/all-products" class="na-explore-link">Explore Vintage</a>
+    </div>
+    <a href="/" class="na-logo" aria-label="{{ shop.name }}">
+      {%- if logo != blank -%}
+        <img src="{{ logo | image_url: width: 300 }}" alt="{{ logo_alt }}" width="{{ logo.width }}" height="{{ logo.height }}" loading="eager">
+      {%- else -%}
+        <span class="na-logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+    <div class="na-header-right">
+      <form action="/search" method="get" class="na-search-wrap" role="search">
+        <input class="na-search-input" type="search" name="q" placeholder="Search..." aria-label="Search" autocomplete="off">
+        <svg class="na-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </form>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}" class="na-icon-btn" aria-label="Account">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="na-icon-btn" id="cart-icon-bubble" aria-label="Cart">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        {%- if cart.item_count > 0 -%}
+          <span class="na-cart-count">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+    <form action="/search" method="get" class="na-search-mobile" role="search">
+      <input class="na-search-input" type="search" name="q" placeholder="Search..." aria-label="Search" autocomplete="off">
+      <svg class="na-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+    </form>
+  </div>
+</header>
+
+<script>
+(function() {
+    var hw = document.getElementById('naHeaderWrapper');
+    var isHome = window.location.pathname === '/' || window.location.pathname === '';
+    if (!isHome) {
+      hw.setAttribute('data-static', 'true');
+      function setOffset() {
+        var h = hw.offsetHeight;
+        document.documentElement.style.setProperty('--header-offset', h + 'px');
+      }
+      setTimeout(setOffset, 50);
+      window.addEventListener('resize', setOffset);
+    } else {
+      document.documentElement.style.setProperty('--header-offset', '0px');
+    }
+    function onScroll() { hw.classList.toggle('scrolled', window.scrollY > 50); }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  function naInitCart() {
+    var cartBtn = document.getElementById('cart-icon-bubble');
+    if (cartBtn && !cartBtn._kachingBound) {
+      cartBtn._kachingBound = true;
+      cartBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (window.kachingCartApi) {
+          window.kachingCartApi.refreshCart();
+          window.kachingCartApi.openCart();
+        }
+      });
+    }
+    var cd = document.querySelector('cart-drawer');
+    if (cd && !cd._kachingPatched) {
+      cd._kachingPatched = true;
+      cd.open = function() {
+        if (window.kachingCartApi) {
+          window.kachingCartApi.refreshCart();
+          window.kachingCartApi.openCart();
+        }
+      };
+      cd.renderContents = function() {
+        if (window.kachingCartApi) window.kachingCartApi.refreshCart();
+        fetch('/cart.js').then(function(r){ return r.json(); }).then(function(cart){
+          var el = document.querySelector('.na-cart-count');
+          if (el) {
+            el.textContent = cart.item_count;
+            el.style.display = cart.item_count > 0 ? 'flex' : 'none';
+          }
+        });
+      };
+    }
+    function attachSlideObserver() {
+      var inner = document.querySelector('kaching-cart-drawer');
+      if (inner && !inner._slidePatched) {
+        inner._slidePatched = true;
+        var slideObs = new MutationObserver(function(mutations) {
+          mutations.forEach(function(m) {
+            if (m.attributeName !== 'open') return;
+            var isOpen = inner.getAttribute('open') === 'true';
+            if (isOpen) {
+              inner.style.setProperty('transform', 'translateX(110%)', 'important');
+              inner.style.setProperty('transition', 'none', 'important');
+              requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                  inner.style.setProperty('transition', 'transform 0.45s cubic-bezier(0.4,0,0.2,1)', 'important');
+                  inner.style.setProperty('transform', 'translateX(0)', 'important');
+                });
+              });
+            } else {
+              inner.style.setProperty('transition', 'transform 0.45s cubic-bezier(0.4,0,0.2,1)', 'important');
+              inner.style.setProperty('transform', 'translateX(110%)', 'important');
+              setTimeout(function() {
+                inner.style.removeProperty('transform');
+                inner.style.removeProperty('transition');
+              }, 460);
+            }
+          });
+        });
+        slideObs.observe(inner, { attributes: true, attributeFilter: ['open'] });
+        return true;
+      }
+      return false;
+    }
+    if (!attachSlideObserver()) {
+      var domObs = new MutationObserver(function() {
+        if (attachSlideObserver()) domObs.disconnect();
+      });
+      domObs.observe(document.body, { childList: true, subtree: true });
+    }
+    var rawCount = {{ shop.orders_count | default: 0 }};
+    var orderEl = document.getElementById('naOrderCount');
+    if (orderEl && orderEl.textContent === '—') {
+      orderEl.textContent = rawCount > 0 ? rawCount.toLocaleString('en-GB') + '+ Orders Shipped' : '6,600+ Orders Shipped';
+    }
+  }
+
+  naInitCart();
+  setTimeout(naInitCart, 300);
+  setTimeout(naInitCart, 1000);
+
+// Mobile search → open Snap Search overlay
+  (function() {
+    function bindMobileSearch() {
+      var mobileInput = document.querySelector('.na-search-mobile input');
+      var snapEl = document.querySelector('snap-search');
+      if (!mobileInput || !snapEl || mobileInput._snapBound) return;
+      mobileInput._snapBound = true;
+      function openSnap() {
+        if (snapEl.open) { snapEl.open(); return; }
+        if (snapEl.openSearch) { snapEl.openSearch(); return; }
+        if (snapEl.show) { snapEl.show(); return; }
+        var desktopInput = document.querySelector('.na-search-wrap input');
+        if (desktopInput) {
+          desktopInput.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+          desktopInput.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
+        }
+      }
+      mobileInput.addEventListener('focus', openSnap);
+      mobileInput.addEventListener('click', openSnap);
+      mobileInput.addEventListener('touchstart', openSnap);
+    }
+    setTimeout(bindMobileSearch, 500);
+    setTimeout(bindMobileSearch, 1500);
+  })();
+
+  function naToggleDrawer() {
+    var drawer = document.getElementById('naDrawer');
+    var overlay = document.getElementById('naOverlay');
+    var burger = document.getElementById('naBurger');
+    var isOpen = drawer.classList.contains('open');
+    drawer.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('open', !isOpen);
+    burger.classList.toggle('open', !isOpen);
+    burger.setAttribute('aria-expanded', String(!isOpen));
+    drawer.setAttribute('aria-hidden', String(isOpen));
+    document.body.style.overflow = isOpen ? '' : 'hidden';
+  }
+
+  function naDrawerTab(btn, panelId) {
+    document.querySelectorAll('.na-drawer-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.na-drawer-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var drawer = document.getElementById('naDrawer');
+      if (drawer.classList.contains('open')) naToggleDrawer();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo image" },
+    { "type": "range", "id": "logo_width", "min": 50, "max": 300, "step": 10, "default": 150, "unit": "px", "label": "Logo width" }
+  ],
+  "blocks": [{ "type": "@app" }]
+}
+{% endschema %}
