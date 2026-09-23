@@ -1,6 +1,6 @@
 {% comment %}
-  Shop By Brand grid for the burger menu.
-  2-up on mobile / 3-up on desktop. Tiles mirror the homepage "Shop Our Brands" strip, smaller.
+  Shop By Brand grid — used in the burger drawer "Brands" tab (see sections/header.liquid).
+  2-up on mobile / 3-up on wider drawers. Tiles mirror the homepage "Shop Our Brands" strip.
 
   IMAGE PER TILE: shows the collection's featured image if one is set
   (Shopify admin > Products > Collections > [brand] > add an Image),
@@ -14,6 +14,10 @@
   assign brand_pairs = 'carhartt|Carhartt,ralph-lauren|Ralph Lauren,levis|Levis,the-north-face-1|The North Face,tommy-hilfiger|Tommy Hilfiger,nike|Nike,dickies|Dickies,patagonia|Patagonia,lacoste|Lacoste,adidas|Adidas,wrangler|Wrangler,columbia|Columbia,champion|Champion,nautica|Nautica,lee|Lee,eddie-bauer|Eddie Bauer,realtree|Realtree,harley-davidson|Harley Davidson' | split: ','
 -%}
 <div class="sbb">
+  <div class="sbb__head">
+    <span class="sbb__title">Shop By Brand</span>
+    <span class="sbb__sub">Every big label we stock — tap a brand to see its bundles.</span>
+  </div>
   <div class="sbb__grid">
     {%- for pair in brand_pairs -%}
       {%- assign parts = pair | split: '|' -%}
@@ -35,10 +39,32 @@
       {%- endif -%}
     {%- endfor -%}
   </div>
+  <a href="/collections/all" class="sbb__all">View all bundles &#8250;</a>
 </div>
 <style>
   .sbb {
-    padding: 4px 2px 24px;
+    padding: 18px 20px 10px;
+  }
+  .sbb__head {
+    margin: 0 0 16px;
+  }
+  .sbb__title {
+    display: block;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #111;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #111;
+  }
+  .sbb__sub {
+    display: block;
+    margin-top: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #888;
   }
   .sbb__grid {
     display: grid;
@@ -48,7 +74,7 @@
   @media screen and (min-width: 750px) {
     .sbb__grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px 16px;
+      gap: 20px 14px;
     }
   }
   .sbb__tile {
@@ -70,6 +96,7 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     background: #ffffff;
+    border: 1px solid #f0f0ee;
     border-radius: 10px;
     overflow: hidden;
   }
@@ -86,7 +113,6 @@
     width: 100%;
     height: 100%;
     background: #f4f4f2;
-    border: 1px dashed #dddddd;
     border-radius: 10px;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
@@ -101,5 +127,22 @@
     letter-spacing: -0.01em;
     line-height: 1.2;
     color: #111;
+  }
+  .sbb__all {
+    display: block;
+    margin-top: 18px;
+    padding: 12px 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #111;
+    text-decoration: none;
+    border-top: 1px solid #efefed;
+  }
+  .sbb__all:hover {
+    color: #000;
   }
 </style>
