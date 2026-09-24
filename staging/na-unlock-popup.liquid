@@ -124,7 +124,6 @@ padding:52px 104px 44px; text-align:center; overflow:hidden; box-shadow:0 40px 1
 </style>
 <div class="na-unlock-root" id="naRoot" aria-hidden="true">
 <div class="naup" id="naPop" role="dialog" aria-modal="true" aria-labelledby="naHeading">
-<button class="naup__x" type="button" id="naClose" aria-label="Close">&#10005;</button>
 <img class="naup-logo" src="{{ na_logo }}" alt="{{ shop.name | escape }}" width="260">
 <p class="naup-eye naup-leave">{{ section.settings.eyebrow | escape }}</p>
 <h2 class="naup-h naup-leave" id="naHeading">
@@ -345,9 +344,8 @@ document.documentElement.style.overflow = '';
 if (lastFocus && lastFocus.focus) lastFocus.focus();
 showTeaser();
 }
-closeB.addEventListener('click', dismiss);
+if(closeB) closeB.addEventListener('click', dismiss);
 var declineB=document.getElementById('naDecline'); if(declineB) declineB.addEventListener('click', dismiss);
-root.addEventListener('click', function(e){ if (e.target === root) dismiss(); });
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && root.classList.contains('is-open')) dismiss(); });
 // keep clicks inside the popup from reaching the theme's global close handlers
 pop.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
