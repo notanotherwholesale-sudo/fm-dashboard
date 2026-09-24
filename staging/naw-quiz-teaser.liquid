@@ -1,5 +1,12 @@
 {%- comment -%}
-  Reseller quiz teaser intentionally disabled.
-  It duplicated the "Stuck on what to buy?" black quiz banner (naw-quiz-banner section)
-  that already appears on collection pages. Blanked out to remove the duplicate.
+  Reseller quiz teaser intentionally disabled — it duplicated the "Stuck on what to buy?"
+  black quiz banner (naw-quiz-banner section) already shown on collection pages.
+
+  We also hide the duplicate Okendo reviews badge (grey "4 Reviews") on collection pages,
+  since we display our own custom review badge in the naw-review-photos section
+  (black "211 Reviews"). The Okendo badge section key is 1767877626758e22ba.
 {%- endcomment -%}
+<style>
+  #shopify-section-template--{{ collection.id }}__1767877626758e22ba,
+  [id*="__1767877626758e22ba"] { display: none !important; }
+</style>
