@@ -1,0 +1,424 @@
+{% comment %}
+  NAW F1 (Kaching edition) — glass free-shipping meter inside the Kaching Cart.
+  BUNDLE-COUNT SCHEME (Aug 2026): free UK shipping unlocks at 2+ bundles in the
+  cart (any mix), matching the "FREE UK SHIPPING - 2+ BUNDLES" automatic
+  discount — no £ threshold any more.
+  The live cart is the Kaching Cart app (light-DOM <kaching-cart> element), which
+  replaces the theme's native drawer — so this injects the meter INTO Kaching's
+  drawer, directly beneath the cart items. Frosted-glass styling.
+  Behaviour:
+    • GBP storefronts only — non-GBP visitors see nothing, and Kaching's own
+      banner is left untouched for them.
+    • Mounts under .kaching-cart-item-container; survives Kaching re-renders via
+      MutationObserver; updates from /cart.js (debounced) on every cart change.
+    • Hides Kaching's static "FREE UK SHIPPING…" trust badge (the meter replaces
+      it); other trust badges untouched.
+    • Fails silently if Kaching is absent (falls back to the native-drawer meter
+      rendered by naw-shipping-meter-cart).
+  INSTALL: {% render 'naw-shipping-meter-kaching' %} in layout/theme.liquid
+  before </body>. CONFIG: bundle count below.
+{% endcomment %}
+
+<style>
+.naw-kmeter{margin:2px 14px 10px;background:rgba(253,251,247,.55);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(17,17,17,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 4px 16px rgba(17,17,17,.05);border-radius:12px;padding:11px 14px;font-family:'Poppins',sans-serif}
+.naw-kmeter__row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#111}
+.naw-kmeter__row svg{flex:none}
+.naw-kmeter__txt b{font-weight:700}
+.naw-kmeter__bar{position:relative;height:4px;background:rgba(17,17,17,.07);border-radius:99px;margin:10px 3px 4px;overflow:visible}
+.naw-kmeter__fill{height:100%;background:#111;border-radius:99px;transition:width .5s cubic-bezier(.23,1,.32,1)}
+.naw-kmeter__ic{width:20px;height:20px;border-radius:50%;background:rgba(17,17,17,.07);display:inline-flex;align-items:center;justify-content:center;flex:none;color:#111}
+.naw-kmeter.un .naw-kmeter__ic{background:#16A35E;color:#fff}
+.naw-kmeter.un .naw-kmeter__ic svg{color:#fff !important}
+.naw-kmeter__dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#FDFCFA;border:2px solid rgba(17,17,17,.18);box-sizing:border-box}
+.naw-kmeter__dot.hit{background:#16A35E;border-color:#16A35E}
+.naw-kmeter__free{font-weight:700;letter-spacing:.045em;font-size:11.5px}
+.naw-kmeter.un{background:rgba(22,163,94,.08);border-color:rgba(22,163,94,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 16px rgba(22,163,94,.07)}
+.naw-kmeter.un .naw-kmeter__txt{color:#0B4D2C;font-weight:500}
+.naw-kmeter.un .naw-kmeter__txt b{font-weight:700}
+.naw-kmeter.un .naw-kmeter__row svg{color:#0B4D2C}
+.naw-kmeter.un .naw-kmeter__bar{background:rgba(22,163,94,.14)}
+.naw-kmeter.un .naw-kmeter__fill{background:linear-gradient(90deg,#149356,#1FC276)}
+</style>
+
+<script>
+(function(){
+  var cur=(window.Shopify&&Shopify.currency&&Shopify.currency.active)||'GBP';
+  if(cur!=='GBP')return;
+  var NEED=2; /* bundles for free UK shipping */
+  var applying=false,fetchTimer=null,lastCount=null;
+
+  var LADDER=[{n:2,pct:5},{n:3,pct:8},{n:5,pct:12},{n:10,pct:18}];
+  function html(count){
+    var un=count>=NEED,left=NEED-count;
+    var pct=Math.min(count/NEED*100,100);
+    var active=null;
+    LADDER.forEach(function(t){if(count>=t.n)active=t;});
+    var txt;
+    if(!un){txt='Add <b>'+left+' more bundle'+(left===1?'':'s')+'</b> &rarr; <b>5% off</b> + free UK shipping';}
+    else{txt='Free UK shipping + <b>'+active.pct+'% off</b> unlocked';}
+    var ic=un
+      ?'<span class="naw-kmeter__ic"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'
+      :'<span class="naw-kmeter__ic"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H4a2 2 0 0 1-2-2V7h12v4h3l3 3a2 2 0 0 1-2 2h-1"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="17.5" cy="17.5" r="1.5"/></svg></span>';
+    return '<div class="naw-kmeter__row">'+ic+'<span class="naw-kmeter__txt">'+txt+'</span></div><div class="naw-kmeter__bar"><div class="naw-kmeter__fill" style="width:'+pct+'%"></div></div>';
+  }  function mount(count){
+    var kc=document.querySelector('kaching-cart');if(!kc)return;
+    var boxes=kc.querySelectorAll('.kaching-cart-item-container');
+    var itemBox=boxes.length?boxes[boxes.length-1]:null;
+    applying=true;
+    try{
+      var foot=kc.querySelector('.kaching-cart__footer');
+      var el=kc.querySelector('.naw-kmeter');
+      if(count<=0||!itemBox||!foot){if(el)el.remove();return;}
+      if(!el){
+        el=document.createElement('div');el.className='naw-kmeter';
+        foot.insertBefore(el,foot.firstChild);
+      }else if(el.parentElement!==foot||el!==foot.firstElementChild){
+        foot.insertBefore(el,foot.firstChild);
+      }
+      el.classList.toggle('un',count>=NEED);
+      el.innerHTML=html(count);
+      // retire Kaching's static shipping badge — the live meter replaces it
+      [].slice.call(kc.querySelectorAll('.kaching-cart__trust-badge')).forEach(function(b){
+        if(/FREE UK SHIPPING ON ORDERS OVER/i.test(b.textContent))b.style.setProperty('display','none','important');
+      });
+    }finally{
+      setTimeout(function(){applying=false;},0);
+    }
+  }
+  function refresh(){
+    fetch('/cart.js').then(function(r){return r.json();}).then(function(c){
+      var n=0;(c.items||[]).forEach(function(i){if(!(/washing/i.test(i.product_title)||i.product_type==='Service'))n+=i.quantity;});
+      lastCount=n;mount(lastCount);
+    }).catch(function(){});
+  }
+  function schedule(){clearTimeout(fetchTimer);fetchTimer=setTimeout(refresh,350);}
+
+  function arm(){
+    var kc=document.querySelector('kaching-cart');
+    if(!kc){setTimeout(arm,800);return;}
+    new MutationObserver(function(){
+      if(applying)return;
+      // fast path: keep position/state through re-renders without waiting on the network
+      if(lastCount!==null)mount(lastCount);
+      schedule();
+    }).observe(kc,{childList:true,subtree:true});
+    refresh();
+  }
+  ['cart:refresh','cart:build','cart:updated'].forEach(function(ev){document.addEventListener(ev,schedule);});
+  document.addEventListener('click',function(e){
+    if(e.target&&e.target.closest&&e.target.closest('button[name="add"], .product-form__submit, #naMicroAtc'))schedule();
+  },true);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm);else arm();
+})();
+</script>
+
+{% comment %} NAW CART BOOSTERS — ladder nudge + washing upsell (appended Aug 27; see repo naw-kaching-boosters.liquid for standalone) {% endcomment %}
+<style>
+.naw-kboost{margin:2px 14px 10px;border:1px solid rgba(17,17,17,.08);border-radius:12px;padding:11px 14px;background:rgba(253,251,247,.55);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 4px 16px rgba(17,17,17,.05);font-family:'Poppins',sans-serif}
+.naw-kboost[hidden]{display:none !important}
+.naw-kboost--un{background:rgba(22,163,94,.14);border-color:rgba(22,163,94,.28)}
+.naw-kboost--un .naw-kwash{display:flex;align-items:center;gap:11px}
+.naw-kwash__ic{color:#111;flex:none;display:flex}
+.naw-kwash__meta{flex:1;min-width:0}
+.naw-kwash__t{font-size:12.5px;font-weight:700;color:#111}
+.naw-kwash__s{font-size:11px;color:#6B6B6B;line-height:1.45;margin-top:1px}
+.naw-kwash__btn{flex:none;border:1px solid #111;background:#fff;color:#111;border-radius:8px;font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:9px 16px;cursor:pointer;transition:.15s}
+.naw-kwash__btn:hover{background:#111;color:#fff}
+.naw-kwash__btn.is-added{background:#16A35E;border-color:#16A35E;color:#fff}
+.naw-krail{position:fixed;top:50%;transform:translateY(-50%) translateX(10px);width:150px;background:#FDFCFA;border:1px solid #ECECEC;border-right:none;border-radius:14px 0 0 14px;padding:16px 13px;font-family:'Poppins',sans-serif;z-index:9999;opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.23,1,.32,1);box-shadow:-10px 8px 34px rgba(0,0,0,.18)}
+.naw-krail.on{opacity:1;transform:translateY(-50%) translateX(0)}
+.naw-krail__t{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#111;text-align:center;margin-bottom:12px}
+.naw-krail__step{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;margin-bottom:5px;border:1px solid transparent}
+.naw-krail__pct{font-size:15px;font-weight:800;color:#B9B4A9;min-width:38px}
+.naw-krail__lbl{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9C978C;line-height:1.3}
+.naw-krail__step.hit{background:#EAF6EE;border-color:rgba(21,128,61,.25)}
+.naw-krail__step.hit .naw-krail__pct{color:#15803D}
+.naw-krail__step.hit .naw-krail__lbl{color:#0B4D2C}
+.naw-krail__step.next{border-color:#111;background:#111}
+.naw-krail__step.next .naw-krail__pct{color:#fff}.naw-krail__step.next .naw-krail__lbl{color:rgba(255,255,255,.75)}
+.naw-krail__foot{margin-top:9px;padding-top:10px;border-top:1px solid #EEE;font-size:10.5px;color:#6B6B6B;text-align:center;line-height:1.5}
+.naw-krail__foot b{color:#111}
+@media(max-width:1023px){.naw-krail{display:none !important}}
+</style>
+
+<script>
+(function(){
+  var cur=(window.Shopify&&Shopify.currency&&Shopify.currency.active)||'GBP';
+  if(cur!=='GBP')return;
+  var WASH_VID='48159249793303';
+  var TIERS=[{n:2,pct:5},{n:3,pct:8},{n:5,pct:12},{n:10,pct:18}];
+  var lastFetch=0,cartCache=null,lastBundles=1;
+
+  function isService(i){return /washing/i.test(i.product_title)||i.product_type==='Service';}
+
+  function washEl(){
+    var el=document.createElement('div');
+    el.className='naw-kboost naw-kwash';el.setAttribute('data-naw-kwash','');el.hidden=true;
+    el.innerHTML='<div class="naw-kwash__ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M5 6l1.5 14h11L19 6M9 6V4a3 3 0 0 1 6 0v2"/><path d="M8.5 13c1 .8 2.3 1.2 3.5 1.2s2.5-.4 3.5-1.2"/></svg></div><div class="naw-kwash__meta"><div class="naw-kwash__t">Want it list-ready?</div><div class="naw-kwash__s">Washed &amp; photo-ready on arrival &middot; &pound;30 per bundle</div></div><button type="button" class="naw-kwash__btn" data-kwash-btn>Add</button>';
+    el.querySelector('[data-kwash-btn]').addEventListener('click',function(){
+      var btn=this;btn.disabled=true;btn.textContent='…';
+      fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:WASH_VID,quantity:Math.max(1,lastBundles)})})
+        .then(function(r){return r.json();})
+        .then(function(){
+          btn.classList.add('is-added');btn.textContent='Added ✓';
+          cartCache=null;lastFetch=0;
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          setTimeout(function(){var w=document.querySelector('[data-naw-kwash]');if(w)w.hidden=true;refresh(true);},1200);
+        })
+        .catch(function(){btn.disabled=false;btn.textContent='Add';});
+    });
+    return el;
+  }
+
+  function railEl(){
+    var el=document.createElement('div');
+    el.className='naw-krail';el.setAttribute('data-naw-krail','');
+    el.innerHTML='<div class="naw-krail__t">Bundle &amp; Save</div>'
+      +[{n:2,pct:5},{n:3,pct:8},{n:5,pct:12},{n:10,pct:18}].map(function(t){
+        return '<div class="naw-krail__step" data-krail-n="'+t.n+'"><span class="naw-krail__pct">'+t.pct+'%</span><span class="naw-krail__lbl">'+t.n+'+ bundles</span></div>';
+      }).join('')
+      +'<div class="naw-krail__foot" data-krail-foot></div>';
+    document.body.appendChild(el);
+    return el;
+  }
+  function syncRail(bundles){
+    if(window.innerWidth<1024)return;
+    var host=document.querySelector('.kaching-cart-item-container');
+    var rail=document.querySelector('[data-naw-krail]')||railEl();
+    var open=false,left=0;
+    if(host&&host.offsetParent){var r=host.getBoundingClientRect();if(r.width>0&&r.left>320){open=true;left=r.left;}}
+    if(!open||bundles<1){rail.classList.remove('on');return;}
+    rail.style.left=Math.max(10,left-150)+'px';
+    var active=null,next=null;
+    TIERS.forEach(function(t){if(bundles>=t.n)active=t;else if(!next)next=t;});
+    rail.querySelectorAll('[data-krail-n]').forEach(function(st){
+      var n=parseInt(st.getAttribute('data-krail-n'),10);
+      st.classList.toggle('hit',bundles>=n);
+      st.classList.toggle('next',!!next&&next.n===n);
+    });
+    var foot=rail.querySelector('[data-krail-foot]');
+    if(!active&&next)foot.innerHTML='You have <b>'+bundles+'</b> bundle'+(bundles>1?'s':'')+' &mdash; add <b>'+(next.n-bundles)+'</b> to save';
+    else if(active&&next)foot.innerHTML='<b>'+active.pct+'% off</b> applied &mdash; <b>'+(next.n-bundles)+'</b> more for '+next.pct+'%';
+    else foot.innerHTML='<b>Max saving</b> &mdash; 18% off applied';
+    rail.classList.add('on');
+  }
+  function paint(c){
+    var bundles=0;c.items.forEach(function(i){if(!isService(i))bundles+=i.quantity;});
+    var hasWash=c.items.some(function(i){return String(i.variant_id)===WASH_VID||/washing/i.test(i.product_title);});
+    lastBundles=bundles;
+    var w=document.querySelector('[data-naw-kwash]');
+    if(w&&!w.querySelector('.is-added')){
+      w.hidden=!(bundles>0&&!hasWash);
+      var ws=w.querySelector('.naw-kwash__s');
+      if(ws)ws.innerHTML=bundles>1
+        ?'Washed &amp; photo-ready on arrival &middot; &pound;30 &times; '+bundles+' bundles = <b>&pound;'+(30*bundles)+'</b>'
+        :'Washed &amp; photo-ready on arrival &middot; &pound;30 per bundle';
+    }
+    syncRail(bundles);
+  }
+
+  function refresh(force){
+    var now=Date.now();
+    if(!force&&cartCache&&now-lastFetch<1500){paint(cartCache);return;}
+    lastFetch=now;
+    fetch('/cart.js').then(function(r){return r.json();}).then(function(c){cartCache=c;paint(c);}).catch(function(){});
+  }
+
+  function maintain(){
+    var kc=document.querySelector('kaching-cart');
+    var foot=kc&&kc.querySelector('.kaching-cart__footer');
+    if(!foot)return;
+    var meter=foot.querySelector('.naw-kmeter');
+    var w=document.querySelector('[data-naw-kwash]');
+    if(!w||!foot.contains(w)||(meter&&w.previousElementSibling!==meter)){
+      if(w)w.remove();
+      w=washEl();
+      if(meter)foot.insertBefore(w,meter.nextSibling);
+      else foot.insertBefore(w,foot.firstChild);
+    }
+    slimExtras();
+    refresh();
+  }
+  function nawDelivRange(){
+    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var x=new Date();
+    var wk=x.getDay()!==0&&x.getDay()!==6;
+    if(!(wk&&x.getHours()<11))x.setDate(x.getDate()+1);
+    while(x.getDay()===0||x.getDay()===6)x.setDate(x.getDate()+1);
+    function add(d,n){var y=new Date(d.getTime()),a=0;while(a<n){y.setDate(y.getDate()+1);if(y.getDay()!==0)a++;}return y;}
+    var a=add(x,1),b=add(x,2);
+    if(a.getMonth()===b.getMonth())return a.getDate()+'\u2013'+b.getDate()+' '+M[b.getMonth()];
+    return a.getDate()+' '+M[a.getMonth()]+'\u2013'+b.getDate()+' '+M[b.getMonth()];
+  }
+  function slimExtras(){
+    var kc=document.querySelector('kaching-cart');
+    if(!kc)return;
+    kc.querySelectorAll('.kaching-cart__contents .kaching-cart__module').forEach(function(m){
+      if(m.querySelector('.kaching-cart__trust-badges')||(!m.textContent.trim()&&!m.querySelector('img,.kaching-cart-item-container')))m.style.setProperty('display','none','important');
+    });
+    kc.querySelectorAll('.kaching-cart-item').forEach(function(it){
+      var src=it.querySelector('.na-stock-badge');
+      var qc=it.querySelector('.kaching-cart-item__quantity-controls');
+      var cl=it.querySelector('.naw-qbadge');
+      if(src&&qc){
+        var txt=src.textContent.replace(/\s+/g,' ').trim();
+        var row=it.querySelector('.naw-qrow');
+        if(!row){
+          row=document.createElement('div');row.className='naw-qrow';
+          qc.parentElement.insertBefore(row,qc);
+          row.appendChild(qc);
+        }
+        if(!cl){cl=document.createElement('span');cl.className='naw-qbadge';row.appendChild(cl);}
+        else if(cl.parentElement!==row)row.appendChild(cl);
+        if(cl.textContent!==txt)cl.textContent=txt;
+      }else if(cl){cl.remove();}
+    });
+    var foot=kc.querySelector('.kaching-cart__footer');
+    var btn=foot&&foot.querySelector('.kaching-cart__checkout-button');
+    if(!btn)return;
+    var card=foot.querySelector('[data-naw-sumcard]');
+    if(!card||card.nextElementSibling!==btn){
+      if(card)card.remove();
+      card=document.createElement('div');card.className='naw-sumcard';card.setAttribute('data-naw-sumcard','');
+      card.innerHTML='<div class="naw-srow" data-srow-deliv><span class="naw-srow__l">Delivery</span><span class="naw-srow__v" data-sv-deliv></span></div>';
+      btn.parentElement.insertBefore(card,btn);
+    }
+    var st=foot.querySelector('.kaching-cart__subtotal');
+    var dv=card.querySelector('[data-sv-deliv]');
+    if(dv)dv.innerHTML=nawDelivRange()+(lastBundles>=2?' &middot; <span class="free">Free</span>':'');
+    var accel=foot.querySelector('.kaching-cart__accelerated-checkout-buttons');
+    var kf=foot.querySelector('[data-naw-klarnafoot]');
+    if(!kf&&accel){
+      kf=document.createElement('div');kf.className='naw-klarnafoot';kf.setAttribute('data-naw-klarnafoot','');
+      accel.parentElement.insertBefore(kf,accel.nextSibling);
+    }
+    var kv=kf?kf:null;
+    if(kv){
+      var mm=(st?st.textContent:'').match(/\u00a3\s?[\d,]+\.?\d*/g);
+      var tot=mm&&mm.length?parseFloat(mm[mm.length-1].replace(/[^\d.]/g,'')):0;
+      kv.innerHTML='<span class="naw-klarnafoot__badge">Klarna.</span><span>Split it \u2014 3 payments of <b>\u00a3'+(tot>0?(tot/3).toFixed(2):'\u2014')+'</b>, 0% interest.</span>';
+    }
+    var oldcap=foot.querySelector('[data-naw-trustcap]');if(oldcap)oldcap.remove();
+    var inner=kc.querySelector('.kaching-cart__inner');
+    var contents=kc.querySelector('.kaching-cart__contents');
+    if(inner&&contents){
+      var tb=inner.querySelector('[data-naw-trustbar]');
+      if(!tb||tb.nextElementSibling!==contents){
+        if(tb)tb.remove();
+        tb=document.createElement('div');tb.className='naw-trustbar';tb.setAttribute('data-naw-trustbar','');
+        tb.innerHTML='<span class="naw-trustbar__ic"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 2.4 3.3-.5.5 3.3L20.6 9 19 12l1.6 3-2.4 1.8-.5 3.3-3.3-.5L12 22l-2.4-2.4-3.3.5-.5-3.3L3.4 15 5 12 3.4 9l2.4-1.8.5-3.3 3.3.5z"/><path d="M9 12l2 2 4-4"/></svg></span>'
+          +'<span class="naw-trustbar__meta"><span class="naw-trustbar__t">Every bundle quality checked</span><span class="naw-trustbar__s" style="display:block">Rated 4.8\u2605 by 7,500+ resellers</span></span>'
+          +'<span class="naw-trustbar__chip">4.8\u2605</span>';
+        inner.insertBefore(tb,contents);
+      }
+    }
+  }
+
+  var t=null;
+  new MutationObserver(function(){
+    if(t)return;
+    t=setTimeout(function(){t=null;maintain();},400);
+  }).observe(document.documentElement,{childList:true,subtree:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',maintain);else maintain();
+})();
+</script>
+
+{% comment %} SLIM CART (9 Sept) — descaled drawer: hidden Kaching html modules (timeline+badge) replaced by micro delivery/trust lines, compact item cards, one-line Klarna/wash. Payment icons kept. {% endcomment %}
+<style>
+.kaching-cart__footer .kaching-cart__html-module{display:none !important}
+.kaching-cart-item{padding:8px 18px 8px 14px !important;overflow:visible !important}
+.kaching-cart-item__content{gap:8px !important;min-width:0 !important}
+.kaching-cart-item__content-left{min-width:0 !important}
+.kaching-cart-item__content-right{flex:none !important;padding-right:0 !important;align-items:flex-end !important}
+.kaching-cart-item__price-info{padding-right:0 !important}
+.kaching-cart__badge{white-space:nowrap !important}
+.kaching-cart-item__remove-btn{margin:4px 0 0 !important;overflow:visible !important;flex:none !important}
+.kaching-cart-item__remove-btn svg{overflow:visible !important}
+.kaching-cart__contents .kaching-cart__module:has(.kaching-cart__trust-badges){display:none !important}
+.kaching-cart-item__image-container,.kaching-cart-item__link,.kaching-cart-item__image{width:54px !important;height:54px !important}
+.kaching-cart-item__title{font-size:12px !important;line-height:1.3 !important}
+.kaching-cart-item .na-stock-badge{display:none !important}
+.kaching-cart-item__quantity-controls{display:inline-flex !important;width:auto !important;flex:none !important;vertical-align:middle !important}
+.naw-qrow{display:flex !important;flex-wrap:wrap !important;align-items:center !important;gap:8px !important;margin-top:4px !important}
+.naw-qbadge{display:inline-flex;align-items:center;font-size:9.5px;font-weight:600;color:#8a6d3b;background:rgba(251,244,228,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid #EFE2C4;border-radius:7px;padding:4px 9px;white-space:nowrap;font-family:'Poppins',sans-serif}
+@media(max-width:480px){
+.naw-qbadge{padding:3px 7px;font-size:9px}
+[id^="kaching-cart"] .kaching-cart-item__quantity-controls,.kaching-cart-item__quantity-controls{gap:0 !important}
+.kaching-cart-item__quantity-btn{width:26px !important;min-width:26px !important;height:26px !important;min-height:26px !important;font-size:12px !important;padding:0 !important}
+.kaching-cart-item__quantity-input{width:28px !important;min-width:28px !important;height:26px !important;min-height:26px !important;font-size:11px !important;padding:0 !important}
+.naw-qrow{gap:7px !important;margin-top:5px !important}
+}
+.kaching-cart-item__option-names{display:none !important}
+.kaching-cart-item__variant-selectors{height:auto !important;margin:2px 0 0 !important}
+.kaching-cart-item__variant-selectors select{font-size:10.5px !important;padding:3px 20px 3px 9px !important;min-height:0 !important;min-width:56px !important;letter-spacing:.03em !important;border-radius:6px !important}
+.kaching-cart-item__quantity-controls{margin-top:4px !important}
+.kaching-cart-item__quantity-btn,.kaching-cart-item__quantity-input{height:24px !important;min-height:24px !important;font-size:11px !important}
+kaching-cart .kaching-cart-item__quantity-controls{height:26px !important}
+kaching-cart .kaching-cart-item__quantity-btn{height:26px !important;min-height:26px !important;width:26px !important;min-width:26px !important;padding:0 !important}
+kaching-cart .kaching-cart-item__quantity-btn svg{width:12px !important;height:12px !important}
+kaching-cart .kaching-cart-item__quantity-input{height:26px !important;min-height:26px !important;width:30px !important;min-width:30px !important;font-size:11px !important;font-weight:600 !important;padding:0 !important}
+.kaching-cart-item__quantity-input{width:34px !important}
+.kaching-cart-item__total{font-size:13px !important}
+.kaching-cart-item__price-info .kaching-cart__badge{font-size:9.5px !important;padding:2px 6px !important}
+
+.naw-kmeter{margin:2px 14px 4px !important;padding:8px 12px !important}
+.naw-kmeter__row{font-size:11.5px !important}
+.naw-kboost{margin:4px 14px 6px !important;padding:7px 12px !important}
+.naw-kwash__meta{min-width:0 !important}
+.naw-kwash__t{font-size:11.5px !important}
+.naw-kwash__s{font-size:10px !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
+.naw-kwash__btn{padding:6px 12px !important;font-size:10px !important;flex:none !important;margin-left:auto !important}
+.naw-kwash{display:flex !important;flex-wrap:nowrap !important;align-items:center !important}
+.naw-kwash__ic{flex:none !important}
+.naw-kwash__meta{flex:1 1 auto !important;overflow:hidden !important}
+.naw-klarna--kcart{margin:2px 16px !important;padding:3px 0 !important;font-size:10.5px !important;background:none !important;border:none !important;box-shadow:none !important;height:auto !important}
+.naw-klarna--kcart *{font-size:10.5px !important;line-height:1.4 !important}
+.naw-klarna--kcart{display:none !important}
+.naw-sumcard{margin:0 16px 8px;font-family:'Poppins',sans-serif;border-bottom:1px solid #F2F2F0}
+.naw-sumcard .naw-srow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 1px;border-top:1px solid #F2F2F0}
+.naw-sumcard .naw-srow__l{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#98948C;white-space:nowrap}
+.naw-sumcard .naw-srow__v{font-size:11.5px;font-weight:600;color:#111;text-align:right}
+.naw-sumcard .naw-srow__v .free{color:#15803D;font-weight:700}
+.kaching-cart__footer .kaching-cart__cart-discounts{display:flex !important;align-items:center;justify-content:space-between;gap:10px;padding:7px 1px !important;margin:0 16px !important;border-top:1px solid #F2F2F0;font-family:'Poppins',sans-serif !important}
+.kaching-cart__footer .kaching-cart__cart-discounts-title{font-size:9.5px !important;font-weight:700 !important;letter-spacing:.1em !important;text-transform:uppercase !important;color:#98948C !important;display:flex;align-items:center;gap:6px}
+.kaching-cart__footer .kaching-cart__cart-discounts-badge{font-size:9px !important;letter-spacing:.02em !important;text-transform:none !important;color:#C0392B !important;background:#FBEEEC;border-radius:5px;padding:1px 6px;font-weight:600 !important}
+.kaching-cart__footer .kaching-cart__cart-discounts-badge svg{width:11px !important;height:11px !important}
+.kaching-cart__footer .kaching-cart__subtotal{display:flex !important;align-items:center;justify-content:space-between;gap:10px;padding:8px 1px !important;margin:0 16px !important;border-top:1px solid #F2F2F0;font-size:9.5px !important;font-weight:700 !important;letter-spacing:.1em !important;text-transform:uppercase !important;color:#98948C !important;font-family:'Poppins',sans-serif !important}
+.kaching-cart__footer .kaching-cart__subtotal>span{font-size:14px !important;font-weight:800 !important;color:#111 !important;letter-spacing:0 !important;text-transform:none !important}
+.kaching-cart__footer .kaching-cart__subtotal-original{font-size:11px !important;color:#B9B4A9 !important;font-weight:400 !important;margin-right:5px}
+.naw-kwash__btn{background:#111 !important;color:#fff !important;border-color:#111 !important;border-radius:999px !important}
+.naw-klarnafoot{display:flex;align-items:flex-start;gap:10px;margin:8px 16px 4px;padding:10px 12px;background:#FDF7FA;border:1px solid #F3DCE6;border-radius:10px;font-size:11px;line-height:1.5;color:#333;font-family:'Poppins',sans-serif}
+.naw-klarnafoot b{color:#111;font-weight:700}
+.naw-klarnafoot__badge{background:#FFB3C7;color:#111;font-weight:800;border-radius:6px;padding:3px 8px;font-size:10.5px;letter-spacing:.01em;flex:none;margin-top:1px}
+.naw-trustbar{background:#111;color:#fff;font-family:'Poppins',sans-serif;padding:9px 16px 10px;display:flex;align-items:center;gap:10px;position:relative;margin-bottom:8px}
+.naw-trustbar__ic{flex:none;display:flex;color:#fff}
+.naw-trustbar__meta{flex:1;min-width:0}
+.naw-trustbar__t{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;line-height:1.3}
+.naw-trustbar__s{font-size:8.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:1px}
+.naw-trustbar__chip{flex:none;background:#fff;color:#111;font-weight:800;font-size:11px;border-radius:6px;padding:4px 8px}
+.kaching-cart__checkout-button,.kaching-cart__checkout-button *{font-size:12px !important;letter-spacing:.08em !important}
+.kaching-cart__checkout-button button,.kaching-cart__checkout-button a{padding-top:11px !important;padding-bottom:11px !important;min-height:0 !important}
+.kaching-cart__accelerated-checkout-buttons{font-size:10.5px !important}
+.kaching-cart__accelerated-checkout-buttons *{font-size:10.5px !important}
+.kaching-cart__payment-icons{margin:2px 0 6px !important;padding:0 !important;gap:4px !important;justify-content:center !important;transform:none !important}
+.kaching-cart__payment-icons img,.kaching-cart__payment-icons svg{height:13px !important;width:auto !important;max-height:13px !important;border-radius:2px !important}
+.naw-klarnafoot{padding:5px 10px !important;margin:3px 16px 3px !important;font-size:10.5px !important;align-items:center !important;justify-content:center !important}
+.naw-klarnafoot__badge{padding:2px 7px !important;font-size:10px !important}
+.kaching-cart__checkout-button{margin-top:6px !important}
+.kaching-cart__accelerated-checkout-buttons{margin:1px 0 0 !important;padding:1px 0 !important}
+.kaching-cart__footer{padding-bottom:4px !important}
+.kaching-cart__footer{padding-top:4px !important}
+.kaching-cart__header{padding-top:12px !important;padding-bottom:12px !important;min-height:0 !important}
+.kaching-cart__header-image{height:32px !important;max-height:32px !important}
+.kaching-cart__header-image img{height:32px !important;max-height:32px !important;width:auto !important}
+</style>
+
+{% comment %} SITE-WIDE: cap oversized section headings on mobile so they fit one line (9 Sept) {% endcomment %}
+<style>
+@media screen and (max-width:749px){
+  .title.h1, .title-wrapper .title.h1, h2.title.inline-richtext.h1{font-size:22px !important;line-height:1.2 !important;letter-spacing:-.3px !important}
+}
+@media screen and (max-width:400px){
+  .title.h1, .title-wrapper .title.h1, h2.title.inline-richtext.h1{font-size:20px !important}
+}
+</style>
