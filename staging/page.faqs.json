@@ -1,0 +1,191 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "custom_css": [],
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "ss_faq_9_Gxd4Jw": {
+      "type": "ss-faq-9",
+      "blocks": {
+        "heading_haJPj6": {
+          "type": "heading",
+          "settings": {
+            "heading": "<h2>HAVE QUESTIONS?<br/>WE HAVE THE ANSWERS.</h2>",
+            "heading_custom": false,
+            "heading_font": "sans_serif_n4",
+            "heading_size": 38,
+            "heading_size_mobile": 18,
+            "heading_height": 130,
+            "heading_mt": 0,
+            "heading_mt_mobile": 0,
+            "heading_align": "left",
+            "heading_align_mobile": "left",
+            "heading_color": "#000000"
+          }
+        },
+        "text_mz9N6e": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Don’t let buying vintage be a burden. Here are some of our most commonly asked questions.</p>",
+            "text_custom": false,
+            "text_font": "sans_serif_n4",
+            "text_size": 20,
+            "text_size_mobile": 10,
+            "text_height": 130,
+            "text_mt": 20,
+            "text_mt_mobile": 20,
+            "text_align": "left",
+            "text_align_mobile": "left",
+            "text_color": "#9a9a9a"
+          }
+        },
+        "item_z9hwPx": {
+          "type": "item",
+          "settings": {
+            "question": "ARE YOU LEGIT?",
+            "answer": "<p>We started in the world of vintage back in 2015. We then launched the wholesale company over two years ago in 2023 and have been going strong since. With nearly 10,000 website orders locked in, we are now one of the UK's leading suppliers for used & vintage clothing.</p>"
+          }
+        },
+        "item_bYJ8Kq": {
+          "type": "item",
+          "settings": {
+            "question": "WHAT TYPES OF CLOTHING DO YOU OFFER?",
+            "answer": "<p>We offer a wide range of vintage clothing from various eras, including the '80s, '90s, Y2K and modern, with styles ranging from casual wear to high fashion. Our inventory includes a mix of both men's and women's clothing, so our company tailors to all shapes and sizes.</p>"
+          }
+        },
+        "item_TLFEEY": {
+          "type": "item",
+          "settings": {
+            "question": "DO YOU OFFER HANDPICK?",
+            "answer": "<p>No, we do not offer handpicking. We want to keep the grading process fair and consistent for all of our online customers, ensuring that everyone receives an equal selection of quality items. However, for larger customers, we can accommodate specific requests and work with you to tailor larger bulk orders.</p>"
+          }
+        },
+        "item_gtxhbi": {
+          "type": "item",
+          "settings": {
+            "question": "HOW DO YOU SOURCE THE PRODUCT?",
+            "answer": "<p>We source our vintage clothing from a variety of trusted suppliers all over the world. From USA to Asia and everywhere in between. Our team is dedicated to ensuring each piece is carefully inspected and chosen for its quality, authenticity, and style. We strive to offer a diverse selection of product to cater to all styles of business, whilst keeping the operation lean, meeting on trend demands and volumes.</p>"
+          }
+        },
+        "item_UYjCjY": {
+          "type": "item",
+          "settings": {
+            "question": "CAN I SEE THE PRODUCT BEFORE BUYING?",
+            "answer": "<p>No, we do not provide individual photos of each item in a bundle. However, we do provide an example video to give you a better idea of what you can expect with your order. This way, you can get a sense of the quality and variety before making a purchase. Feel free to message us on instagram if you want us to send you a video of a specific product before purchasing.</p>"
+          }
+        },
+        "item_zbUAmD": {
+          "type": "item",
+          "settings": {
+            "question": "HOW DO I KNOW THE QUALITY OF THE ITEMS?",
+            "answer": "<p>We inspect all of our bundle product before listing it to the website. Each item is checked for authenticity, condition, and potential imperfections. While we do not alter or heavily repair items, we ensure they are in good wearable condition. We also offer a washing service to make your life easier and improve the grade of the items. Please check out our <a href=\"/pages/grading-system\" target=\"_blank\" title=\"Our Grading System\">grading page</a> to understand what to expect.</p>"
+          }
+        },
+        "item_4U9haL": {
+          "type": "item",
+          "settings": {
+            "question": "DO YOU ACCEPT RETURNS?",
+            "answer": "<p>Due to the nature of vintage items, we typically do not accept returns or exchanges on wholesale orders unless the items are damaged or incorrect. If you receive any defective or incorrect pieces, please contact us within 7 days of receiving your order, and we’ll assist with resolving the issue. We want you to be completely satisfied with your purchase!<br/><br/>For more information, please see our<a href=\"/policies/refund-policy\" title=\"Refund Policy\"> refund policy</a> page.</p>"
+          }
+        },
+        "item_qheEck": {
+          "type": "item",
+          "settings": {
+            "question": "HOW QUICKLY CAN YOU DISPATCH?",
+            "answer": "<p>Our warehouse is open 9-5 on Monday to Friday. All bundles are sent the same day if place before 11am. Any placed after 11am will be sent the next working day. if you order a washing bundle, it can take 2-5 days to be processed at our washing facility.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_haJPj6",
+        "text_mz9N6e",
+        "item_z9hwPx",
+        "item_bYJ8Kq",
+        "item_TLFEEY",
+        "item_gtxhbi",
+        "item_UYjCjY",
+        "item_zbUAmD",
+        "item_4U9haL",
+        "item_qheEck"
+      ],
+      "custom_css": [
+        "h1 {font-size: 4em; font-colour: white; font-weight: 700; letter-spacing: -2px; max-width: 450px;}"
+      ],
+      "settings": {
+        "body_gap": 30,
+        "body_gap_mobile": 20,
+        "body_radius": 0,
+        "faq_position": "bottom",
+        "faq_position_mobile": "bottom",
+        "item_padding_vertical": 20,
+        "item_padding_vertical_mobile": 20,
+        "item_padding_horizontal": 20,
+        "item_padding_horizontal_mobile": 10,
+        "item_mt": 10,
+        "item_radius": 12,
+        "item_border_thickness": 1,
+        "item_shadow": false,
+        "question_custom": false,
+        "question_font": "sans_serif_n4",
+        "question_size": 18,
+        "question_size_mobile": 10,
+        "question_height": 130,
+        "arrow_size": 24,
+        "arrow_size_mobile": 24,
+        "arrow_border_thickness": 0,
+        "answer_custom": false,
+        "answer_font": "sans_serif_n4",
+        "answer_size": 16,
+        "answer_size_mobile": 12,
+        "answer_height": 170,
+        "answer_padding_top": 16,
+        "item_bg_color": "#f4f4f4",
+        "item_border_color": "#ffffff",
+        "question_color": "#000000",
+        "arrow_color": "#ffffff",
+        "arrow_border_color": "#000000",
+        "answer_color": "#000000",
+        "background_color": "#ffffff",
+        "background_gradient": "",
+        "border_color": "#ffffff",
+        "margin_top": 8,
+        "margin_bottom": 16,
+        "margin_horizontal": 4,
+        "margin_horizontal_mobile": 1.5,
+        "padding_top": 44,
+        "padding_bottom": 32,
+        "padding_horizontal": 3,
+        "padding_horizontal_mobile": 1.5,
+        "full_width": true,
+        "content_width": 120,
+        "border_thickness": 0
+      }
+    },
+    "17678775558521f67c": {
+      "type": "apps",
+      "blocks": {
+        "okendo_media_carousel_VRUK78": {
+          "type": "shopify://apps/okendo/blocks/media-carousel/bb689e69-ea70-4661-8fb7-ad24a2e23c29",
+          "settings": {
+            "product": ""
+          }
+        }
+      },
+      "block_order": [
+        "okendo_media_carousel_VRUK78"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "ss_faq_9_Gxd4Jw",
+    "17678775558521f67c"
+  ]
+}
