@@ -1,0 +1,68 @@
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "1767877390ef1ea0af": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "17776444855d287fc9": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "link_list_XyCaFQ": {
+          "type": "link_list",
+          "settings": {
+            "heading": "",
+            "menu": "footer-1"
+          }
+        }
+      },
+      "block_order": [
+        "link_list_XyCaFQ"
+      ],
+      "custom_css": [],
+      "settings": {
+        "newsletter_enable": true,
+        "newsletter_heading": "Early access to premium stock",
+        "enable_country_selector": true,
+        "payment_enable": true,
+        "margin_top": 0
+      }
+    },
+    "naw_facets_css": {
+      "type": "custom-liquid",
+      "name": "NAW Filter Styling",
+      "settings": {
+        "custom_liquid": "{{ 'naw-facets.css' | asset_url | stylesheet_tag }}\n<script src=\"{{ 'naw-facets.js' | asset_url }}\" defer=\"defer\"></script>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "naw_policy_css": {
+      "type": "custom-liquid",
+      "name": "NAW Policy Styling",
+      "settings": {
+        "custom_liquid": "{%- comment -%} NAW policy page typography tidy (privacy / terms / refund / shipping) {%- endcomment -%}\n<style>\n  .shopify-policy__container{max-width:760px !important;margin:0 auto !important;padding:26px 22px 64px !important;font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}\n  .shopify-policy__title{margin:20px 0 6px !important;text-align:left !important}\n  .shopify-policy__title h1{font-size:clamp(30px,5vw,42px) !important;font-weight:800 !important;letter-spacing:-0.02em !important;line-height:1.08 !important;color:#111 !important;margin:0 !important;text-transform:none !important}\n  .shopify-policy__body{border-top:1px solid #e8e8e8;padding-top:26px;margin-top:16px}\n  .shopify-policy__body .rte{font-size:15.5px;line-height:1.75;color:#3a3a3a}\n  .shopify-policy__body .rte p{margin:0 0 16px}\n  .shopify-policy__body .rte h1,.shopify-policy__body .rte h2{font-size:20px;font-weight:700;letter-spacing:-0.01em;color:#111;margin:34px 0 12px;line-height:1.3}\n  .shopify-policy__body .rte h3,.shopify-policy__body .rte h4{font-size:16px;font-weight:700;color:#111;margin:24px 0 10px}\n  .shopify-policy__body .rte strong,.shopify-policy__body .rte b{color:#111;font-weight:600}\n  .shopify-policy__body .rte ul,.shopify-policy__body .rte ol{margin:0 0 16px;padding-left:22px}\n  .shopify-policy__body .rte li{margin:6px 0;line-height:1.7}\n  .shopify-policy__body .rte li::marker{color:#9a9a9a}\n  .shopify-policy__body .rte a{color:#111;text-decoration:underline;text-underline-offset:2px}\n  .shopify-policy__body .rte a:hover{color:#000}\n  .shopify-policy__body .rte hr{border:0;border-top:1px solid #e8e8e8;margin:30px 0}\n  .shopify-policy__body .rte table{border-collapse:collapse;width:100%;margin:0 0 18px;font-size:14px}\n  .shopify-policy__body .rte td,.shopify-policy__body .rte th{border:1px solid #e8e8e8;padding:9px 12px;text-align:left}\n  @media(max-width:600px){\n    .shopify-policy__container{padding:18px 18px 46px !important}\n    .shopify-policy__body .rte{font-size:15px}\n    .shopify-policy__body{padding-top:20px}\n  }\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "1767877390ef1ea0af",
+    "17776444855d287fc9",
+    "footer",
+    "naw_facets_css",
+    "naw_policy_css"
+  ]
+}
