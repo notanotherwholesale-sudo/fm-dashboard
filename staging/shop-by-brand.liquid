@@ -1,6 +1,7 @@
 {% comment %}
   Shop By Brand grid — used in the burger drawer "Brands" tab (see sections/header.liquid).
-  2-up on mobile / 3-up on wider drawers. Tiles mirror the homepage "Shop Our Brands" strip.
+  2-up on mobile / 3-up on wider drawers. Images float (no tile box) above the brand name,
+  matching the homepage "Shop Our Brands" strip.
 
   IMAGE PER TILE: shows the collection's featured image if one is set
   (Shopify admin > Products > Collections > [brand] > add an Image),
@@ -11,12 +12,11 @@
   Format: "collection-handle|Display Name".
 {% endcomment %}
 {%- liquid
-  assign brand_pairs = 'carhartt|Carhartt,ralph-lauren|Ralph Lauren,levis|Levis,the-north-face-1|The North Face,tommy-hilfiger|Tommy Hilfiger,nike|Nike,dickies|Dickies,patagonia|Patagonia,lacoste|Lacoste,adidas|Adidas,wrangler|Wrangler,columbia|Columbia,champion|Champion,nautica|Nautica,lee|Lee,eddie-bauer|Eddie Bauer,realtree|Realtree,harley-davidson|Harley Davidson' | split: ','
+  assign brand_pairs = 'carhartt|Carhartt,ralph-lauren|Ralph Lauren,levis|Levis,the-north-face-1|The North Face,tommy-hilfiger|Tommy Hilfiger,nike|Nike,dickies|Dickies,patagonia|Patagonia,lacoste|Lacoste,adidas|Adidas,wrangler|Wrangler,columbia|Columbia,champion|Champion,nautica|Nautica,lee|Lee,eddie-bauer|Eddie Bauer,realtree|Realtree,harley-davidson|Harley Davidson,branded|Branded' | split: ','
 -%}
 <div class="sbb">
   <div class="sbb__head">
     <span class="sbb__title">Shop By Brand</span>
-    <span class="sbb__sub">Every big label we stock — tap a brand to see its bundles.</span>
   </div>
   <div class="sbb__grid">
     {%- for pair in brand_pairs -%}
@@ -58,23 +58,15 @@
     padding-bottom: 8px;
     border-bottom: 2px solid #111;
   }
-  .sbb__sub {
-    display: block;
-    margin-top: 8px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 11.5px;
-    line-height: 1.45;
-    color: #888;
-  }
   .sbb__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px 12px;
+    gap: 18px 12px;
   }
   @media screen and (min-width: 750px) {
     .sbb__grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px 14px;
+      gap: 22px 14px;
     }
   }
   .sbb__tile {
@@ -95,16 +87,11 @@
     justify-content: center;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: #ffffff;
-    border: 1px solid #f0f0ee;
-    border-radius: 10px;
-    overflow: hidden;
   }
   .sbb__img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 6px;
   }
   .sbb__placeholder {
     display: flex;
@@ -112,15 +99,13 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    background: #f4f4f2;
-    border-radius: 10px;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     font-size: 24px;
     color: #b8b8b8;
   }
   .sbb__name {
-    margin-top: 9px;
+    margin-top: 8px;
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     font-weight: 600;
     font-size: 13px;
