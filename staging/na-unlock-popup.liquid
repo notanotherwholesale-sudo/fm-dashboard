@@ -99,10 +99,11 @@ padding:52px 104px 44px; text-align:center; overflow:hidden; box-shadow:0 40px 1
 .naup-shop{display:inline-block; margin-top:12px; background:var(--naup-ink); color:#fff; text-decoration:none; font-weight:800; text-transform:uppercase; letter-spacing:.12em; font-size:11px; padding:11px 22px}
 .naup-shop:hover{background:var(--naup-accent)}
 @media (max-width:600px){
-.naup{max-width:360px; padding:34px 20px 28px}
-.naup-logo{height:22px; margin-bottom:16px}
-.naup-boxwrap{width:min(230px,74%)}
-.naup-h{font-size:clamp(28px,9vw,38px); margin-bottom:22px}
+.naup{max-width:320px; padding:24px 16px 20px}
+.naup-logo{height:19px; margin-bottom:11px}
+.naup-boxwrap{width:min(178px,54%)}
+.naup-h{font-size:clamp(22px,6.8vw,29px); margin-bottom:13px}
+.naup-sub{margin:13px 0 9px}
 }
 @media (prefers-reduced-motion:reduce){
 .naup-box,.naup-flap,.naup-tape,.naup-leave{transition:none}
@@ -117,6 +118,8 @@ padding:52px 104px 44px; text-align:center; overflow:hidden; box-shadow:0 40px 1
 .naup-teaser:hover{background:var(--naup-accent);transform:translateY(-2px)}
 .naup-teaser__ic{font-size:15px;line-height:1}
 @keyframes naup-teaserin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.naup-decline{display:block;margin:12px auto 2px;background:0;border:0;color:var(--naup-mute);font-family:var(--naup-font);font-size:11.5px;text-decoration:underline;text-underline-offset:2px;cursor:pointer;letter-spacing:.02em;padding:4px}
+.naup-decline:hover{color:var(--naup-ink)}
 @media(max-width:600px){.naup-teaser{left:12px;bottom:12px;padding:10px 14px 10px 11px;font-size:11px}}
 </style>
 <div class="na-unlock-root" id="naRoot" aria-hidden="true">
@@ -170,6 +173,7 @@ placeholder="{{ section.settings.placeholder | escape }}" aria-label="Email addr
 <button type="submit" id="naSubmit">{{ section.settings.cta | escape }}</button>
 </div>
 </form>
+<button type="button" class="naup-decline naup-leave" id="naDecline">I&rsquo;ll pay full price</button>
 <p class="naup-err" id="naErr" role="alert" hidden>{{ section.settings.error_text | escape }}</p>
 <p class="naup-tc naup-leave">{{ section.settings.legal | escape }}</p>
 <div class="naup-sent" id="naSent">
@@ -342,6 +346,7 @@ if (lastFocus && lastFocus.focus) lastFocus.focus();
 showTeaser();
 }
 closeB.addEventListener('click', dismiss);
+var declineB=document.getElementById('naDecline'); if(declineB) declineB.addEventListener('click', dismiss);
 root.addEventListener('click', function(e){ if (e.target === root) dismiss(); });
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && root.classList.contains('is-open')) dismiss(); });
 // keep clicks inside the popup from reaching the theme's global close handlers
@@ -396,12 +401,12 @@ if (CFG.exitIntent) document.addEventListener('mouseout', onExit);
 { "type": "image_picker", "id": "logo", "label": "Logo (optional)", "info": "Leave blank to use the default store logo." },
 { "type": "text", "id": "logo_url", "label": "Logo URL (fallback)", "default": "https://cdn.shopify.com/s/files/1/0810/4090/0375/files/logo_transparent_black.png?width=520" },
 { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "First time ordering?" },
-{ "type": "text", "id": "headline", "label": "Headline", "default": "10% off|sealed inside.", "info": "Separate lines with |" },
+{ "type": "text", "id": "headline", "label": "Headline", "default": "Unlock your secret|discount inside", "info": "Separate lines with |" },
 { "type": "textarea", "id": "subcopy", "label": "Subcopy", "default": "Drop your email — we'll cut it open." },
 { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "you@yourshop.com" },
 { "type": "text", "id": "cta", "label": "Button", "default": "Unlock" },
 { "type": "text", "id": "error_text", "label": "Invalid-email message", "default": "* Please enter your email" },
-{ "type": "textarea", "id": "legal", "label": "Small print", "default": "By unlocking you agree to receive emails from Not Another Wholesale. Unsubscribe any time." },
+{ "type": "textarea", "id": "legal", "label": "Small print", "default": "No spam \u2014 just first dibs on drops & offers. Unsubscribe anytime." },
 { "type": "header", "content": "After unlock" },
 { "type": "text", "id": "cta_done", "label": "Shop button", "default": "Shop the drop" },
 { "type": "url", "id": "shop_url", "label": "Shop button destination", "info": "Code is auto-applied via the link. Defaults to /collections/all." },
