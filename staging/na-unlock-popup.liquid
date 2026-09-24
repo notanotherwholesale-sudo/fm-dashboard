@@ -112,6 +112,12 @@ padding:52px 104px 44px; text-align:center; overflow:hidden; box-shadow:0 40px 1
 .na-unlock-root::before{animation:none}
 }
 .na-unlock-root .naup-box .naup-flap,.na-unlock-root .naup-box .naup-cut,.na-unlock-root .naup-box .naup-box__shadow,.na-unlock-root .naup-box .naup-well__rim,.na-unlock-root .naup-box .naup-well__glow{display:block !important}
+.naup-teaser{position:fixed;left:16px;bottom:16px;z-index:2147482000;display:none;align-items:center;gap:8px;background:#14130F;color:#fff;border:0;border-radius:999px;padding:11px 16px 11px 13px;font-family:var(--naup-font);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.28);transition:transform .18s,background .18s}
+.naup-teaser.is-shown{display:inline-flex;animation:naup-teaserin .4s cubic-bezier(.16,1,.3,1)}
+.naup-teaser:hover{background:var(--naup-accent);transform:translateY(-2px)}
+.naup-teaser__ic{font-size:15px;line-height:1}
+@keyframes naup-teaserin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(max-width:600px){.naup-teaser{left:12px;bottom:12px;padding:10px 14px 10px 11px;font-size:11px}}
 </style>
 <div class="na-unlock-root" id="naRoot" aria-hidden="true">
 <div class="naup" id="naPop" role="dialog" aria-modal="true" aria-labelledby="naHeading">
@@ -172,16 +178,17 @@ placeholder="{{ section.settings.placeholder | escape }}" aria-label="Email addr
 </div>
 </div>
 </div>
+<button class="naup-teaser" id="naTeaser" type="button" aria-label="Get 10% off"><span class="naup-teaser__ic">🎁</span><span class="naup-teaser__tx">10% off</span></button>
 <script>
 (function(){
 var CFG = {
 companyId : {{ section.settings.klaviyo_public_key | json }},
 listId    : {{ section.settings.klaviyo_list_id | json }},
 code      : {{ na_code | json }},
-delay     : {{ section.settings.delay | default: 5 }} * 1000,
-scrollPct : {{ section.settings.scroll_pct | default: 35 }},
+delay     : {{ section.settings.delay | default: 8 }} * 1000,
+scrollPct : {{ section.settings.scroll_pct | default: 40 }},
 exitIntent: {% if section.settings.exit_intent %}true{% else %}false{% endif %},
-coolDays  : {{ section.settings.cooldown_days | default: 30 }},
+coolDays  : {{ section.settings.cooldown_days | default: 1 }},
 hideLogged: {% if section.settings.hide_for_customers %}true{% else %}false{% endif %},
 loggedIn  : {% if customer %}true{% else %}false{% endif %},
 editor    : {% if request.design_mode %}true{% else %}false{% endif %},
@@ -306,6 +313,7 @@ if (errEl) errEl.hidden=true; row.classList.remove('err');
 enqueue(addr);
 try { if (CFG.trackK && window.klaviyo && typeof klaviyo.identify==='function') klaviyo.identify({ '$email': addr }); } catch(err){}
 track('na_email_submitted');
+if(!CFG.editor){ store(KEY_DONE,'1'); }
 var done=false, go=function(){ if(done)return; done=true; beginUnlock(); };
 setTimeout(go, 1200);                 // reveal never waits on the network
 sendCapture(addr).then(go).catch(go);
@@ -331,6 +339,7 @@ root.classList.remove('is-open');
 root.setAttribute('aria-hidden','true');
 document.documentElement.style.overflow = '';
 if (lastFocus && lastFocus.focus) lastFocus.focus();
+showTeaser();
 }
 closeB.addEventListener('click', dismiss);
 root.addEventListener('click', function(e){ if (e.target === root) dismiss(); });
@@ -362,6 +371,9 @@ var timer=null;
 function onScroll(){ var h=document.documentElement.scrollHeight - window.innerHeight; if (h>0 && (window.scrollY/h)*100 >= CFG.scrollPct) open(); }
 function onExit(e){ if (e.clientY <= 0) open(); }
 function teardownTriggers(){ if(timer) clearTimeout(timer); window.removeEventListener('scroll', onScroll); document.removeEventListener('mouseout', onExit); }
+var teaser = document.getElementById('naTeaser');
+function showTeaser(){ if(!teaser||CFG.editor) return; if(read(KEY_DONE)) return; if(CFG.hideLogged&&CFG.loggedIn) return; if(!withinSchedule()) return; if(/\/(checkouts?|orders|account)\b/.test(location.pathname)) return; teaser.classList.add('is-shown'); }
+if(teaser){ teaser.addEventListener('click', function(){ teaser.classList.remove('is-shown'); revealed=false; open(); }); }
 flushQueue();   // retry anything stranded from a previous visit
 if (CFG.editor){
 open();
@@ -369,7 +381,7 @@ open();
 timer = setTimeout(open, CFG.delay);
 window.addEventListener('scroll', onScroll, { passive:true });
 if (CFG.exitIntent) document.addEventListener('mouseout', onExit);
-}
+} else { showTeaser(); }
 })();
 </script>
 {%- endif -%}
@@ -417,10 +429,10 @@ if (CFG.exitIntent) document.addEventListener('mouseout', onExit);
 { "type": "checkbox", "id": "track_ga4", "label": "Send events to GA4", "default": true },
 { "type": "checkbox", "id": "track_meta", "label": "Send events to Meta Pixel (if present)", "default": true },
 { "type": "header", "content": "When it shows" },
-{ "type": "range", "id": "delay", "label": "Delay", "unit": "s", "min": 0, "max": 30, "step": 1, "default": 5 },
-{ "type": "range", "id": "scroll_pct", "label": "Or after scrolling", "unit": "%", "min": 10, "max": 90, "step": 5, "default": 35 },
+{ "type": "range", "id": "delay", "label": "Delay", "unit": "s", "min": 0, "max": 30, "step": 1, "default": 8 },
+{ "type": "range", "id": "scroll_pct", "label": "Or after scrolling", "unit": "%", "min": 10, "max": 90, "step": 5, "default": 40 },
 { "type": "checkbox", "id": "exit_intent", "label": "Also trigger on exit intent", "default": true },
-{ "type": "range", "id": "cooldown_days", "label": "Don't show again for", "unit": "d", "min": 1, "max": 90, "step": 1, "default": 30 },
+{ "type": "range", "id": "cooldown_days", "label": "Don't show again for", "unit": "d", "min": 1, "max": 90, "step": 1, "default": 1 },
 { "type": "checkbox", "id": "hide_for_customers", "label": "Hide from logged-in customers", "default": true },
 { "type": "header", "content": "Schedule (optional)" },
 { "type": "text", "id": "start_at", "label": "Start date", "info": "YYYY-MM-DD. Blank = live now." },
