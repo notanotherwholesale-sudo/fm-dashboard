@@ -6,13 +6,13 @@
   IMAGE PER TILE: shows the collection's featured image if one is set
   (Shopify admin > Products > Collections > [brand] > add an Image),
   otherwise falls back to that brand's first product photo so it's never empty.
-  To match the homepage cutouts exactly, set each brand collection's image in admin.
+  Brand collections use background-removed cutout images for a clean floating look.
 
   Order is by prominence / best-sellers. Edit the brand_pairs list to add/remove/reorder.
   Format: "collection-handle|Display Name".
 {% endcomment %}
 {%- liquid
-  assign brand_pairs = 'carhartt|Carhartt,ralph-lauren|Ralph Lauren,levis|Levis,the-north-face-1|The North Face,tommy-hilfiger|Tommy Hilfiger,nike|Nike,dickies|Dickies,patagonia|Patagonia,lacoste|Lacoste,adidas|Adidas,wrangler|Wrangler,columbia|Columbia,champion|Champion,nautica|Nautica,lee|Lee,eddie-bauer|Eddie Bauer,realtree|Realtree,harley-davidson|Harley Davidson,branded|Branded' | split: ','
+  assign brand_pairs = 'carhartt|Carhartt,ralph-lauren|Ralph Lauren,levis|Levis,the-north-face-1|The North Face,tommy-hilfiger|Tommy Hilfiger,nike|Nike,dickies|Dickies,patagonia|Patagonia,lacoste|Lacoste,adidas|Adidas,wrangler|Wrangler,columbia|Columbia,champion|Champion,nautica|Nautica,lee|Lee,eddie-bauer|Eddie Bauer,realtree|Realtree,harley-davidson|Harley Davidson,l-l-bean|L.L.Bean,branded|Branded' | split: ','
 -%}
 <div class="sbb">
   <div class="sbb__head">
