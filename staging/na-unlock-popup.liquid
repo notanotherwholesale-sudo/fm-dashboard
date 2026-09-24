@@ -1,0 +1,430 @@
+{%- if section.settings.enabled -%}
+{%- assign na_code = section.settings.code | upcase -%}
+{%- assign na_logo = section.settings.logo_url | default: 'https://cdn.shopify.com/s/files/1/0810/4090/0375/files/logo_transparent_black.png?width=520' -%}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap">
+<style>
+:root{
+--naup-font:'Poppins','Helvetica Neue',Helvetica,Arial,sans-serif;
+--naup-paper:#FFFFFF; --naup-ink:#14130F; --naup-mute:#7d776b;
+--naup-eye:#FF6A00; --naup-accent:#FF6A00; --naup-accent-ink:#fff;
+--naup-box-a:#cdbda8; --naup-box-b:#a8967d; --naup-box-edge:#7c6a52; --naup-void:#1a140e;
+--naup-tape:#000; --naup-tape-ink:rgba(255,255,255,.6); --naup-print:rgba(240,225,205,.14);
+}
+.na-unlock-root, .na-unlock-root *,.na-unlock-root *::before,.na-unlock-root *::after{box-sizing:border-box}
+/* ---------- overlay shell ---------- */
+.na-unlock-root{position:fixed; inset:0; z-index:2147483000; display:none; align-items:center; justify-content:center; padding:24px; overflow-y:auto; font-family:var(--naup-font)}
+.na-unlock-root.is-open{display:flex}
+.na-unlock-root::before{content:""; position:absolute; inset:0; background:rgba(0,0,0,.72); backdrop-filter:blur(3px); animation:naup-fade .28s ease forwards}
+@keyframes naup-fade{from{opacity:0}to{opacity:1}}
+/* ---------- the popup (white, centred) ---------- */
+.naup{position:relative; z-index:1; background:var(--naup-paper); color:var(--naup-ink); width:100%; max-width:640px;
+padding:52px 104px 44px; text-align:center; overflow:hidden; box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.naup__x{position:absolute; top:0; right:0; z-index:9; width:44px; height:44px; display:grid; place-items:center; background:transparent; color:var(--naup-ink); border:0; cursor:pointer; font-size:15px; opacity:.5}
+.naup__x:hover{opacity:1}
+.naup__x:focus-visible{outline:2px solid var(--naup-ink); outline-offset:-6px}
+.naup-logo{height:26px; width:auto; display:block; margin:0 auto 20px}
+.naup-leave{transition:opacity .34s ease, max-height .55s cubic-bezier(.4,0,.2,1), margin .55s ease, transform .34s ease; overflow:hidden; max-height:220px}
+.naup.is-open .naup-leave, .naup.is-armed .naup-leave{opacity:0; max-height:0 !important; margin-top:0 !important; margin-bottom:0 !important; transform:translateY(-8px); pointer-events:none}
+.naup-eye{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--naup-eye); font-weight:600; margin:0 0 10px}
+.naup-h{font-weight:900; text-transform:uppercase; font-size:clamp(30px,3.4vw,46px); line-height:.92; letter-spacing:-.02em; margin:0 0 28px; color:var(--naup-ink); text-wrap:balance}
+.naup-h em{font-style:normal; display:block}
+.naup-sub{font-size:13.5px; color:var(--naup-mute); margin:22px 0 12px}
+/* box */
+.naup-boxwrap{position:relative; perspective:1200px; perspective-origin:50% 44%; width:min(272px,58%); margin:0 auto; transform-origin:50% 50%}
+.naup-box{position:relative; width:100%; aspect-ratio:1/.8; transform-style:preserve-3d; transition:transform .9s cubic-bezier(.5,-.04,.2,1.03)}
+.naup.enter{animation:naup-thud 1.05s both}
+.naup.enter .naup-boxwrap{animation:naup-slam 1.05s both}
+@keyframes naup-thud{0%{opacity:0}12%{opacity:1}34%{transform:translate(0,0)}39%{transform:translate(0,3px)}47%{transform:translate(0,0)}100%{opacity:1;transform:none}}
+@keyframes naup-slam{0%{opacity:0;transform:translate(-58%,-46%) rotate(-96deg);animation-timing-function:cubic-bezier(.55,0,.9,.35)}10%{opacity:1}36%{transform:translate(-55%,0) rotate(0deg);animation-timing-function:cubic-bezier(.33,0,.3,1)}44%{transform:translate(-55%,0) rotate(0deg) scaleY(.9)}50%{transform:translate(-55%,-5%) rotate(0deg) scaleY(1.04)}56%{transform:translate(-55%,0) rotate(0deg) scaleY(1);animation-timing-function:cubic-bezier(.12,.7,.26,1)}90%{transform:translate(4%,0) rotate(0deg)}96%{transform:translate(-1%,0) rotate(0deg)}100%{transform:translate(0,0) rotate(0deg)}}
+.naup.is-open .naup-box{transform:scale(1.14) translateY(-2px)}
+.naup-box__shadow{position:absolute; left:6%; right:6%; bottom:-9%; height:16%; background:radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.28), rgba(0,0,0,0) 72%); filter:blur(3px)}
+.naup-well{position:absolute; inset:0; overflow:hidden; display:grid; place-items:center; background-image:linear-gradient(180deg,#000 0%,#1a140e 40%,#1e170f 100%) !important; box-shadow:inset 0 26px 34px rgba(0,0,0,.9), inset 0 -10px 20px rgba(0,0,0,.7)}
+.naup-well__rim{position:absolute; left:0; right:0; top:0; height:15%; background:linear-gradient(180deg,var(--naup-box-edge),#443a2d 60%,transparent)}
+.naup-inkmark{position:absolute; top:11%; left:0; right:0; text-align:center; z-index:1; font-weight:900; font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:var(--naup-print)}
+.naup-inkmark--low{top:auto; bottom:10%; font-weight:600; font-size:7.5px; letter-spacing:.24em; color:rgba(240,225,205,.1)}
+.naup-well__glow{position:absolute; left:50%; top:52%; width:80%; height:62%; transform:translate(-50%,-50%); background:radial-gradient(50% 50% at 50% 50%, rgba(255,106,0,.32), transparent 70%); opacity:0; transition:opacity .5s ease .25s}
+.naup.is-open .naup-well__glow{opacity:1}
+.naup-prize{position:relative; z-index:2; background:#fff; color:var(--naup-ink); padding:15px 18px; text-align:center; min-width:78%; box-shadow:0 24px 44px rgba(0,0,0,.7); transform:translateY(48px) scale(.85); opacity:0}
+.naup.is-open .naup-prize{animation:naup-rise .8s cubic-bezier(.16,1,.3,1) .4s forwards}
+@keyframes naup-rise{0%{transform:translateY(48px) scale(.85);opacity:0}55%{opacity:1}100%{transform:none;opacity:1}}
+.naup-prize__lbl{font-size:8.5px; letter-spacing:.26em; text-transform:uppercase; color:var(--naup-mute); font-weight:600; margin:0}
+.naup-prize__code{font-weight:900; font-size:clamp(22px,6vw,30px); line-height:1; letter-spacing:.03em; margin:5px 0 6px}
+.naup-prize__off{display:inline-block; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:800; color:var(--naup-accent-ink); background:var(--naup-accent); padding:4px 9px}
+.naup-flap{position:absolute; top:0; bottom:0; width:50%; z-index:3; transition:transform .9s cubic-bezier(.5,-.04,.2,1.03); background-color:#c3b39d !important; background-image:linear-gradient(135deg,#cdbda8 0%,#a8967d 46%,#7c6f5d 100%) !important; box-shadow:inset 0 0 30px rgba(0,0,0,.3)}
+.naup-flap::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(93deg,rgba(0,0,0,.05) 0 1px,transparent 1px 5px)}
+.naup-flap::after{content:""; position:absolute; inset:0; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 0 -12px 22px rgba(0,0,0,.3)}
+.naup-flap--l{left:0; transform-origin:left center}
+.naup-flap--r{right:0; transform-origin:right center}
+.naup.is-open .naup-flap--l{transform:rotateY(-115deg)}
+.naup.is-open .naup-flap--r{transform:rotateY(115deg)}
+.naup-tape{position:absolute; top:0; bottom:0; left:50%; width:17%; transform:translateX(-50%); z-index:5; display:grid; place-items:center; overflow:hidden; background-image:linear-gradient(90deg,#000,#101010 42%,#000) !important; box-shadow:0 3px 12px rgba(0,0,0,.42); transition:opacity .3s ease .3s}
+.naup-tape::before{content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,0) 34%,rgba(255,255,255,.09) 66%,rgba(255,255,255,0))}
+.naup-tape span{writing-mode:vertical-rl; font-weight:900; font-size:8px; letter-spacing:.3em; text-transform:uppercase; color:var(--naup-tape-ink); white-space:nowrap}
+.naup.is-open .naup-tape{opacity:0}
+.naup-cut{position:absolute; top:0; left:50%; width:4px; height:0; transform:translateX(-50%); z-index:6; background:linear-gradient(90deg,rgba(255,255,255,.4),#000 32%,#000 68%,rgba(255,255,255,.3)); pointer-events:none; transition:opacity .3s ease}
+.naup.is-cutting .naup-cut{animation:naup-slit 1s cubic-bezier(.42,.02,.4,1) forwards}
+@keyframes naup-slit{from{height:0}to{height:100%}}
+.naup.is-open .naup-cut{opacity:0}
+.naup-hand{position:absolute; z-index:7; width:34%; left:50%; top:-6%; opacity:0; pointer-events:none; transform:translate(-16%,-46%); filter:drop-shadow(-14px 16px 14px rgba(0,0,0,.4)); transition:opacity .3s ease}
+.naup-hand svg{display:block; width:100%; height:auto}
+.naup.is-cutting .naup-hand{animation:naup-pass 1.5s cubic-bezier(.36,.05,.35,1) forwards}
+@keyframes naup-pass{0%{opacity:0;transform:translate(24%,-70%) rotate(8deg)}14%{opacity:1;transform:translate(-16%,-46%)}72%{opacity:1;transform:translate(-16%,54%)}100%{opacity:0;transform:translate(32%,92%) rotate(6deg)}}
+.naup.is-armed .naup-box{cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none}
+.naup.is-armed .naup-box:active{cursor:grabbing}
+.naup.is-armed .naup-hand{opacity:1; transform:translateX(-50%)}
+.naup.is-armed:not(.is-dragging) .naup-hand{animation:naup-bob 1.2s ease-in-out infinite}
+@keyframes naup-bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7%)}}
+.naup-hint{position:absolute; left:0; right:0; bottom:-13%; text-align:center; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; color:var(--naup-ink); opacity:0; transition:opacity .3s ease; pointer-events:none}
+.naup-hint::after{content:" \2193"}
+.naup.is-armed .naup-hint{opacity:.75; animation:naup-hintp 1.2s ease-in-out infinite}
+.naup.is-dragging .naup-hint{opacity:0; animation:none}
+@keyframes naup-hintp{0%,100%{opacity:.45}50%{opacity:.85}}
+/* form */
+.naup-form{width:min(320px,100%); margin:0 auto; display:flex; flex-direction:column; gap:9px}
+.na-unlock-root .naup-form__row{display:flex !important; border:2px solid #000 !important; border-radius:0 !important; background:#fff !important}
+.na-unlock-root .naup-form__row.err{border-color:#e11 !important}
+.naup-form__row.shake{animation:naup-shake .34s cubic-bezier(.36,.07,.19,.97)}
+@keyframes naup-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.na-unlock-root .naup-form__row input{flex:1 1 auto !important; width:auto !important; min-width:0 !important; border:0 !important; border-radius:0 !important; margin:0 !important; box-shadow:none !important; background:#fff !important; color:#14130F !important; font-family:var(--naup-font); font-size:13.5px; padding:13px 14px !important; text-align:left; height:auto !important}
+.naup-form__row input::placeholder{color:#a09a8e}
+.na-unlock-root .naup-form__row input:focus{outline:0 !important; box-shadow:none !important}
+.na-unlock-root .naup-form__row button{flex:0 0 auto !important; border:0 !important; border-radius:0 !important; margin:0 !important; background:#14130F !important; color:#fff !important; font-family:var(--naup-font); font-weight:800; text-transform:uppercase; letter-spacing:.12em; font-size:12px; padding:0 18px !important; cursor:pointer; white-space:nowrap; transition:background .18s; width:auto !important; height:auto !important}
+.na-unlock-root .naup-form__row button:hover{background:var(--naup-accent) !important}
+.naup-form__row button:disabled{opacity:.55; cursor:progress}
+.naup-err{color:#e11; font-size:11px; font-weight:600; letter-spacing:.03em; margin:4px 0 0; text-align:center}
+.naup-tc{font-size:10px; line-height:1.5; color:var(--naup-mute); max-width:38ch; margin:12px auto 0}
+.naup-sent{max-height:0; opacity:0; overflow:hidden; margin:0; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--naup-ink); font-weight:700; transition:opacity .4s ease .55s, max-height .5s ease .4s, margin .5s ease .4s}
+.naup-sent b{color:var(--naup-accent)}
+.naup.is-open .naup-sent{opacity:1; max-height:160px; margin:22px auto 4px}
+.naup-shop{display:inline-block; margin-top:12px; background:var(--naup-ink); color:#fff; text-decoration:none; font-weight:800; text-transform:uppercase; letter-spacing:.12em; font-size:11px; padding:11px 22px}
+.naup-shop:hover{background:var(--naup-accent)}
+@media (max-width:600px){
+.naup{max-width:360px; padding:34px 20px 28px}
+.naup-logo{height:22px; margin-bottom:16px}
+.naup-boxwrap{width:min(230px,74%)}
+.naup-h{font-size:clamp(28px,9vw,38px); margin-bottom:22px}
+}
+@media (prefers-reduced-motion:reduce){
+.naup-box,.naup-flap,.naup-tape,.naup-leave{transition:none}
+.naup-hand{display:none}
+.naup.enter,.naup.enter .naup-boxwrap{animation:none}
+.naup.is-open .naup-prize{animation:none;transform:none;opacity:1}
+.na-unlock-root::before{animation:none}
+}
+.na-unlock-root .naup-box .naup-flap,.na-unlock-root .naup-box .naup-cut,.na-unlock-root .naup-box .naup-box__shadow,.na-unlock-root .naup-box .naup-well__rim,.na-unlock-root .naup-box .naup-well__glow{display:block !important}
+</style>
+<div class="na-unlock-root" id="naRoot" aria-hidden="true">
+<div class="naup" id="naPop" role="dialog" aria-modal="true" aria-labelledby="naHeading">
+<button class="naup__x" type="button" id="naClose" aria-label="Close">&#10005;</button>
+<img class="naup-logo" src="{{ na_logo }}" alt="{{ shop.name | escape }}" width="260">
+<p class="naup-eye naup-leave">{{ section.settings.eyebrow | escape }}</p>
+<h2 class="naup-h naup-leave" id="naHeading">
+{%- assign lines = section.settings.headline | split: '|' -%}
+{%- for line in lines -%}<em>{{ line | strip | escape }}</em>{%- endfor -%}
+</h2>
+<div class="naup-boxwrap">
+<div class="naup-hint">{{ section.settings.drag_hint | escape }}</div>
+<div class="naup-box" id="naBox" data-state="sealed">
+<div class="naup-box__shadow"></div>
+<div class="naup-well">
+<div class="naup-well__rim"></div>
+<div class="naup-inkmark">{{ section.settings.box_print | escape }}</div>
+<div class="naup-inkmark naup-inkmark--low">{{ section.settings.box_print_low | escape }}</div>
+<div class="naup-well__glow"></div>
+<div class="naup-prize">
+<p class="naup-prize__lbl">{{ section.settings.prize_label | escape }}</p>
+<p class="naup-prize__code">{{ na_code }}</p>
+<span class="naup-prize__off">{{ section.settings.prize_sub | escape }}</span>
+</div>
+</div>
+<div class="naup-tape"><span>{{ section.settings.tape_text | escape }} &middot; {{ section.settings.tape_text | escape }} &middot;</span></div>
+<div class="naup-flap naup-flap--l"></div>
+<div class="naup-flap naup-flap--r"></div>
+<div class="naup-cut"></div>
+<div class="naup-hand">
+<svg viewBox="0 0 240 300" aria-hidden="true" focusable="false">
+<polygon points="104,196 128,196 121,236 104,222" fill="#d0cabd"/>
+<polygon points="104,196 116,196 112,230 104,222" fill="#9a9484"/>
+<rect x="98" y="56" width="38" height="142" fill="#141210"/>
+<rect x="98" y="56" width="8" height="142" fill="#2a2620"/>
+<rect x="106" y="78" width="22" height="6" fill="#332f27"/>
+<rect x="106" y="92" width="22" height="6" fill="#332f27"/>
+<path d="M182 94 L240 76 L240 168 L182 150 Z" fill="#0d0c0a"/>
+<path d="M132 76 C160 64 192 74 200 98 C209 122 206 144 197 160 C187 178 162 186 138 180 L132 174 Z" fill="#171512"/>
+<path d="M134 114 C114 112 102 120 102 132 C102 145 115 152 134 149 Z" fill="#211e1a"/>
+</svg>
+</div>
+</div>
+</div>
+<p class="naup-sub naup-leave">{{ section.settings.subcopy | escape }}</p>
+<form class="naup-form naup-leave" id="naForm" novalidate>
+<div class="naup-form__row" id="naRow">
+<input id="naEmail" type="email" name="email" inputmode="email" autocomplete="email"
+placeholder="{{ section.settings.placeholder | escape }}" aria-label="Email address" required>
+<button type="submit" id="naSubmit">{{ section.settings.cta | escape }}</button>
+</div>
+</form>
+<p class="naup-err" id="naErr" role="alert" hidden>{{ section.settings.error_text | escape }}</p>
+<p class="naup-tc naup-leave">{{ section.settings.legal | escape }}</p>
+<div class="naup-sent" id="naSent">
+&#10003; Sent &mdash; apply <b>{{ na_code }}</b> at checkout
+<a class="naup-shop" id="naShop" href="/discount/{{ na_code }}?redirect={{ section.settings.shop_url | default: '/collections/all' }}">{{ section.settings.cta_done | escape }} &rarr;</a>
+</div>
+</div>
+</div>
+<script>
+(function(){
+var CFG = {
+companyId : {{ section.settings.klaviyo_public_key | json }},
+listId    : {{ section.settings.klaviyo_list_id | json }},
+code      : {{ na_code | json }},
+delay     : {{ section.settings.delay | default: 5 }} * 1000,
+scrollPct : {{ section.settings.scroll_pct | default: 35 }},
+exitIntent: {% if section.settings.exit_intent %}true{% else %}false{% endif %},
+coolDays  : {{ section.settings.cooldown_days | default: 30 }},
+hideLogged: {% if section.settings.hide_for_customers %}true{% else %}false{% endif %},
+loggedIn  : {% if customer %}true{% else %}false{% endif %},
+editor    : {% if request.design_mode %}true{% else %}false{% endif %},
+mode      : {{ section.settings.interaction_mode | default: 'auto' | json }},
+startAt   : {{ section.settings.start_at | json }},
+endAt     : {{ section.settings.end_at | json }},
+trackK    : {% if section.settings.track_klaviyo %}true{% else %}false{% endif %},
+trackGA   : {% if section.settings.track_ga4 %}true{% else %}false{% endif %},
+trackMeta : {% if section.settings.track_meta %}true{% else %}false{% endif %}
+};
+var KEY_DONE='na_unlock_done', KEY_SEEN='na_unlock_seen', KEY_Q='na_unlock_queue', KEY_VAR='na_unlock_variant';
+var root   = document.getElementById('naRoot');
+var pop    = document.getElementById('naPop');
+var box    = document.getElementById('naBox');
+var form   = document.getElementById('naForm');
+var row    = document.getElementById('naRow');
+var email  = document.getElementById('naEmail');
+var submit = document.getElementById('naSubmit');
+var errEl  = document.getElementById('naErr');
+var closeB = document.getElementById('naClose');
+if (!root || !pop) return;
+var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var ctaLabel = submit ? submit.textContent : 'Unlock';
+var lastFocus = null, revealed = false;
+function store(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function read(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+/* ---------- A/B variant ---------- */
+var VAR = (function(){
+if (CFG.mode === 'drag' || CFG.mode === 'auto') return CFG.mode;
+var v = read(KEY_VAR);
+if (v !== 'drag' && v !== 'auto'){ v = (Math.random() < 0.5) ? 'drag' : 'auto'; store(KEY_VAR, v); }
+return v;
+})();
+/* ---------- tracking ---------- */
+function track(name, extra){
+var p = { variant: VAR, code: CFG.code, source: 'cut-open-popup' };
+if (extra){ for (var k in extra){ if (extra.hasOwnProperty(k)) p[k] = extra[k]; } }
+try { if (CFG.trackK && window.klaviyo){ (typeof klaviyo.track === 'function') ? klaviyo.track(name, p) : klaviyo.push(['track', name, p]); } } catch(e){}
+try { if (CFG.trackGA){ if (typeof window.gtag === 'function') gtag('event', name, p); else if (window.dataLayer && window.dataLayer.push){ var d={event:name}; for (var j in p){ if(p.hasOwnProperty(j)) d[j]=p[j]; } window.dataLayer.push(d); } } } catch(e){}
+try { if (CFG.trackMeta && typeof window.fbq === 'function'){ (name === 'na_email_submitted') ? fbq('track','Lead',{content_name:'cut-open-popup'}) : fbq('trackCustom', name, p); } } catch(e){}
+}
+/* ---------- capture (Klaviyo + Shopify), with retry queue ---------- */
+function loadQ(){ try{ return JSON.parse(read(KEY_Q) || '[]'); }catch(e){ return []; } }
+function saveQ(a){ store(KEY_Q, JSON.stringify(a)); }
+function enqueue(a){ var q=loadQ(); if (q.indexOf(a) < 0){ q.push(a); saveQ(q); } }
+function dequeue(a){ saveQ(loadQ().filter(function(x){ return x !== a; })); }
+function subscribeKlaviyo(addr){
+if (!CFG.companyId || !CFG.listId) return Promise.reject(new Error('no klaviyo config'));
+return fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(CFG.companyId), {
+method:'POST',
+headers:{ 'Content-Type':'application/json', 'revision':'2024-10-15' },
+body: JSON.stringify({ data:{ type:'subscription', attributes:{
+custom_source:'Cut-open popup',
+profile:{ data:{ type:'profile', attributes:{ email: addr, properties:{ unlock_code: CFG.code, popup_variant: VAR } } } }
+}, relationships:{ list:{ data:{ type:'list', id: CFG.listId } } } } })
+});
+}
+function sendCapture(addr){
+// Shopify customer is created automatically by the Klaviyo->Shopify sync
+// (verified live). A direct /contact POST is blocked by this store's bot
+// protection, so Klaviyo is the single source of capture.
+return subscribeKlaviyo(addr).then(function(res){
+if (res && (res.ok || res.status === 202)){ dequeue(addr); return true; }
+throw new Error('klaviyo status ' + (res && res.status));
+});
+}
+function flushQueue(){ loadQ().forEach(function(addr){ sendCapture(addr).catch(function(){}); }); }
+/* ---------- audio (Web Audio, no assets) ---------- */
+var actx;
+function AC(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended'){ actx.resume(); } return actx; }
+function nbuf(ac,dur){ var n=Math.floor(ac.sampleRate*dur),b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0),last=0; for(var i=0;i<n;i++){ var w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.2; } return b; }
+function buzz(p){ if(navigator.vibrate){ try{ navigator.vibrate(p); }catch(e){} } }
+function sThud(){ var ac=AC(); if(!ac)return; var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain(); o.type='sine'; o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(46,t+0.13); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.85,t+0.008); g.gain.exponentialRampToValueAtTime(0.0001,t+0.3); o.connect(g).connect(ac.destination); o.start(t); o.stop(t+0.32); var nb=ac.createBufferSource(); nb.buffer=nbuf(ac,0.05); var nf=ac.createBiquadFilter(),ng=ac.createGain(); nf.type='lowpass'; nf.frequency.value=1600; ng.gain.setValueAtTime(0.45,t); ng.gain.exponentialRampToValueAtTime(0.0001,t+0.05); nb.connect(nf).connect(ng).connect(ac.destination); nb.start(t); }
+function sSlide(dur){ var ac=AC(); if(!ac)return; var t=ac.currentTime; dur=dur||0.4; var nb=ac.createBufferSource(); nb.buffer=nbuf(ac,dur); var f=ac.createBiquadFilter(),g=ac.createGain(); f.type='bandpass'; f.frequency.setValueAtTime(340,t); f.frequency.linearRampToValueAtTime(150,t+dur); f.Q.value=0.8; g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.3,t+0.05); g.gain.setValueAtTime(0.3,t+dur*0.55); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); nb.connect(f).connect(g).connect(ac.destination); nb.start(t); nb.stop(t+dur); }
+function sGrain(){ var ac=AC(); if(!ac)return; var t=ac.currentTime; var cb=ac.createBufferSource(); cb.buffer=nbuf(ac,0.035); var hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1400+Math.random()*1600; var g=ac.createGain(); var amp=0.05+Math.random()*0.07; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(amp,t+0.004); g.gain.exponentialRampToValueAtTime(0.0001,t+0.035); cb.connect(hp).connect(g).connect(ac.destination); cb.start(t); cb.stop(t+0.04); }
+function sCut(dur){ var ac=AC(); if(!ac)return; var t=ac.currentTime; dur=dur||1; var nb=ac.createBufferSource(); nb.buffer=nbuf(ac,dur); var bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(900,t); bp.frequency.linearRampToValueAtTime(1700,t+dur); bp.Q.value=0.9; var g=ac.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.08,t+0.1); g.gain.setValueAtTime(0.08,t+dur-0.15); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); nb.connect(bp).connect(g).connect(ac.destination); nb.start(t); nb.stop(t+dur); var n=Math.round(dur*16); for(var i=0;i<n;i++){ var st=t+(i/n)*dur+Math.random()*0.02; var cb=ac.createBufferSource(); cb.buffer=nbuf(ac,0.03); var hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1500+Math.random()*1500; var cg=ac.createGain(); var amp=0.05+Math.random()*0.08; cg.gain.setValueAtTime(0.0001,st); cg.gain.exponentialRampToValueAtTime(amp,st+0.004); cg.gain.exponentialRampToValueAtTime(0.0001,st+0.03); cb.connect(hp).connect(cg).connect(ac.destination); cb.start(st); cb.stop(st+0.035); } }
+function sRip(){ var ac=AC(); if(!ac)return; var t=ac.currentTime; var nb=ac.createBufferSource(); nb.buffer=nbuf(ac,0.18); var hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.setValueAtTime(1200,t); hp.frequency.exponentialRampToValueAtTime(400,t+0.18); var g=ac.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.38,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.2); nb.connect(hp).connect(g).connect(ac.destination); nb.start(t); nb.stop(t+0.22); var o=ac.createOscillator(),og=ac.createGain(); o.type='sine'; o.frequency.setValueAtTime(92,t); o.frequency.exponentialRampToValueAtTime(54,t+0.14); og.gain.setValueAtTime(0.0001,t); og.gain.exponentialRampToValueAtTime(0.5,t+0.01); og.gain.exponentialRampToValueAtTime(0.0001,t+0.22); o.connect(og).connect(ac.destination); o.start(t); o.stop(t+0.24); }
+function sChime(){ var ac=AC(); if(!ac)return; var t=ac.currentTime; var ch=[261.63,329.63,392,440]; for(var i=0;i<ch.length;i++){ var o=ac.createOscillator(),g=ac.createGain(); o.type='sine'; o.frequency.value=ch[i]; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.075,t+0.09); g.gain.exponentialRampToValueAtTime(0.0001,t+1.5); o.connect(g).connect(ac.destination); o.start(t); o.stop(t+1.55); } }
+function slamFX(){ if(!actx || actx.state!=='running') return; setTimeout(function(){ buzz(38); sThud(); },380); setTimeout(function(){ buzz([0,90]); sSlide(0.38); },600); }
+function unlockAudio(){ AC(); document.removeEventListener('pointerdown',unlockAudio); document.removeEventListener('keydown',unlockAudio); }
+document.addEventListener('pointerdown',unlockAudio); document.addEventListener('keydown',unlockAudio);
+/* ---------- reveal + interaction ---------- */
+function openReveal(){
+if (revealed) return; revealed = true;
+pop.classList.remove('is-armed','is-dragging','is-cutting');
+pop.classList.add('is-open');
+box.dataset.state = 'open';
+if (!CFG.editor) store(KEY_DONE, '1');
+buzz([0,22,60,32]); sRip(); setTimeout(sChime, 330);
+track('na_cut_completed');
+}
+function armCut(){
+pop.classList.add('is-armed');
+var cut = pop.querySelector('.naup-cut'), hand = pop.querySelector('.naup-hand');
+var maxp=0, committed=false, started=false, idle, lastStep=-1;
+function nowMs(){ return (window.performance && performance.now) ? performance.now() : Date.now(); }
+function paint(p){ cut.style.height=(p*100)+'%'; hand.style.top='calc('+(p*100)+'% - 34%)'; }
+function setP(p){ if(committed)return; p=Math.max(0,Math.min(1,p)); if(p<=maxp)return; maxp=p; paint(p); pop.classList.add('is-dragging'); var st=Math.floor(p/0.05); if(st!==lastStep){ lastStep=st; sGrain(); buzz(5); } if(p>=0.7) commit(); }
+function rp(e){ var r=box.getBoundingClientRect(); return (e.clientY - r.top) / r.height; }
+function down(e){ if(committed)return; started=true; clearTimeout(idle); if(box.setPointerCapture && e.pointerId!=null){ try{ box.setPointerCapture(e.pointerId); }catch(x){} } setP(rp(e)); e.preventDefault(); }
+function move(e){ if(!started||committed)return; setP(rp(e)); e.preventDefault(); }
+function up(){ if(committed||!started)return; if(maxp>=0.1) autoFinish(); else started=false; }
+function autoFinish(){ if(committed)return; var s=maxp,t0=nowMs(),d=Math.max(180,(1-s)*520); (function step(){ if(committed)return; var k=Math.min(1,(nowMs()-t0)/d); var p=s+(1-s)*k; paint(p); var st=Math.floor(p/0.05); if(st!==lastStep){ lastStep=st; sGrain(); } if(k<1) requestAnimationFrame(step); else { maxp=1; commit(); } })(); }
+function commit(){ if(committed)return; committed=true; clearTimeout(idle); teardownDrag(); cut.style.transition='height .12s linear'; cut.style.height='100%'; sGrain(); setTimeout(openReveal, 120); }
+function teardownDrag(){ box.removeEventListener('pointerdown',down); window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up); }
+box.addEventListener('pointerdown',down); window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); window.addEventListener('pointercancel',up);
+idle = setTimeout(function(){ if(!started && !committed) autoFinish(); }, 3600);
+}
+function beginUnlock(){
+submit.disabled = true; submit.textContent = 'Cut it open';
+if (reduce){ openReveal(); return; }
+if (VAR === 'auto'){ pop.classList.add('is-cutting'); box.dataset.state='cutting'; buzz(12); sCut(1.08); setTimeout(openReveal, 1200); return; }
+armCut();
+}
+/* ---------- validation + submit ---------- */
+function valid(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v).trim()); }
+form.addEventListener('submit', function(e){
+e.preventDefault();
+var addr = (email.value||'').trim();
+if (!valid(addr)){ if(errEl) errEl.hidden=false; row.classList.add('err'); row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); email.focus(); buzz(22); return; }
+if (errEl) errEl.hidden=true; row.classList.remove('err');
+enqueue(addr);
+try { if (CFG.trackK && window.klaviyo && typeof klaviyo.identify==='function') klaviyo.identify({ '$email': addr }); } catch(err){}
+track('na_email_submitted');
+var done=false, go=function(){ if(done)return; done=true; beginUnlock(); };
+setTimeout(go, 1200);                 // reveal never waits on the network
+sendCapture(addr).then(go).catch(go);
+});
+email.addEventListener('input', function(){ if(errEl) errEl.hidden=true; row.classList.remove('err'); });
+/* ---------- open / dismiss ---------- */
+function open(){
+if (root.classList.contains('is-open')) return;
+lastFocus = document.activeElement;
+root.classList.add('is-open');
+root.setAttribute('aria-hidden','false');
+document.documentElement.style.overflow = 'hidden';
+pop.classList.remove('enter'); void pop.offsetWidth; pop.classList.add('enter');
+if (!CFG.editor) store(KEY_SEEN, String(Date.now()));
+track('na_popup_shown');
+if (!reduce) slamFX();
+setTimeout(function(){ if(email) try{ email.focus({preventScroll:true}); }catch(e){ email.focus(); } }, 220);
+teardownTriggers();
+}
+function dismiss(){
+if (!revealed) track('na_popup_dismissed');
+root.classList.remove('is-open');
+root.setAttribute('aria-hidden','true');
+document.documentElement.style.overflow = '';
+if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+closeB.addEventListener('click', dismiss);
+root.addEventListener('click', function(e){ if (e.target === root) dismiss(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && root.classList.contains('is-open')) dismiss(); });
+// keep clicks inside the popup from reaching the theme's global close handlers
+pop.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+pop.addEventListener('click', function(e){ e.stopPropagation(); });
+// shop button: apply the code in the background and just close (no redirect)
+var shopBtn = document.getElementById('naShop');
+if (shopBtn) shopBtn.addEventListener('click', function(e){ e.preventDefault(); try { fetch('/discount/' + encodeURIComponent(CFG.code)); } catch(_){} dismiss(); });
+/* ---------- schedule + suppression ---------- */
+function withinSchedule(){
+if (CFG.startAt){ var s=new Date(CFG.startAt); if(!isNaN(s) && Date.now() < s.getTime()) return false; }
+if (CFG.endAt){ var en=new Date(CFG.endAt); if(!isNaN(en) && Date.now() > (en.getTime()+86399000)) return false; }
+return true;
+}
+function suppressed(){
+if (CFG.editor) return false;
+if (!withinSchedule()) return true;
+if (read(KEY_DONE)) return true;
+if (CFG.hideLogged && CFG.loggedIn) return true;
+var seen = parseInt(read(KEY_SEEN) || '0', 10);
+if (seen && (Date.now() - seen) < CFG.coolDays * 86400000) return true;
+if (/\/(checkouts?|orders|account)\b/.test(location.pathname)) return true;
+return false;
+}
+/* ---------- triggers ---------- */
+var timer=null;
+function onScroll(){ var h=document.documentElement.scrollHeight - window.innerHeight; if (h>0 && (window.scrollY/h)*100 >= CFG.scrollPct) open(); }
+function onExit(e){ if (e.clientY <= 0) open(); }
+function teardownTriggers(){ if(timer) clearTimeout(timer); window.removeEventListener('scroll', onScroll); document.removeEventListener('mouseout', onExit); }
+flushQueue();   // retry anything stranded from a previous visit
+if (CFG.editor){
+open();
+} else if (!suppressed()){
+timer = setTimeout(open, CFG.delay);
+window.addEventListener('scroll', onScroll, { passive:true });
+if (CFG.exitIntent) document.addEventListener('mouseout', onExit);
+}
+})();
+</script>
+{%- endif -%}
+{% schema %}
+{
+"name": "NA Unlock Popup",
+"settings": [
+{ "type": "checkbox", "id": "enabled", "label": "Enable popup", "default": true },
+{ "type": "header", "content": "Offer" },
+{ "type": "text", "id": "code", "label": "Discount code", "default": "GIVEME10",
+"info": "Must exist and be active in Discounts. Currently: 10% off, once per customer." },
+{ "type": "image_picker", "id": "logo", "label": "Logo (optional)", "info": "Leave blank to use the default store logo." },
+{ "type": "text", "id": "logo_url", "label": "Logo URL (fallback)", "default": "https://cdn.shopify.com/s/files/1/0810/4090/0375/files/logo_transparent_black.png?width=520" },
+{ "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "First time ordering?" },
+{ "type": "text", "id": "headline", "label": "Headline", "default": "10% off|sealed inside.", "info": "Separate lines with |" },
+{ "type": "textarea", "id": "subcopy", "label": "Subcopy", "default": "Drop your email — we'll cut it open." },
+{ "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "you@yourshop.com" },
+{ "type": "text", "id": "cta", "label": "Button", "default": "Unlock" },
+{ "type": "text", "id": "error_text", "label": "Invalid-email message", "default": "* Please enter your email" },
+{ "type": "textarea", "id": "legal", "label": "Small print", "default": "By unlocking you agree to receive emails from Not Another Wholesale. Unsubscribe any time." },
+{ "type": "header", "content": "After unlock" },
+{ "type": "text", "id": "cta_done", "label": "Shop button", "default": "Shop the drop" },
+{ "type": "url", "id": "shop_url", "label": "Shop button destination", "info": "Code is auto-applied via the link. Defaults to /collections/all." },
+{ "type": "header", "content": "The box" },
+{ "type": "text", "id": "drag_hint", "label": "Drag prompt", "default": "Drag down to open" },
+{ "type": "text", "id": "box_print", "label": "Inside the box (top)", "default": "Not Another Wholesale" },
+{ "type": "text", "id": "box_print_low", "label": "Inside the box (bottom)", "default": "Graded · Sealed · Halifax UK" },
+{ "type": "text", "id": "tape_text", "label": "Printed on tape", "default": "Not Another" },
+{ "type": "text", "id": "prize_label", "label": "Card label", "default": "Your code" },
+{ "type": "text", "id": "prize_sub", "label": "Card badge", "default": "10% off" },
+{ "type": "header", "content": "Interaction" },
+{ "type": "select", "id": "interaction_mode", "label": "Cut style", "default": "auto",
+"options": [
+{ "value": "drag", "label": "Drag to cut (interactive)" },
+{ "value": "auto", "label": "Auto-cut (no drag)" },
+{ "value": "ab", "label": "A/B test 50/50" }
+],
+"info": "A/B stamps the variant on every tracked event." },
+{ "type": "header", "content": "Klaviyo" },
+{ "type": "text", "id": "klaviyo_public_key", "label": "Public API key", "default": "SHDKyV" },
+{ "type": "text", "id": "klaviyo_list_id", "label": "List ID", "default": "U9Yr2i",
+"info": "U9Yr2i = Popup Subscribers (single opt-in). Triggers the Welcome Series (POP UP MARKETING) flow." },
+{ "type": "header", "content": "Tracking" },
+{ "type": "checkbox", "id": "track_klaviyo", "label": "Send events to Klaviyo", "default": true },
+{ "type": "checkbox", "id": "track_ga4", "label": "Send events to GA4", "default": true },
+{ "type": "checkbox", "id": "track_meta", "label": "Send events to Meta Pixel (if present)", "default": true },
+{ "type": "header", "content": "When it shows" },
+{ "type": "range", "id": "delay", "label": "Delay", "unit": "s", "min": 0, "max": 30, "step": 1, "default": 5 },
+{ "type": "range", "id": "scroll_pct", "label": "Or after scrolling", "unit": "%", "min": 10, "max": 90, "step": 5, "default": 35 },
+{ "type": "checkbox", "id": "exit_intent", "label": "Also trigger on exit intent", "default": true },
+{ "type": "range", "id": "cooldown_days", "label": "Don't show again for", "unit": "d", "min": 1, "max": 90, "step": 1, "default": 30 },
+{ "type": "checkbox", "id": "hide_for_customers", "label": "Hide from logged-in customers", "default": true },
+{ "type": "header", "content": "Schedule (optional)" },
+{ "type": "text", "id": "start_at", "label": "Start date", "info": "YYYY-MM-DD. Blank = live now." },
+{ "type": "text", "id": "end_at", "label": "End date", "info": "YYYY-MM-DD. Blank = no end." }
+]
+}
+{% endschema %}
