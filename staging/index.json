@@ -1,0 +1,375 @@
+{
+  "sections": {
+    "custom_liquid_8Utcxb": {
+      "type": "custom-liquid",
+      "custom_css": [],
+      "settings": {
+        "custom_liquid": "{% render 'naw-drop-hero' %}",
+        "color_scheme": "background-1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_liquid_DrhnRE": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<style>\n  .naw-statline-wrap{max-width:1360px;margin:0 auto;padding:16px 20px;font-family:'Poppins',sans-serif}\n  .naw-statline{display:flex;align-items:stretch;justify-content:center;background:#F7F6F3;border-radius:16px;padding:20px 8px}\n  .naw-statline__item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:2px 14px;border-left:1px solid #E4E2DC;text-decoration:none;text-align:center}\n  .naw-statline__item:first-child{border-left:none}\n  .naw-statline__num{font-size:clamp(20px,2.4vw,30px);font-weight:700;color:#111;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}\n  .naw-statline__num sup{font-size:.45em;font-weight:700;vertical-align:.5em}\n  .naw-statline__lbl{font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#98948C;line-height:1.35;white-space:nowrap}\n  a.naw-statline__item:hover .naw-statline__num{opacity:.55;transition:opacity .2s ease}\n  @media (max-width: 820px){\n    .naw-statline{flex-wrap:nowrap;padding:15px 4px}\n    .naw-statline__item{flex:1 1 0;min-width:0;padding:2px 6px}\n    .naw-statline__item--mhide{display:none}\n    .naw-statline__item:nth-child(3){border-left:1px solid #E4E2DC}\n    .naw-statline__num{font-size:20px}\n    .naw-statline__lbl{font-size:7.5px;letter-spacing:.09em}\n  }\n</style>\n\n<div class=\"naw-statline-wrap\">\n  <div class=\"naw-statline\">\n    <div class=\"naw-statline__item\"><span class=\"naw-statline__num\" data-nsl-count=\"35000\" data-nsl-suffix=\"+\">0+</span><span class=\"naw-statline__lbl\">Pieces in stock</span></div>\n    <div class=\"naw-statline__item naw-statline__item--mhide\"><span class=\"naw-statline__num\">2+</span><span class=\"naw-statline__lbl\">Bundles ship free &middot; UK</span></div>\n    <div class=\"naw-statline__item\"><span class=\"naw-statline__num\">11am</span><span class=\"naw-statline__lbl\">Same-day dispatch</span></div>\n    <div class=\"naw-statline__item naw-statline__item--mhide\"><span class=\"naw-statline__num\" data-nsl-count=\"100\" data-nsl-suffix=\"%\">0%</span><span class=\"naw-statline__lbl\">Handgraded in the UK</span></div>\n    <a href=\"/pages/reviews\" class=\"naw-statline__item\"><span class=\"naw-statline__num\" data-nsl-count=\"48\" data-nsl-decimal=\"1\" data-nsl-suffix=\"&#9733;\">0&#9733;</span><span class=\"naw-statline__lbl\">Rated by 200+ resellers</span></a>\n  </div>\n</div>\n\n<script>\n(function(){\n  var els=[].slice.call(document.querySelectorAll('[data-nsl-count]'));\n  if(!els.length)return;\n  var io=new IntersectionObserver(function(entries){\n    entries.forEach(function(en){\n      if(!en.isIntersecting||en.target.dataset.done)return;\n      en.target.dataset.done='1';\n      var target=parseInt(en.target.dataset.nslCount,10)||0;\n      var dec=parseInt(en.target.dataset.nslDecimal||'0',10);\n      var suf=en.target.dataset.nslSuffix||'';\n      var t0=null,DUR=1200;\n      function fmt(v){var n=dec?(v/Math.pow(10,dec)).toFixed(dec):Math.round(v).toLocaleString('en-GB');return n+suf;}\n      function step(ts){\n        if(!t0)t0=ts;\n        var p=Math.min(1,(ts-t0)/DUR);\n        var e=1-Math.pow(1-p,3);\n        en.target.innerHTML=fmt(target*e);\n        if(p<1)requestAnimationFrame(step);\n      }\n      if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches){en.target.innerHTML=fmt(target);}\n      else requestAnimationFrame(step);\n    });\n  },{threshold:.6});\n  els.forEach(function(e){io.observe(e);});\n})();\n</script>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "gp_section_489161199330526347": {
+      "type": "gp-section-489161199330526347",
+      "blocks": {
+        "1clickpopup_form_rJLFKQ": {
+          "type": "shopify://apps/1clickpopup/blocks/form/233742b9-16cb-4f75-9de7-3fe92c29fdff",
+          "settings": {
+            "form_id": "",
+            "padding_top": 32,
+            "padding_bottom": 32,
+            "padding_right": 0,
+            "padding_left": 0
+          }
+        }
+      },
+      "block_order": [
+        "1clickpopup_form_rJLFKQ"
+      ],
+      "disabled": true,
+      "settings": {}
+    },
+    "1751466235fe4734d3": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "gp_section_489203611344044850": {
+      "type": "gp-section-489203611344044850",
+      "disabled": true,
+      "settings": {}
+    },
+    "featured_collection_tHiUhW": {
+      "type": "featured-collection",
+      "custom_css": [
+        ".section-heading,.collection-hero__title,h2 {display: flex; align-items: center; justify-content: flex-start; font-size: clamp(2.3em, 2vw, 2.2em); font-weight: 700; color: #000; margin: 60px auto 40px auto; padding: 0 5%; line-height: 1.1;}",
+        ".collection__title.page-width {max-width: 100% !important; padding-left: 0 !important; padding-right: 0 !important;}"
+      ],
+      "settings": {
+        "title": "SHOP THE LATEST DROP",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "winter-drop",
+        "products_to_show": 10,
+        "columns_desktop": 5,
+        "full_width": true,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "background-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": true,
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 0,
+        "padding_bottom": 12
+      }
+    },
+    "custom_liquid_yFfMJU": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<style>\n  .brand-carousel-wrapper {\n    overflow: hidden;\n    width: 100%;\n    padding: 1rem 0;\n    background: #fff;\n    margin-bottom: 1rem; /* ✅ Add space beneath carousel */\n  }\n\n  .brand-track {\n    display: flex;\n    width: max-content;\n    animation: scroll-left 40s linear infinite;\n  }\n\n  .brand-logo {\n    flex: 0 0 auto;\n    margin: 0 2rem;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n\n  .brand-logo img {\n    height: 60px;\n    width: auto;\n    object-fit: contain;\n    filter: grayscale(100%);\n    opacity: 0.85;\n    transition: all 0.3s ease;\n  }\n\n  .brand-logo img:hover {\n    filter: none;\n    opacity: 1;\n    transform: scale(1.05);\n  }\n\n  @keyframes scroll-left {\n    0% { transform: translateX(0); }\n    100% { transform: translateX(-50%); }\n  }\n\n  @media screen and (max-width: 600px) {\n    .brand-logo {\n      margin: 0 1rem;\n    }\n\n    .brand-logo img {\n      height: 50px;\n    }\n  }\n</style>\n\n<div class=\"brand-carousel-wrapper\">\n  <div class=\"brand-track\">\n    {% for i in (1..2) %}\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/russell_logo.png?v=1753192601\" alt=\"Russell\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/carhartt_logo.png?v=1753192804\" alt=\"Carhartt\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/tommy_logo.png?v=1753192933\" alt=\"Tommy Hilfiger\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/ralphlauren.png?v=1753193396\" alt=\"Polo Ralph Lauren\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/levis_logo.png?v=1753193380\" alt=\"LEVIS\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/disney_logo.png?v=1753193379\" alt=\"Disney\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/lee_logo.png?v=1753193380\" alt=\"Lee\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/Nike_logo.png?v=1753193380\" alt=\"Nike\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/wrangler_logo.png?v=1753193381\" alt=\"Wrangler\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/realtree_logo.png?v=1753193380\" alt=\"RealTree\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/TNF_logo.png?v=1753193381\" alt=\"TNF\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/pro_sport_logo.png?v=1753193381\" alt=\"PROSPORT\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/columbia_logo.png?v=1753193381\" alt=\"Columbia\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/adidas_logo.png?v=1753193381\" alt=\"Adidas\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/harley_davidson_logo.png?v=1753193381\" alt=\"HarleyDavidson\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/patagonia_logo.png?v=1753193381\" alt=\"Patagonia\"></div>\n      <div class=\"brand-logo\"><img src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/Dickies_logo.png?v=1753193382\" alt=\"Dickies\"></div>\n    {% endfor %}\n  </div>\n</div>",
+        "color_scheme": "",
+        "padding_top": 24,
+        "padding_bottom": 0
+      }
+    },
+    "f5647033-a7a6-4b3e-b3ef-e789e0dc70f3": {
+      "type": "featured-collection",
+      "custom_css": [
+        ".section-heading,.collection-hero__title,h2 {display: flex; align-items: center; justify-content: flex-start; font-size: clamp(2.3em, 2vw, 2.2em); font-weight: 700; color: #000; margin: 60px auto 40px auto; padding: 0 5%; line-height: 1.1;}",
+        ".collection__title.page-width {max-width: 100% !important; padding-left: 0 !important; padding-right: 0 !important;}"
+      ],
+      "settings": {
+        "title": "WE THINK YOU'LL LOVE",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "staff-picks",
+        "products_to_show": 10,
+        "columns_desktop": 5,
+        "full_width": true,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "background-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": true,
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 0,
+        "padding_bottom": 40
+      }
+    },
+    "17514663948a5edefb": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "gp_section_490662493438346097": {
+      "type": "gp-section-490662493438346097",
+      "disabled": true,
+      "settings": {}
+    },
+    "gp_section_489161355090199346": {
+      "type": "gp-section-489161355090199346",
+      "disabled": true,
+      "custom_css": [],
+      "settings": {}
+    },
+    "gp_section_489162947080225586": {
+      "type": "gp-section-489162947080225586",
+      "disabled": true,
+      "settings": {}
+    },
+    "gp_section_491188689494344507": {
+      "type": "gp-section-491188689494344507",
+      "disabled": true,
+      "settings": {}
+    },
+    "gp_section_491083410534564898": {
+      "type": "gp-section-491083410534564898",
+      "disabled": true,
+      "settings": {}
+    },
+    "gp_section_490662303117608083": {
+      "type": "gp-section-490662303117608083",
+      "disabled": true,
+      "settings": {}
+    },
+    "custom_liquid_EtL6Fg": {
+      "type": "custom-liquid",
+      "name": "Reseller Pack Block",
+      "settings": {
+        "custom_liquid": "{% comment %}\n  Not Another Wholesale — Reseller Hero Banner\n  File: sections/naw-reseller-hero.liquid\n{% endcomment %}\n\n<style>\n  /* RESELLER HERO — DESKTOP */\n  .naw-hero { position: relative; width: 100%; min-height: 420px; display: flex; align-items: center; overflow: hidden; }\n  .naw-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0; }\n  .naw-hero__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); z-index: 1; }\n  .naw-hero__inner { position: relative; z-index: 2; width: 100%; max-width: 1400px; margin: 0 auto; padding: 48px 64px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }\n  .naw-hero__left { flex: 0 0 240px; }\n  .naw-hero__eyebrow { display: block; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 12px; }\n  .naw-hero__title { font-family: 'Poppins', sans-serif; font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -1px; color: #fff; margin: 0 0 32px; text-shadow: 0 2px 12px rgba(0,0,0,0.4); white-space: nowrap; }\n  .naw-hero__btn { display: inline-block !important; font-family: 'Poppins', sans-serif !important; background: #fff !important; color: #111 !important; font-size: 12px !important; font-weight: 700 !important; letter-spacing: 1.5px !important; text-transform: uppercase !important; text-decoration: none !important; padding: 14px 28px !important; border-radius: 4px !important; border: none !important; box-shadow: none !important; transition: opacity 0.2s; }\n  .naw-hero__btn:hover { opacity: 0.85; }\n  .naw-hero__right { flex: 0 0 270px; display: flex; flex-direction: column; }\n  .naw-hero__highlight { position: relative; display: inline-block; white-space: nowrap; }\n  .naw-hero__highlight::before { content: ''; position: absolute; top: -4px; left: -8px; bottom: -4px; width: 0; background: linear-gradient(to right, #111 60%, rgba(17,17,17,0.85) 80%, rgba(17,17,17,0.4) 92%, transparent 100%); z-index: -1; border-radius: 2px 6px 8px 2px; transition: none; }\n  .naw-hero--visible .naw-hero__highlight::before { width: calc(100% + 24px); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }\n  .naw-hero__link { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.15); color: #fff; text-decoration: none; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.2px; transition: opacity 0.2s; gap: 16px; }\n  .naw-hero__link:first-child { border-top: 1px solid rgba(255,255,255,0.15); }\n  .naw-hero__link:hover { opacity: 0.65; }\n\n  /* RESELLER HERO — MOBILE */\n  @media (max-width: 768px) {\n    .naw-hero { min-height: unset; display: block; background: #111; overflow: visible; }\n    .naw-hero__img { display: none; }\n    .naw-hero__overlay { display: none; }\n    .naw-hero__inner { display: none; }\n    .naw-hero__mobile-image-wrap { position: relative; display: block; overflow: hidden; }\n    .naw-hero__mobile-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.2); transform-origin: center center; filter: drop-shadow(0px 25px 50px rgba(0,0,0,0.15)); }\n    .naw-hero__mobile-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); z-index: 1; }\n    .naw-hero__mobile-content { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; padding: 35px 0 0; gap: 0; }\n    .naw-hero__mobile-top { display: flex; flex-direction: column; padding: 0 16px; }\n    .naw-hero__mobile-top .naw-hero__title { margin-bottom: 0; }\n    .naw-hero__eyebrow { display: block; font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 4px; }\n    .naw-hero__title { font-family: 'Poppins', sans-serif; font-size: 44px; font-weight: 700; line-height: 0.95; letter-spacing: -1px; color: #fff; margin: 0 0 0 -2px; text-shadow: 0 2px 12px rgba(0,0,0,0.4); white-space: normal; }\n    .naw-hero__highlight::before { z-index: -1; }\n    .naw-hero__mobile-links { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid rgba(255,255,255,0.15); margin-top: auto; }\n    .naw-hero__mobile-link { display: flex; align-items: center; justify-content: center; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.12); color: #fff; text-decoration: none; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 900; text-shadow: 0 1px 6px rgba(0,0,0,0.7); letter-spacing: 0.04em; text-transform: uppercase; background: transparent; transition: opacity 0.2s; text-align: center; }\n    .naw-hero__mobile-link:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.12); }\n    .naw-hero__mobile-link:hover { opacity: 0.65; }\n    .naw-hero__mobile-link svg { display: none; }\n    .naw-hero__mobile-btn-wrap { background: #111 url('https://cdn.shopify.com/s/files/1/0810/4090/0375/files/concrete_button_background.png?v=1773614852') center/cover no-repeat; padding: 20px 16px; margin-top: 0; }\n    .naw-hero__btn { display: block !important; width: 100% !important; text-align: center !important; padding: 18px 28px !important; font-size: 11px !important; letter-spacing: 2px !important; border-radius: 4px !important; background: #fff !important; color: #111 !important; }\n  }\n  @media (min-width: 769px) {\n    .naw-hero__mobile-image-wrap { display: none; }\n    .naw-hero__mobile-btn-wrap { display: none; }\n    .naw-hero__btn--desktop { display: inline-block !important; }\n  }\n</style>\n\n<div class=\"naw-hero\">\n\n  <!-- DESKTOP: background image + overlay -->\n  <img class=\"naw-hero__img\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/BEGIN_YOUR_RESELLING_JOURNEY_TODAY.._NOTANOTHERWHOLESALE.png?v=1773416550\" alt=\"Reseller Packs\" loading=\"eager\">\n  <div class=\"naw-hero__overlay\"></div>\n\n  <!-- DESKTOP: inner content -->\n  <div class=\"naw-hero__inner\">\n    <div class=\"naw-hero__left\">\n      <span class=\"naw-hero__eyebrow\">Best Seller</span>\n      <h2 class=\"naw-hero__title\"><span class=\"naw-hero__highlight\">RESELLER</span><br>PACKS</h2>\n      <a href=\"https://notanotherwholesale.com/collections/reseller-bundles\" class=\"naw-hero__btn naw-hero__btn--desktop\" style=\"margin-top:32px;\">BECOME A RESELLER &#8594;</a>\n    </div>\n    <div class=\"naw-hero__right\">\n      <a href=\"https://notanotherwholesale.com/products/30-piece-reseller-box\" class=\"naw-hero__link\">\n        <span>VINTED DEPOP RESELLER BOXES</span>\n        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"9 18 15 12 9 6\"/></svg>\n      </a>\n      <a href=\"https://notanotherwholesale.com/products/premium-reseller-box-x25\" class=\"naw-hero__link\">\n        <span>PREMIUM RESELLER BOXES</span>\n        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"9 18 15 12 9 6\"/></svg>\n      </a>\n      <a href=\"https://notanotherwholesale.com/products/basic-reseller-box-x30\" class=\"naw-hero__link\">\n        <span>BASIC RESELLER BOXES</span>\n        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"9 18 15 12 9 6\"/></svg>\n      </a>\n      <a href=\"https://notanotherwholesale.com/products/sample-pack\" class=\"naw-hero__link\">\n        <span>SAMPLE RESELLER PACKS</span>\n        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"9 18 15 12 9 6\"/></svg>\n      </a>\n    </div>\n  </div>\n\n  <!-- MOBILE: portrait image with title + 2x2 links overlaid -->\n  <div class=\"naw-hero__mobile-image-wrap\">\n    <img class=\"naw-hero__mobile-img\" src=\"https://cdn.shopify.com/s/files/1/0810/4090/0375/files/mobile_version_-_reseller_packs_hero.png?v=1773420900\" alt=\"Reseller Packs\" loading=\"eager\">\n    <div class=\"naw-hero__mobile-overlay\"></div>\n    <div class=\"naw-hero__mobile-content\">\n      <div class=\"naw-hero__mobile-top\">\n        <span class=\"naw-hero__eyebrow\">BEST SELLER</span>\n        <h2 class=\"naw-hero__title\"><span class=\"naw-hero__highlight\">RESELLER</span><br>PACKS</h2>\n      </div>\n      <div class=\"naw-hero__mobile-links\">\n        <a href=\"https://notanotherwholesale.com/products/30-piece-reseller-box\" class=\"naw-hero__mobile-link\">shop VINTED DEPOP</a>\n        <a href=\"https://notanotherwholesale.com/products/sample-pack\" class=\"naw-hero__mobile-link\">shop SAMPLe</a>\n        <a href=\"https://notanotherwholesale.com/products/premium-reseller-box-x25\" class=\"naw-hero__mobile-link\"> shop PREMIUM</a>\n        <a href=\"https://notanotherwholesale.com/products/basic-reseller-box-x30\" class=\"naw-hero__mobile-link\">shop BASIC</a>\n      </div>\n    </div>\n  </div>\n\n  <!-- MOBILE: CTA below image -->\n  <div class=\"naw-hero__mobile-btn-wrap\">\n    <a href=\"https://notanotherwholesale.com/collections/reseller-bundles\" class=\"naw-hero__btn\">BECOME A RESELLER &#8594;</a>\n  </div>\n\n</div>\n\n<script>\n(function(){\n  var hero = document.querySelector('.naw-hero');\n  if (!hero) return;\n  var obs = new IntersectionObserver(function(entries){\n    entries.forEach(function(e){\n      if (e.isIntersecting) {\n        setTimeout(function(){ hero.classList.add('naw-hero--visible'); }, 200);\n        obs.disconnect();\n      }\n    });\n  }, { threshold: 0.3 });\n  obs.observe(hero);\n}());\n</script>",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 0
+      }
+    },
+    "naw_live_reviews_RRKFjQ": {
+      "type": "naw-live-reviews",
+      "name": "NAW Live reviews",
+      "settings": {
+        "button_text": "SEE ALL REVIEWS",
+        "button_link": "",
+        "max_reviews": 20,
+        "speed": 75
+      }
+    },
+    "featured_collection_eDNn7G": {
+      "type": "featured-collection",
+      "custom_css": [
+        ".section-heading,.collection-hero__title,h2 {display: flex; align-items: center; justify-content: flex-start; font-size: clamp(2.3em, 2vw, 2.2em); font-weight: 700; color: #000; margin: 60px auto 40px auto; padding: 0 5%; line-height: 1.1;}",
+        ".collection__title.page-width {max-width: 100% !important; padding-left: 0 !important; padding-right: 0 !important;}"
+      ],
+      "settings": {
+        "title": "BEST SELLERS",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "best-sellers",
+        "products_to_show": 10,
+        "columns_desktop": 5,
+        "full_width": true,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "background-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": true,
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 0,
+        "padding_bottom": 28
+      }
+    },
+    "06371f49-2454-4edc-98e0-4939fadada7e": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "custom_css": [
+        "div {text-align: center; display: flex; align-items: center; justify-content: center;}",
+        "@media only screen and (max-width: 600px) {div {display: flex; flex-direction: column-reverse; }}",
+        "h2 {font-weight: 700; letter-spacing: -1px;}",
+        "img {height: 50px; padding-left: 10px;}"
+      ],
+      "settings": {
+        "custom_liquid": "<div>\n<h2>\nAS SEEN ON INSTAGRAM\n</h2>\n<img src=\"https://static.vecteezy.com/system/resources/previews/014/414/683/non_2x/instagram-black-logo-on-transparent-background-free-vector.jpg\">\n</div>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 44
+      }
+    },
+    "gp_section_489203540409975602": {
+      "type": "gp-section-489203540409975602",
+      "blocks": {
+        "instafeed_app_block_CBGec6": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_CBGec6"
+      ],
+      "disabled": true,
+      "settings": {}
+    },
+    "gp_section_490662611700941681": {
+      "type": "gp-section-490662611700941681",
+      "disabled": true,
+      "settings": {}
+    },
+    "gp_section_490666004959986835": {
+      "type": "gp-section-490666004959986835",
+      "blocks": {
+        "klaviyo_reviews_all_reviews_9yUY63": {
+          "type": "shopify://apps/klaviyo-reviews/blocks/all-reviews/db20e365-d984-4ac4-9655-e1588d951ca9",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "klaviyo_reviews_all_reviews_9yUY63"
+      ],
+      "disabled": true,
+      "settings": {}
+    },
+    "custom_liquid_AzpJAj": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "How to Resell",
+      "settings": {
+        "custom_liquid": "{% render 'na-how-it-works' %}",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_liquid_KW8DJF": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "{% render 'naw-brand-icons' %}",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "naw_bundle_quiz_BYDGck": {
+      "type": "naw-bundle-quiz",
+      "name": "NAW Bundle quiz",
+      "settings": {
+        "kicker": "FOUR TAPS · TWENTY SECONDS",
+        "heading": "Stuck on what to buy?",
+        "subheading": "30-second quiz. Tell us where you sell, your budget and your niche, then we'll recommend the in-stock bundles that best match your business.",
+        "cta_label": "LET'S BEGIN",
+        "lane_work": "workwear",
+        "lane_sport": "sportswear",
+        "lane_legwear": "trousers,shorts",
+        "lane_graphics": "t-shirts",
+        "lane_outdoors": "jackets,knitwear",
+        "lane_premium": "premium",
+        "seasonal_summer": "spring-summer",
+        "seasonal_winter": "autumn-collection",
+        "lane_any": "mixed-category,reseller-bundles,bales"
+      }
+    },
+    "featured_collection_instock": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "IN STOCK — READY TO SHIP TODAY",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "in-stock",
+        "products_to_show": 10,
+        "columns_desktop": 5,
+        "full_width": true,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "color_scheme": "background-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": true,
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 0,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "custom_liquid_8Utcxb",
+    "custom_liquid_DrhnRE",
+    "gp_section_489161199330526347",
+    "1751466235fe4734d3",
+    "gp_section_489203611344044850",
+    "featured_collection_instock",
+    "featured_collection_tHiUhW",
+    "custom_liquid_yFfMJU",
+    "f5647033-a7a6-4b3e-b3ef-e789e0dc70f3",
+    "17514663948a5edefb",
+    "gp_section_490662493438346097",
+    "gp_section_489161355090199346",
+    "gp_section_489162947080225586",
+    "gp_section_491188689494344507",
+    "gp_section_491083410534564898",
+    "gp_section_490662303117608083",
+    "custom_liquid_EtL6Fg",
+    "naw_live_reviews_RRKFjQ",
+    "featured_collection_eDNn7G",
+    "06371f49-2454-4edc-98e0-4939fadada7e",
+    "gp_section_489203540409975602",
+    "gp_section_490662611700941681",
+    "gp_section_490666004959986835",
+    "custom_liquid_AzpJAj",
+    "custom_liquid_KW8DJF",
+    "naw_bundle_quiz_BYDGck"
+  ]
+}
