@@ -60,8 +60,19 @@
           .then(function(r){return r.json();})
           .then(function(rv){
             var m = rv.filter(function(x){ return x.p && String(x.p).trim().toLowerCase()===base && (+x.s>0); });
-            if(m.length < 1) return;
+            var badges = document.querySelectorAll('.na-store-rating');
+            if(m.length < 1){ badges.forEach(function(b){ b.style.display='none'; }); return; }
             var avg = m.reduce(function(s,x){return s+(+x.s||0);},0)/m.length;
+            (function(){
+              var ratingStr=avg.toFixed(1), cnt=m.length, cntStr=cnt+(cnt===1?' review':' reviews');
+              var filled=Math.round(avg); if(filled>5)filled=5; if(filled<0)filled=0;
+              var starsStr='★★★★★☆☆☆☆☆'.substr(5-filled,5);
+              badges.forEach(function(b){
+                b.setAttribute('aria-label','Rated '+ratingStr+' out of 5 from '+cntStr);
+                var t=b.querySelector('.na-store-rating__text'); if(t){ t.textContent=ratingStr+'/5 · '+cntStr; }
+                var st=b.querySelector('.na-store-rating__stars'); if(st){ st.textContent=starsStr; }
+              });
+            })();
             document.querySelectorAll('script[type="application/ld+json"]').forEach(function(sc){
               try{
                 var j=JSON.parse(sc.textContent);
