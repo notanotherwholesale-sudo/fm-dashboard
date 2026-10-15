@@ -1,0 +1,190 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+{{ 'component-list-payment.css' | asset_url | stylesheet_tag }}
+
+<style>
+footer.na-footer { all: initial; display: block; font-family: inherit; background: #fff; border-top: 3px solid #000; }
+footer.na-footer *, footer.na-footer *::before, footer.na-footer *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+footer.na-footer .nf-email { background: #fff; border-bottom: 1px solid #ebebeb; padding: 24px 56px; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+footer.na-footer .nf-email__ey { font-size: 9px; text-transform: uppercase; letter-spacing: 0.25em; color: #999; display: block; margin-bottom: 8px; font-family: inherit; }
+footer.na-footer .nf-email__h { font-size: 21px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; color: #000; line-height: 1; font-family: inherit; display: block; }
+footer.na-footer .nf-email__sub { font-size: 11px; color: #777; margin-top: 6px; font-family: inherit; display: block; }
+footer.na-footer .nf-email__form { display: flex; flex: 1; max-width: 420px; min-width: 240px; }
+footer.na-footer .nf-email__input { flex: 1; border: 1.5px solid #000; border-right: none; padding: 13px 16px; font-size: 13px; font-family: inherit; outline: none; background: #fff; color: #000; border-radius: 0; -webkit-appearance: none; height: auto; width: auto; box-shadow: none; }
+footer.na-footer .nf-email__input::placeholder { color: #999; }
+footer.na-footer .nf-email__input:focus { border-color: #000; }
+footer.na-footer .nf-email__btn { background: #000; color: #fff; border: 1.5px solid #000; padding: 13px 24px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; white-space: nowrap; font-family: inherit; border-radius: 0; -webkit-appearance: none; height: auto; width: auto; box-shadow: none; transition: background 0.15s; }
+footer.na-footer .nf-email__btn:hover { background: #333; color: #fff; }
+
+footer.na-footer .nf-brand { padding: 24px 56px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; }
+footer.na-footer .nf-brand__logo { display: block; height: 46px; width: auto; margin-bottom: 12px; }
+footer.na-footer .nf-brand__tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #000; line-height: 1.5; margin-bottom: 5px; font-family: inherit; display: block; }
+footer.na-footer .nf-brand__desc { font-size: 11px; color: #999; line-height: 1.7; max-width: 220px; font-family: inherit; display: block; }
+footer.na-footer .nf-brand__right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
+footer.na-footer .nf-social { display: flex; gap: 6px; list-style: none; }
+footer.na-footer .nf-social li { display: flex; }
+footer.na-footer .nf-social__a { width: 30px; height: 30px; border: 1.5px solid #000; display: flex; align-items: center; justify-content: center; text-decoration: none; background: #fff; transition: background 0.12s; }
+footer.na-footer .nf-social__a:hover { background: #000; }
+footer.na-footer .nf-social__a svg { width: 13px; height: 13px; fill: #000; stroke: none; display: block; transition: fill 0.12s; }
+footer.na-footer .nf-social__a:hover svg { fill: #fff; }
+footer.na-footer .nf-social__a--ig svg { fill: none; stroke: #000; stroke-width: 1.8; }
+footer.na-footer .nf-social__a--ig:hover svg { stroke: #fff; fill: none; }
+footer.na-footer .nf-login { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #000; text-decoration: none; border-bottom: 1px solid #000; padding-bottom: 1px; transition: opacity 0.15s; font-family: inherit; display: inline-block; }
+footer.na-footer .nf-login:hover { opacity: 0.5; }
+
+footer.na-footer .nf-div { margin: 18px 56px 0; height: 1px; background: #ebebeb; display: block; }
+
+footer.na-footer .nf-info { padding: 14px 56px 0; display: block; }
+footer.na-footer .nf-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #000; display: block; margin-bottom: 10px; font-family: inherit; }
+footer.na-footer .nf-links { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; }
+footer.na-footer .nf-links a { font-size: 11px; color: #777; text-decoration: none; text-transform: uppercase; letter-spacing: 0.07em; transition: color 0.12s; font-family: inherit; border: none; padding: 0; background: none; display: inline-block; }
+footer.na-footer .nf-links a:hover { color: #000; text-decoration: none; }
+
+footer.na-footer .nf-contact { padding: 14px 56px 22px; display: block; }
+footer.na-footer .nf-contact__row { display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-end; }
+footer.na-footer .nf-clabel { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #bbb; display: block; margin-bottom: 4px; font-family: inherit; }
+footer.na-footer .nf-cval { font-size: 11px; color: #555; font-family: inherit; display: block; }
+footer.na-footer .nf-ctaLink { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #000; text-decoration: none; border-bottom: 1px solid #000; padding-bottom: 1px; margin-left: auto; transition: opacity 0.15s; font-family: inherit; display: inline-block; }
+footer.na-footer .nf-ctaLink:hover { opacity: 0.5; }
+
+footer.na-footer .nf-bottom { border-top: 1px solid #ebebeb; padding: 14px 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+footer.na-footer .nf-copy { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; font-family: inherit; display: block; }
+footer.na-footer .nf-payments { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; list-style: none; }
+footer.na-footer .nf-payments .icon { height: 22px; width: auto; display: block; }
+footer.na-footer .nf-bottom .localization-form { margin: 0; }
+
+@media (max-width: 768px) {
+  footer.na-footer .nf-email { padding: 18px 16px; flex-direction: column; gap: 12px; }
+  footer.na-footer .nf-email__h { font-size: 17px; }
+  footer.na-footer .nf-email__sub { font-size: 10px; margin-top: 3px; }
+  footer.na-footer .nf-email__input { padding: 10px 13px; font-size: 12px; }
+  footer.na-footer .nf-email__btn { padding: 10px 16px; }
+  footer.na-footer .nf-email__form { max-width: 100%; width: 100%; min-width: unset; }
+  footer.na-footer .nf-brand { padding: 16px 16px 0; flex-direction: column; gap: 12px; }
+  footer.na-footer .nf-brand__logo { height: 34px; margin-bottom: 8px; }
+  footer.na-footer .nf-brand__tag { font-size: 9px; }
+  footer.na-footer .nf-brand__desc { max-width: 100%; font-size: 10px; line-height: 1.5; }
+  footer.na-footer .nf-brand__right { flex-direction: row; align-items: center; gap: 10px; }
+  footer.na-footer .nf-div { margin: 14px 16px 0; }
+  footer.na-footer .nf-info { padding: 12px 16px 0; }
+  footer.na-footer .nf-links { gap: 9px 12px; }
+  footer.na-footer .nf-links a { font-size: 10px; }
+  footer.na-footer .nf-contact { padding: 12px 16px 16px; }
+  footer.na-footer .nf-contact__row { gap: 10px 20px; }
+  footer.na-footer .nf-cval { font-size: 10px; }
+  footer.na-footer .nf-ctaLink { margin-left: 0; margin-top: 4px; }
+  footer.na-footer .nf-bottom { padding: 10px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  footer.na-footer .nf-payments .icon { height: 18px; }
+}
+</style>
+
+<footer class="footer na-footer">
+
+  {%- if section.settings.newsletter_enable -%}
+  <div class="nf-email">
+    <div>
+      <span class="nf-email__ey">Stay in the loop</span>
+      <span class="nf-email__h">{{ section.settings.newsletter_heading }}</span>
+      <span class="nf-email__sub">27,000+ resellers already signed up.</span>
+    </div>
+    {%- form 'customer', id: 'ContactFooter', class: 'nf-email__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="email" name="contact[email]" class="nf-email__input" value="{{ form.email }}" placeholder="Your email address" aria-required="true" autocorrect="off" autocapitalize="off" autocomplete="email" {% if form.errors %}autofocus aria-invalid="true"{% endif %} required />
+      <button type="submit" class="nf-email__btn">Subscribe &#8594;</button>
+    {%- endform -%}
+  </div>
+  {%- endif -%}
+
+  <div class="nf-brand">
+    <div>
+      <img class="nf-brand__logo" src="https://cdn.shopify.com/s/files/1/0810/4090/0375/files/Short_Logo_2_dd85eee9-6ddf-43ca-909f-a400d88426ed.jpg?v=1773141782&width=140" alt="{{ shop.name }}" width="46" height="46" loading="lazy" />
+      <span class="nf-brand__tag">Built for Resellers. Trusted by Thousands.</span>
+      <span class="nf-brand__desc">The UK's no.1 vintage wholesaler. Premium bundles, same-day dispatch, hand graded stock.</span>
+    </div>
+    <div class="nf-brand__right">
+      <ul class="nf-social">
+        <li><a href="https://www.facebook.com/p/Not-Another-Wholesale-61553269331450/" target="_blank" rel="noopener" class="nf-social__a" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a></li>
+        <li><a href="https://www.instagram.com/notanotherwholesale/" target="_blank" rel="noopener" class="nf-social__a nf-social__a--ig" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="#000" stroke="none"/></svg></a></li>
+        <li><a href="https://www.tiktok.com/@notanotherwholesale" target="_blank" rel="noopener" class="nf-social__a" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-6.33 6.34 6.34 6.34 0 0 0 6.33 6.34 6.34 6.34 0 0 0 6.34-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg></a></li>
+      </ul>
+      <a href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}" class="nf-login">&#128274; Reseller Login &#8594;</a>
+    </div>
+  </div>
+
+  <div class="nf-div"></div>
+
+  <div class="nf-info">
+    <span class="nf-label">Info</span>
+    <div class="nf-links">
+      <a href="/pages/faqs">FAQs</a>
+      <a href="/pages/grading-system">Our Grading System</a>
+      <a href="/policies/shipping-policy">Shipping Policy</a>
+      <a href="/policies/refund-policy">Returns</a>
+      <a href="/policies/privacy-policy">Privacy Policy</a>
+      <a href="/policies/terms-of-service">Terms of Service</a>
+      <a href="/pages/reviews">Customer Reviews</a>
+    </div>
+  </div>
+
+  <div class="nf-info">
+    <span class="nf-label">For Resellers</span>
+    <div class="nf-links">
+      <a href="/pages/wholesale-vintage-clothing-for-depop-sellers">Depop Wholesale</a>
+      <a href="/pages/wholesale-vintage-clothing-for-vinted-resellers">Vinted Wholesale</a>
+      <a href="/pages/wholesale-vintage-clothing-for-ebay-sellers">eBay Wholesale</a>
+      <a href="/pages/wholesale-vintage-for-whatnot-tiktok-live">Whatnot &amp; TikTok</a>
+      <a href="/blogs/guides">Reseller Guides</a>
+    </div>
+  </div>
+
+  <div class="nf-contact">
+    <span class="nf-label">Contact</span>
+    <div class="nf-contact__row">
+      <div><span class="nf-clabel">Email</span><span class="nf-cval">support@notanotherwholesale.com</span></div>
+      <div><span class="nf-clabel">Hours</span><span class="nf-cval">Mon–Fri, 9am–5pm</span></div>
+      <div><span class="nf-clabel">Same-day dispatch</span><span class="nf-cval">Order before 11am weekdays</span></div>
+      <a href="/pages/contact" class="nf-ctaLink">Contact Us &#8594;</a>
+    </div>
+  </div>
+
+  <div class="nf-bottom">
+    <span class="nf-copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
+      <localization-form>
+        {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
+          <div class="no-js-hidden">
+            <h2 class="caption-large text-body visually-hidden" id="FooterCountryLabel">{{ 'localization.country_label' | t }}</h2>
+            {%- render 'country-localization', localPosition: 'FooterCountry' -%}
+          </div>
+        {%- endform -%}
+      </localization-form>
+    {%- endif -%}
+    {%- if section.settings.payment_enable -%}
+      <ul class="nf-payments">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>{{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+
+</footer>
+
+{% schema %}
+{
+  "name": "t:sections.footer.name",
+  "blocks": [{ "type": "link_list", "name": "t:sections.footer.blocks.link_list.name", "settings": [{ "type": "inline_richtext", "id": "heading", "default": "Quick links", "label": "t:sections.footer.blocks.link_list.settings.heading.label" }, { "type": "link_list", "id": "menu", "default": "footer", "label": "t:sections.footer.blocks.link_list.settings.menu.label" }] }],
+  "settings": [
+    { "type": "header", "content": "t:sections.footer.settings.header__1.content" },
+    { "type": "checkbox", "id": "newsletter_enable", "default": true, "label": "t:sections.footer.settings.newsletter_enable.label" },
+    { "type": "inline_richtext", "id": "newsletter_heading", "default": "First access to drops & bundles.", "label": "t:sections.footer.settings.newsletter_heading.label" },
+    { "type": "header", "content": "t:sections.footer.settings.header__3.content" },
+    { "type": "checkbox", "id": "enable_country_selector", "default": true, "label": "t:sections.footer.settings.enable_country_selector.label" },
+    { "type": "header", "content": "t:sections.footer.settings.header__7.content" },
+    { "type": "checkbox", "id": "payment_enable", "default": true, "label": "t:sections.footer.settings.payment_enable.label" },
+    { "type": "header", "content": "t:sections.all.spacing" },
+    { "type": "range", "id": "margin_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "t:sections.footer.settings.margin_top.label", "default": 0 }
+  ],
+  "default": { "blocks": [{ "type": "link_list" }] }
+}
+{% endschema %}
