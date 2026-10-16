@@ -1,0 +1,143 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-collection-list.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign cat_handles = 'jackets,t-shirts,hoodies,shirts-polo-shirts,trousers,shorts,knitwear,sportswear,workwear,accessories' | split: ','
+  assign format_handles = 'bales,all-bundles,premium-bundles,category-grade-bundles,variety-bundles,reseller-bundles' | split: ','
+-%}
+
+<style>
+  .nacl { max-width: {{ settings.page_width | default: 1200 }}px; margin: 0 auto; padding: 8px 24px 56px; }
+  .nacl__group + .nacl__group { margin-top: 48px; }
+  .nacl__eyebrow { text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #6B6B6B; margin: 0 0 22px; }
+  .nacl__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .nacl__card { display: block; text-decoration: none; color: #111; }
+  .nacl__imgwrap { position: relative; width: 100%; aspect-ratio: 1 / 1; background: #F4F4F4; border: 1px solid #EDEDED; border-radius: 10px; overflow: hidden; }
+  .nacl__imgwrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .nacl__card:hover .nacl__imgwrap img { transform: scale(1.04); }
+  .nacl__noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #BBB; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+  .nacl__name { display: block; text-align: center; margin: 12px 6px 0; font-weight: 600; font-size: 14px; letter-spacing: 0.02em; text-transform: uppercase; color: #111; line-height: 1.3; }
+  @media (max-width: 989px) { .nacl__grid { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+  @media (max-width: 599px) { .nacl__grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .nacl__name { font-size: 12px; } }
+</style>
+
+<div class="page-width">
+  <h1 class="title title--primary inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+    {{ section.settings.title }}
+  </h1>
+</div>
+
+<div class="nacl">
+  {%- for grp in (1..2) -%}
+    {%- liquid
+      if grp == 1
+        assign handles = cat_handles
+        assign eyebrow = 'Shop by Category'
+      else
+        assign handles = format_handles
+        assign eyebrow = 'Bundles & Bales'
+      endif
+    -%}
+    <div class="nacl__group">
+      <p class="nacl__eyebrow">{{ eyebrow }}</p>
+      <ul class="nacl__grid" role="list">
+        {%- for h in handles -%}
+          {%- assign coll = collections[h] -%}
+          {%- if coll != blank and coll.id -%}
+            {%- assign tile_img = coll.image -%}
+            {%- unless tile_img -%}
+              {%- for p in coll.products -%}
+                {%- if p.available and p.featured_image -%}
+                  {%- assign tile_img = p.featured_image -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endunless -%}
+            {%- unless tile_img -%}{%- assign tile_img = coll.featured_image -%}{%- endunless -%}
+            <li class="grid__item">
+              <a href="{{ coll.url }}" class="nacl__card">
+                <div class="nacl__imgwrap">
+                  {%- if tile_img -%}
+                    <img
+                      src="{{ tile_img | image_url: width: 600 }}"
+                      srcset="{{ tile_img | image_url: width: 300 }} 300w, {{ tile_img | image_url: width: 600 }} 600w, {{ tile_img | image_url: width: 900 }} 900w"
+                      sizes="(min-width: 990px) 270px, (min-width: 600px) 30vw, 46vw"
+                      alt="{{ coll.title | escape }}"
+                      width="600" height="600" loading="lazy">
+                  {%- else -%}
+                    <div class="nacl__noimg">{{ coll.title | escape }}</div>
+                  {%- endif -%}
+                </div>
+                <span class="nacl__name">{{ coll.title | escape }}</span>
+              </a>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-list-collections.name",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "t:sections.main-list-collections.settings.title.label",
+      "default": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "options": [
+        { "value": "alphabetical", "label": "t:sections.main-list-collections.settings.sort.options__1.label" },
+        { "value": "alphabetical_reversed", "label": "t:sections.main-list-collections.settings.sort.options__2.label" },
+        { "value": "date_reversed", "label": "t:sections.main-list-collections.settings.sort.options__3.label" },
+        { "value": "date", "label": "t:sections.main-list-collections.settings.sort.options__4.label" },
+        { "value": "products_high", "label": "t:sections.main-list-collections.settings.sort.options__5.label" },
+        { "value": "products_low", "label": "t:sections.main-list-collections.settings.sort.options__6.label" }
+      ],
+      "default": "alphabetical",
+      "label": "t:sections.main-list-collections.settings.sort.label"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        { "value": "adapt", "label": "t:sections.main-list-collections.settings.image_ratio.options__1.label" },
+        { "value": "portrait", "label": "t:sections.main-list-collections.settings.image_ratio.options__2.label" },
+        { "value": "square", "label": "t:sections.main-list-collections.settings.image_ratio.options__3.label" }
+      ],
+      "default": "adapt",
+      "label": "t:sections.main-list-collections.settings.image_ratio.label",
+      "info": "t:sections.main-list-collections.settings.image_ratio.info"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "label": "t:sections.main-list-collections.settings.columns_desktop.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-list-collections.settings.header_mobile.content"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        { "value": "1", "label": "t:sections.main-list-collections.settings.columns_mobile.options__1.label" },
+        { "value": "2", "label": "t:sections.main-list-collections.settings.columns_mobile.options__2.label" }
+      ],
+      "default": "2",
+      "label": "t:sections.main-list-collections.settings.columns_mobile.label"
+    }
+  ]
+}
+{% endschema %}
