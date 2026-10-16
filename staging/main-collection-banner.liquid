@@ -3,24 +3,22 @@
 
 <style>
   .nawcol { background: #FFFFFF; border-bottom: 1px solid #EEEEEE; }
-  .nawcol__inner { max-width: {{ settings.page_width | default: 1200 }}px; margin: 0 auto; padding: 44px 24px 44px; }
-  .nawcol__crumb { text-align: center; margin: 0 0 22px; font-size: 12px; letter-spacing: 0.04em; color: #6B6B6B; }
+  .nawcol__inner { max-width: {{ settings.page_width | default: 1200 }}px; margin: 0 auto; padding: 44px 24px 40px; text-align: center; }
+  .nawcol__crumb { margin: 0 0 20px; font-size: 12px; letter-spacing: 0.04em; color: #6B6B6B; }
   .nawcol__crumb a { color: #6B6B6B; text-decoration: none; }
   .nawcol__crumb a:hover { color: #111; }
   .nawcol__crumb .sep { margin: 0 8px; color: #CBC7BE; }
-  .nawcol__box { max-width: 880px; margin: 0 auto; background: #F4F4F4; border: 2px solid #111111; border-radius: 12px; padding: 40px 48px; text-align: center; }
-  .nawcol__count { display: inline-block; font-weight: 600; color: #6B6B6B; text-transform: uppercase; letter-spacing: 0.14em; font-size: 11px; margin: 0 0 14px; }
   .nawcol__title { font-weight: 800; font-size: clamp(32px, 4.6vw, 50px); line-height: 1.04; letter-spacing: -0.02em; color: #111; margin: 0; text-transform: uppercase; }
-  .nawcol__bar { width: 54px; height: 3px; background: #111; margin: 18px auto 0; }
-  .nawcol__desc { max-width: 640px; margin: 20px auto 0; font-size: 16px; line-height: 1.75; color: #444; }
+  .nawcol__box { max-width: 820px; margin: 24px auto 0; background: #F4F4F4; border: 1px solid #111111; border-radius: 10px; padding: 24px 34px; }
+  .nawcol__desc { max-width: 660px; margin: 0 auto; font-size: 16px; line-height: 1.75; color: #444; }
   .nawcol__desc p { margin: 0 0 10px; }
   .nawcol__desc p:last-child { margin-bottom: 0; }
   .nawcol__desc strong, .nawcol__desc b { color: #111; font-weight: 600; }
-  .nawcol__img { max-width: 880px; margin: 26px auto 0; border-radius: 10px; overflow: hidden; display: block; }
+  .nawcol__img { max-width: 820px; margin: 24px auto 0; border-radius: 10px; overflow: hidden; display: block; }
   .nawcol__img img { display: block; width: 100%; height: auto; }
   @media (max-width: 600px) {
-    .nawcol__inner { padding: 26px 16px 28px; }
-    .nawcol__box { padding: 28px 22px; border-radius: 10px; }
+    .nawcol__inner { padding: 26px 16px 26px; }
+    .nawcol__box { padding: 20px 20px; border-radius: 8px; }
     .nawcol__desc { font-size: 15px; }
   }
 </style>
@@ -32,19 +30,16 @@
       <a href="{{ routes.root_url }}">Home</a><span class="sep">&rsaquo;</span><a href="{{ routes.collections_url }}">Collections</a><span class="sep">&rsaquo;</span>{{ collection.title | escape }}
     </nav>
 
-    <div class="nawcol__box">
-      {%- if collection.all_products_count > 0 -%}
-        <span class="nawcol__count">{{ collection.all_products_count }} {% if collection.all_products_count == 1 %}bundle{% else %}bundles{% endif %}</span>
-      {%- endif -%}
-      <h1 class="nawcol__title">
-        <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
-        {{- collection.title | escape -}}
-      </h1>
-      <div class="nawcol__bar"></div>
-      {%- if collection.description != blank -%}
+    <h1 class="nawcol__title">
+      <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
+      {{- collection.title | escape -}}
+    </h1>
+
+    {%- if collection.description != blank -%}
+      <div class="nawcol__box">
         <div class="nawcol__desc rte">{{ collection.description }}</div>
-      {%- endif -%}
-    </div>
+      </div>
+    {%- endif -%}
 
     {%- if section.settings.show_collection_image and collection.image -%}
       <div class="nawcol__img media">
@@ -56,7 +51,7 @@
             {{ collection.image | image_url }} {{ collection.image.width }}w
           "
           src="{{ collection.image | image_url: width: 1100 }}"
-          sizes="(min-width: 880px) 880px, calc(100vw - 32px)"
+          sizes="(min-width: 820px) 820px, calc(100vw - 32px)"
           alt="{{ collection.image.alt | escape }}"
           width="{{ collection.image.width }}"
           height="{{ collection.image.height }}"
