@@ -1,8 +1,12 @@
 {%- liquid
-  assign cat_handles = 'jackets,t-shirts,hoodies,shirts-polo-shirts,trousers,shorts,knitwear,sportswear,workwear,accessories' | split: ','
-  assign cat_labels = 'Jackets & Coats|T-Shirts|Sweatshirts & Hoodies|Shirts & Polo Shirts|Trousers|Shorts|Knitwear & Fleeces|Sportswear|Workwear|Accessories' | split: '|'
+  assign base = 'https://cdn.shopify.com/s/files/1/0810/4090/0375/files/'
+  assign cat_handles = 'jackets,knitwear,hoodies,t-shirts,trousers,shorts,shirts-polo-shirts,accessories' | split: ','
+  assign cat_labels = 'Jackets & Coats|Knitwear & Fleeces|Sweatshirts & Hoodies|T-Shirts|Trousers|Shorts|Shirts & Polos|Accessories' | split: '|'
+  assign cat_imgs = 'UNBRANDEDDENIMJACKET.png?v=1787655557|GapKnitwear.png?v=1787319848|COLLEGEHOODIESWEATSHIRT.png?v=1751632572|SINGLESTITCHT-SHIRT.png?v=1751632586|BRANDEDCHINOPANTS.png?v=1789988384|LEVIS501CUTOFFSHORTS.png?v=1782907806|RALPHLAURENPOLOSHIRT.png?v=1751632589|BRANDEDCAPS.png?v=1751633444' | split: '|'
+
   assign col_handles = 'best-sellers,under-150,reseller-bundles,winter-drop,spring-summer,sportswear,workwear,premium,unbranded,bales,all-bundles,sale' | split: ','
   assign col_labels = 'Best Sellers|Under £150|Reseller Bundles|Autumn / Winter|Spring / Summer|Sportswear|Workwear|Premium|Unbranded|Bales|Bundles|Sale' | split: '|'
+  assign col_imgs = 'LEVISMIXEDCODEA_B.png?v=1751632469|KIDSMIX.png?v=1751632423|VINTEDDEPOPRESELLER.png?v=1751632549|CHRISTMASJUMPERS.png?v=1791816190|UnrbrandedCargoShorts.png?v=1774968234|ADIDASTRACKPANTS.png?v=1751632470|UnbrandedCoverallDungarees.png?v=1787913392|NORTHFACEDOWNJACKET.png?v=1751632493|UNBRANDEDCORDUROYSHIRT.png?v=1751632496|Bulk1_jnkdscnksjd_11.png?v=1751632456|PREMIUMTRACKJACKET_7e3c1c2d-d2d4-4fa6-8d56-bcadd80a31f6.png?v=1760976808|TOMMYKNITWEAR.png?v=1753458229' | split: '|'
 -%}
 
 <style>
@@ -34,10 +38,12 @@
       if grp == 1
         assign handles = cat_handles
         assign labels = cat_labels
+        assign imgs = cat_imgs
         assign eyebrow = 'Shop by Category'
       else
         assign handles = col_handles
         assign labels = col_labels
+        assign imgs = col_imgs
         assign eyebrow = 'Shop by Collection'
       endif
     -%}
@@ -49,26 +55,23 @@
           {%- if coll != blank and coll.id -%}
             {%- assign lbl = labels[forloop.index0] -%}
             {%- if lbl == blank -%}{%- assign lbl = coll.title -%}{%- endif -%}
-            {%- assign tile_img = coll.image -%}
-            {%- unless tile_img -%}
-              {%- for p in coll.products -%}
-                {%- if p.available and p.featured_image -%}
-                  {%- assign tile_img = p.featured_image -%}
-                  {%- break -%}
-                {%- endif -%}
-              {%- endfor -%}
-            {%- endunless -%}
-            {%- unless tile_img -%}{%- assign tile_img = coll.featured_image -%}{%- endunless -%}
+            {%- assign fixed = imgs[forloop.index0] -%}
+            {%- assign img_url = '' -%}
+            {%- if fixed != blank -%}
+              {%- assign img_url = base | append: fixed -%}
+            {%- else -%}
+              {%- assign ti = coll.image -%}
+              {%- unless ti -%}
+                {%- for p in coll.products -%}{%- if p.available and p.featured_image -%}{%- assign ti = p.featured_image -%}{%- break -%}{%- endif -%}{%- endfor -%}
+              {%- endunless -%}
+              {%- unless ti -%}{%- assign ti = coll.featured_image -%}{%- endunless -%}
+              {%- if ti -%}{%- assign img_url = ti | image_url: width: 600 -%}{%- endif -%}
+            {%- endif -%}
             <li>
               <a href="{{ coll.url }}" class="nacl__card">
                 <div class="nacl__imgwrap">
-                  {%- if tile_img -%}
-                    <img
-                      src="{{ tile_img | image_url: width: 600 }}"
-                      srcset="{{ tile_img | image_url: width: 300 }} 300w, {{ tile_img | image_url: width: 600 }} 600w, {{ tile_img | image_url: width: 900 }} 900w"
-                      sizes="(min-width: 990px) 280px, (min-width: 600px) 30vw, 46vw"
-                      alt="{{ lbl | escape }}"
-                      width="600" height="600" loading="lazy">
+                  {%- if img_url != blank -%}
+                    <img src="{{ img_url }}{% if fixed != blank %}&width=600{% endif %}" alt="{{ lbl | escape }}" width="600" height="600" loading="lazy">
                   {%- else -%}
                     <div class="nacl__noimg">{{ lbl | escape }}</div>
                   {%- endif -%}
