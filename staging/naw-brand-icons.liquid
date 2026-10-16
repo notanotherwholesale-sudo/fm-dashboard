@@ -1,0 +1,51 @@
+{% comment %} NAW brand icons strip. Curated transparent icons from Files; falls back to lead product image if an icon URL is blank. Place via Custom Liquid render of naw-brand-icons {% endcomment %}
+{% assign b_handles = 'carhartt|ralph-lauren|levis|the-north-face-1|tommy-hilfiger|nike|dickies|patagonia|lacoste|adidas|wrangler|lee|columbia|harley-davidson|nautica|realtree|chaps|eddie-bauer|l-l-bean|champion|woolrich' | split: '|' %}
+{% assign b_labels = 'Carhartt|Ralph Lauren|Levis|The North Face|Tommy Hilfiger|Nike|Dickies|Patagonia|Lacoste|Adidas|Wrangler|Lee|Columbia|Harley Davidson|Nautica|Realtree|Chaps|Eddie Bauer|L.L.Bean|Champion|Woolrich' | split: '|' %}
+{% assign b_icons = 'https://cdn.shopify.com/s/files/1/0810/4090/0375/files/CARHARTT_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/RALPH_LAUREN_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/LEVIS_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/TNF_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/TOMMY_HILFIGER_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/NIKE_CLEAN.png?v=1786986591&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/DICKIES_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/PATAGONIA_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/LACOSTE_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/ADIDAS_CLEAN.png?v=1786986590&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/WRANGLER.png?v=1792142961&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/LEE.png?v=1792142965&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/COLUMBIA.png?v=1792142961&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/HARLEY_DAVIDSON.png?v=1792142964&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/NAUTICA.png?v=1792142944&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/REALTREE.png?v=1792142964&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/CHAPS.png?v=1792142954&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/EDDIE_BAUER.png?v=1792142965&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/LLBEAN.png?v=1792142953&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/CHAMPION.png?v=1792142948&width=300|https://cdn.shopify.com/s/files/1/0810/4090/0375/files/WOOLRICH.png?v=1792142941&width=300' | split: '|' %}
+<style>
+  .naw-brands { max-width: 1300px; margin: 0 auto; padding: 44px 4% 40px; font-family: 'Poppins', sans-serif; text-align: center; }
+  .naw-brands__title { font-size: clamp(2em, 3.4vw, 3em); font-weight: 800; letter-spacing: -0.5px; color: #000; text-transform: uppercase; margin: 0 0 34px; line-height: 1; }
+  .naw-brands__grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px 10px; }
+  .naw-brand { flex: 0 0 calc(14.285% - 12px); display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; }
+  .naw-brand .bimg { height: 84px; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+  .naw-brand .bimg img { max-width: 88%; max-height: 84px; object-fit: contain; display: block; transition: transform .2s ease; }
+  .naw-brand:hover .bimg img { transform: translateY(-4px) scale(1.04); }
+  .naw-brand .blabel { font-size: 11px; font-weight: 600; color: #111; letter-spacing: .1px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .naw-brand:hover .blabel { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 989px) {
+    .naw-brands__grid { gap: 26px 8px; }
+    .naw-brand { flex: 0 0 calc(20% - 10px); }
+  }
+  @media (max-width: 749px) {
+    .naw-brands { padding: 34px 4% 30px; }
+    .naw-brands__title { margin-bottom: 24px; }
+    .naw-brands__grid { gap: 22px 6px; }
+    .naw-brand { flex: 0 0 calc(33.333% - 8px); gap: 7px; }
+    .naw-brand .bimg, .naw-brand .bimg img { height: 54px; max-height: 54px; }
+    .naw-brand .blabel { font-size: 8.5px; letter-spacing: 0; }
+  }
+</style>
+<div class="naw-brands">
+  <h2 class="naw-brands__title">Shop Our Brands</h2>
+  <div class="naw-brands__grid">
+    {% for i in (0..20) %}
+      {% assign bh = b_handles[i] %}
+      {% assign coll = collections[bh] %}
+      {% if coll %}
+        {% assign icon = b_icons[i] %}
+        {% if icon == blank %}
+          {% for product in coll.products limit: 12 %}
+            {% if product.available and product.featured_image %}
+              {% assign icon = product.featured_image | image_url: width: 300 %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        <a class="naw-brand" href="{{ coll.url }}">
+          <span class="bimg">{% if icon != blank %}<img src="{{ icon }}" alt="{{ b_labels[i] | escape }}" loading="lazy">{% endif %}</span>
+          <span class="blabel">{{ b_labels[i] }}</span>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
