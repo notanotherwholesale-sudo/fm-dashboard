@@ -1,0 +1,221 @@
+{% comment %} NAW July Drop sliding hero — 3 slides: 1 Autumn Collection, 2 original hero, 3 find-your-bundle quiz. Reuses original .hero-tom CSS verbatim. {% endcomment %}
+<div class="naw-dhero" data-interval="6500">
+
+  <!-- SLIDE 1: September 10k Restock -->
+  <div class="hero-tom naw-slide is-active" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.62)), url('https://cdn.shopify.com/s/files/1/0810/4090/0375/files/Bale_Backdrop.jpg?v=1790008812');">
+    <div class="tom-hero-overlay"></div>
+    <div class="hero-tom-content">
+      <div class="hero-tom-eyebrow">10,000 UNITS JUST DROPPED</div>
+      <div class="hero-tom-title">THE AUTUMN COLLECTION IS&nbsp;<span class="hero-tom-accent">HERE</span></div>
+      <p class="hero-tom-subtitle">FRESH AUTUMN/WINTER STOCK LANDING NOW.<br>FLEECES · JACKETS · KNITS · GRADED A/B · SAME-DAY DISPATCH.</p>
+      <div class="hero-tom-buttons">
+        <a href="https://notanotherwholesale.com/collections/september-drop" class="hero-tom-button">SHOP THE DROP</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: denim piled up (former slide 1 image) -->
+  <div class="hero-tom naw-slide" style="background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('{{ 'naw-hero-drop.webp' | asset_url }}');">
+    <div class="tom-hero-overlay"></div>
+    <div class="hero-tom-content">
+      <div class="hero-tom-title">VINTAGE WHOLESALE,<br>DONE&nbsp;<span class="hero-tom-accent">PROPERLY</span></div>
+      <p class="hero-tom-subtitle">BUILT BY RESELLERS. FOR RESELLERS.<br>PREMIUM VINTAGE BUNDLES SHIPPED DAILY.</p>
+      <div class="hero-tom-buttons">
+        <a href="https://notanotherwholesale.com/collections/all-products" class="hero-tom-button">SHOP THIS WEEK'S DROP</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Find Your Bundle quiz -->
+  <div class="hero-tom naw-slide">
+    <div class="tom-hero-overlay"></div>
+    <div class="hero-tom-content">
+      <div class="hero-tom-eyebrow">NEW AND DON'T KNOW WHERE TO START?</div>
+      <div class="hero-tom-title">FIND YOUR PERFECT&nbsp;<span class="hero-tom-accent">BUNDLE</span></div>
+      <p class="hero-tom-subtitle">30 SECONDS &middot; 4 QUESTIONS = INSTANT RESULTS.<br>MATCHED TO WHERE YOU SELL, YOUR BUDGET AND YOUR GOAL.</p>
+      <div class="hero-tom-buttons">
+        <a href="https://notanotherwholesale.com/pages/find-your-bundle" class="hero-tom-button">TAKE THE QUIZ &#8594;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="naw-dhero__dots">
+    <button type="button" class="is-active" aria-label="Autumn Collection"></button>
+    <button type="button" aria-label="Vintage Wholesale"></button>
+    <button type="button" aria-label="Find your bundle quiz"></button>
+  </div>
+</div>
+
+<style>
+:root {
+  --hero-title-min: 34px;
+  --hero-title-max: 65px;
+  --hero-sub-min: 12px;
+  --hero-sub-max: 16px;
+  --button-font-min: 16px;
+  --button-font-max: 18px;
+}
+
+.naw-dhero { position: relative; width: 100%; height: 100vh; min-height: 600px; margin-top: -78px; overflow: hidden; }
+
+.naw-dhero .hero-tom {
+  position: absolute;
+  inset: 0;
+  padding-top: 78px;
+  background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url('{{ 'naw-hero-rail.webp' | asset_url }}');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  color: #fff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .8s cubic-bezier(.23,1,.32,1);
+  z-index: 1;
+}
+.naw-dhero .hero-tom.is-active { opacity: 1; visibility: visible; z-index: 2; }
+
+.tom-hero-overlay { position: absolute; inset: 0; z-index: 2; }
+
+.hero-tom-content {
+  position: relative;
+  z-index: 3;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-tom-eyebrow {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  padding: 7px 16px;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+}
+
+.hero-tom .hero-tom-title {
+  font-size: clamp(var(--hero-title-min), 6vw, var(--hero-title-max)) !important;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
+  letter-spacing: 0.5px;
+  margin: 0 0 20px 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+  max-width: 24ch;
+}
+
+.hero-tom-accent { position: relative; display: inline-block; padding-right: 0.42em; }
+.hero-tom-accent::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.18em;
+  height: 0.16em;
+  width: 0;
+  background: #FF6A00;
+  animation: heroUnderline 0.5s ease-out 1s forwards;
+}
+.hero-tom-accent::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.20em;
+  width: 0.18em;
+  height: 0.18em;
+  background: #FF6A00;
+  border-radius: 1px;
+  opacity: 0;
+  animation: heroDotPop 0.14s ease-out 1.5s forwards;
+}
+@keyframes heroUnderline { to { width: calc(100% - 0.42em); } }
+@keyframes heroDotPop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+
+.hero-tom p.hero-tom-subtitle {
+  display: inline-block;
+  font-size: clamp(var(--hero-sub-min), 2vw, var(--hero-sub-max)) !important;
+  line-height: 1.35;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: normal;
+  max-width: none !important;
+  margin: 0 auto 28px auto;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 24px;
+  border-radius: 4px;
+}
+
+.hero-tom-buttons { display: flex; justify-content: center; }
+.hero-tom-button {
+  margin-top: 0;
+  display: inline-block;
+  padding: 14px 36px;
+  background-color: #fff;
+  color: #000;
+  text-decoration: none;
+  font-size: clamp(var(--button-font-min), 1.4vw, var(--button-font-max));
+  border-radius: 6px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: transform .25s ease, background-color .25s ease;
+}
+.hero-tom-button:hover { background-color: #f0f0f0; transform: translateY(-2px); }
+
+.naw-dhero__dots { position: absolute; bottom: 28px; left: 0; right: 0; z-index: 5; display: flex; gap: 10px; justify-content: center; }
+.naw-dhero__dots button { width: 10px; height: 10px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: background .3s, width .3s; }
+.naw-dhero__dots button.is-active { background: #fff; width: 28px; border-radius: 6px; }
+
+@media (max-width: 767px) {
+  .naw-dhero { height: 100svh; min-height: 520px; max-height: 700px; }
+  .naw-dhero .hero-tom {
+    background-attachment: scroll;
+    background-position: center 20%;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .hero-tom-content { max-width: 420px; }
+  .hero-tom .hero-tom-title { font-size: clamp(32px, 8vw, 36px) !important; line-height: 1.06; letter-spacing: 0.1px; max-width: 95%; margin: 0 auto 14px auto; text-wrap: balance; }
+  .hero-tom-accent::before { height: 0.14em; bottom: -0.14em; }
+  .hero-tom-accent::after { width: 0.16em; height: 0.16em; bottom: -0.16em; }
+  .hero-tom p.hero-tom-subtitle { font-size: 11px !important; letter-spacing: 0.9px; max-width: 90%; margin: 0 auto 22px auto; padding: 10px 14px; }
+  .hero-tom-button { width: 100%; max-width: 300px; padding: 14px 24px; font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) { .naw-dhero .hero-tom { transition: none; } }
+</style>
+
+<script>
+window.addEventListener('scroll', function() {
+  var h = document.querySelector('.header-wrapper');
+  if (h) h.classList.toggle('scrolled', window.scrollY > 50);
+});
+(function(){
+  var el = document.querySelector('.naw-dhero'); if (!el || el.dataset.init) { return; } el.dataset.init = '1';
+  var slides = el.querySelectorAll('.hero-tom'), dots = el.querySelectorAll('.naw-dhero__dots button'), i = 0, n = slides.length;
+  var ms = parseInt(el.getAttribute('data-interval'), 10) || 6500, timer = null;
+  function go(k){ slides[i].classList.remove('is-active'); dots[i].classList.remove('is-active'); i = (k + n) % n; slides[i].classList.add('is-active'); dots[i].classList.add('is-active'); }
+  function start(){ stop(); if (n < 2) { return; } timer = setInterval(function(){ go(i + 1); }, ms); }
+  function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+  for (var d = 0; d < dots.length; d++) { (function(k){ dots[k].addEventListener('click', function(){ go(k); start(); }); })(d); }
+  el.addEventListener('mouseenter', stop); el.addEventListener('mouseleave', start);
+  start();
+})();
+</script>
