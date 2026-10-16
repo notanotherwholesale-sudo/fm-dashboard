@@ -13,12 +13,30 @@
 {%- assign naw_now = 'now' | date: '%s' | times: 1 -%}
 {%- assign naw_max = section.settings.max_reviews | default: 20 -%}
 
+{%- comment -%} live rating line: compute from the feed unless manually overridden {%- endcomment -%}
+{%- assign naw_cnt = 0 -%}
+{%- assign naw_sum = 0 -%}
+{%- for r in naw_feed -%}
+  {%- assign rs = r.s | default: 5 -%}
+  {%- if rs >= 1 and r.q != blank -%}
+    {%- assign naw_cnt = naw_cnt | plus: 1 -%}
+    {%- assign naw_sum = naw_sum | plus: rs -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign naw_subline = section.settings.subheading -%}
+{%- if naw_subline == blank and naw_cnt > 0 -%}
+  {%- assign naw_avg = naw_sum | times: 10 | divided_by: naw_cnt -%}
+  {%- assign naw_whole = naw_avg | divided_by: 10 -%}
+  {%- assign naw_frac = naw_avg | modulo: 10 -%}
+  {%- capture naw_subline -%}Rated {{ naw_whole }}.{{ naw_frac }} / 5 from {{ naw_cnt }} verified reviews{%- endcapture -%}
+{%- endif -%}
+
 <div class="naw-lrev" data-naw-lrev data-speed="{{ section.settings.speed | default: 45 }}">
   {%- if section.settings.heading != blank -%}
     <h2 class="naw-lrev__h">{{ section.settings.heading | escape }}</h2>
   {%- endif -%}
-  {%- if section.settings.subheading != blank -%}
-    <div class="naw-lrev__sub"><span class="naw-lrev__ssq"></span>{{ section.settings.subheading | escape }}</div>
+  {%- if naw_subline != blank -%}
+    <div class="naw-lrev__sub"><span class="naw-lrev__ssq"></span>{{ naw_subline }}</div>
   {%- endif -%}
 
   <div class="naw-lrev__viewport" data-naw-lrev-viewport>
@@ -140,7 +158,7 @@
   "name": "NAW Live reviews",
   "settings": [
     {"type":"text","id":"heading","label":"Heading","default":"Don't just take our word for it"},
-    {"type":"text","id":"subheading","label":"Subheading (rating line)","default":"Rated 4.5 / 5 by 200+ verified resellers"},
+    {"type":"text","id":"subheading","label":"Rating line — leave blank to auto-calculate live from reviews","default":""},
     {"type":"text","id":"button_text","label":"Button text","default":"SEE ALL REVIEWS"},
     {"type":"url","id":"button_link","label":"Button link"},
     {"type":"range","id":"max_reviews","label":"Max reviews shown","min":4,"max":30,"step":1,"default":20},
