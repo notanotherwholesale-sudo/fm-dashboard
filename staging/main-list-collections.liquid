@@ -1,6 +1,8 @@
 {%- liquid
   assign cat_handles = 'jackets,t-shirts,hoodies,shirts-polo-shirts,trousers,shorts,knitwear,sportswear,workwear,accessories' | split: ','
-  assign format_handles = 'bales,all-bundles,premium-bundles,category-grade-bundles,variety-bundles,reseller-bundles' | split: ','
+  assign cat_labels = 'Jackets & Coats|T-Shirts|Sweatshirts & Hoodies|Shirts & Polo Shirts|Trousers|Shorts|Knitwear & Fleeces|Sportswear|Workwear|Accessories' | split: '|'
+  assign col_handles = 'best-sellers,under-150,reseller-bundles,winter-drop,spring-summer,sportswear,workwear,premium,unbranded,bales,all-bundles,sale' | split: ','
+  assign col_labels = 'Best Sellers|Under £150|Reseller Bundles|Autumn / Winter|Spring / Summer|Sportswear|Workwear|Premium|Unbranded|Bales|Bundles|Sale' | split: '|'
 -%}
 
 <style>
@@ -31,10 +33,12 @@
     {%- liquid
       if grp == 1
         assign handles = cat_handles
+        assign labels = cat_labels
         assign eyebrow = 'Shop by Category'
       else
-        assign handles = format_handles
-        assign eyebrow = 'Bundles & Bales'
+        assign handles = col_handles
+        assign labels = col_labels
+        assign eyebrow = 'Shop by Collection'
       endif
     -%}
     <div class="nacl__group">
@@ -43,6 +47,8 @@
         {%- for h in handles -%}
           {%- assign coll = collections[h] -%}
           {%- if coll != blank and coll.id -%}
+            {%- assign lbl = labels[forloop.index0] -%}
+            {%- if lbl == blank -%}{%- assign lbl = coll.title -%}{%- endif -%}
             {%- assign tile_img = coll.image -%}
             {%- unless tile_img -%}
               {%- for p in coll.products -%}
@@ -61,13 +67,13 @@
                       src="{{ tile_img | image_url: width: 600 }}"
                       srcset="{{ tile_img | image_url: width: 300 }} 300w, {{ tile_img | image_url: width: 600 }} 600w, {{ tile_img | image_url: width: 900 }} 900w"
                       sizes="(min-width: 990px) 280px, (min-width: 600px) 30vw, 46vw"
-                      alt="{{ coll.title | escape }}"
+                      alt="{{ lbl | escape }}"
                       width="600" height="600" loading="lazy">
                   {%- else -%}
-                    <div class="nacl__noimg">{{ coll.title | escape }}</div>
+                    <div class="nacl__noimg">{{ lbl | escape }}</div>
                   {%- endif -%}
                 </div>
-                <div class="nacl__foot"><span class="nacl__name">{{ coll.title | escape }}</span></div>
+                <div class="nacl__foot"><span class="nacl__name">{{ lbl | escape }}</span></div>
               </a>
             </li>
           {%- endif -%}
