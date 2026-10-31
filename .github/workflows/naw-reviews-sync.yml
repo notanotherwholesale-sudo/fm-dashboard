@@ -2,7 +2,7 @@ name: NAW reviews wall sync
 on:
   schedule:
     # 4x/day (UTC): 08:17, 12:17, 17:17, 21:17 — mirrors the old local task
-    - cron: '17 8,12,17,21 * * *'
+    - cron: '37 8,12,17,21 * * *'
   workflow_dispatch:
     inputs:
       write:
