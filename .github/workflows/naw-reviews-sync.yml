@@ -1,0 +1,27 @@
+name: NAW reviews wall sync
+on:
+  schedule:
+    # 4x/day (UTC): 08:17, 12:17, 17:17, 21:17 — mirrors the old local task
+    - cron: '17 8,12,17,21 * * *'
+  workflow_dispatch:
+    inputs:
+      write:
+        description: 'Set to 1 to actually write the wall (blank = dry run)'
+        required: false
+        default: ''
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run reviews sync
+        env:
+          KLAVIYO_API_KEY: ${{ secrets.KLAVIYO_API_KEY }}
+          SHOPIFY_STORE: e64e26-3.myshopify.com
+          SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+          # scheduled runs always write; manual runs write only if you pass write=1
+          WRITE: ${{ github.event_name == 'schedule' && '1' || github.event.inputs.write }}
+        run: python naw-reviews-sync/sync.py
