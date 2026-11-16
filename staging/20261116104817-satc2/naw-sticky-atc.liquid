@@ -1,0 +1,156 @@
+{% comment %}
+  NAW FEATURE 9 — Sticky add-to-cart bar (Black Friday themed)
+  Slim bar slides up from the bottom once the real buy button scrolls out of
+  view: thumbnail, title, BLACK FRIDAY price, grade, add button.
+  During Blackout it shows the final 30%-off price (price × 0.7) so the customer
+  sees what they'll pay without waiting for the cart. Skips bf-exclude products.
+  INSTALL: {% render 'naw-sticky-atc', product: product %} at the end of
+  sections/main-product.liquid (inside the section).
+{% endcomment %}
+
+{%- assign naw_sv = product.selected_or_first_available_variant -%}
+{%- liquid
+  assign naw_satc_vt = naw_sv.title | strip
+  assign naw_satc_grade = ''
+  if naw_satc_vt == 'A' or naw_satc_vt == 'B' or naw_satc_vt == 'C' or naw_satc_vt == 'A/B' or naw_satc_vt == 'B/C' or naw_satc_vt == 'A/B/C'
+    assign naw_satc_grade = naw_satc_vt
+  elsif naw_sv.metafields.custom.productgrade1 != blank
+    assign naw_satc_grade = naw_sv.metafields.custom.productgrade1.value
+  elsif product.metafields.custom.productgrade != blank
+    assign naw_satc_grade = product.metafields.custom.productgrade.value
+  endif
+  assign naw_bf = true
+  if product.tags contains 'bf-exclude'
+    assign naw_bf = false
+  endif
+  if naw_bf
+    assign naw_satc_price = naw_sv.price | times: 0.7 | round
+  else
+    assign naw_satc_price = naw_sv.price
+  endif
+  assign naw_orig = naw_sv.compare_at_price
+  if naw_orig == blank or naw_orig < naw_sv.price
+    assign naw_orig = naw_sv.price
+  endif
+  assign naw_pct = 0
+  if naw_bf and naw_orig > naw_satc_price
+    assign naw_pct = naw_orig | minus: naw_satc_price | times: 100.0 | divided_by: naw_orig | round
+  endif
+-%}
+{%- if product.available -%}
+<div class="naw-satc{% if naw_bf %} naw-satc--bf{% endif %}" data-naw-satc data-naw-bf="{% if naw_bf %}1{% endif %}" data-fallback-grade="{{ naw_satc_grade | escape }}" aria-hidden="true">
+  <div class="naw-satc__imgwrap">
+    <img class="naw-satc__img" src="{{ product.featured_image | image_url: width: 96 }}" width="48" height="48" alt="" loading="lazy">
+    {%- if naw_pct > 0 -%}<span class="naw-satc__badge">{{ naw_pct }}% OFF</span>{%- endif -%}
+  </div>
+  <div class="naw-satc__meta">
+    <div class="naw-satc__title">{% if naw_bf %}Black Friday deal{% else %}{{ product.title }}{% endif %}</div>
+    <div class="naw-satc__sub"><span data-naw-satc-price>{{ naw_satc_price | money }}</span><span class="naw-satc__dot">&middot;</span><span data-naw-satc-variant>{%- if naw_satc_grade != blank -%}Grade {{ naw_satc_grade }}{%- elsif naw_sv.title != 'Default Title' -%}{{ naw_sv.title }}{%- endif -%}</span></div>
+  </div>
+  <button type="button" class="naw-satc__btn" data-naw-satc-btn>Add to cart</button>
+</div>
+
+<style>
+.naw-satc{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid #E8E8E8;padding:10px 16px;transform:translateY(110%);transition:transform .35s cubic-bezier(.23,1,.32,1);font-family:'Poppins',sans-serif}
+.naw-satc.is-in{transform:none}
+.naw-satc__img{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #EEE;flex:none}
+.naw-satc__meta{min-width:0;flex:1}
+.naw-satc__title{font-size:13px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.naw-satc__sub{font-size:12px;color:#6B6B6B;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.naw-satc__sub [data-naw-satc-price]{font-weight:700;color:#111}
+.naw-satc__btn{flex:none;background:#111;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:13px 26px;cursor:pointer;transition:transform .12s cubic-bezier(.23,1,.32,1),opacity .15s}
+.naw-satc__btn:hover{opacity:.85}
+.naw-satc__btn:active{transform:scale(.96)}
+.naw-satc__btn.is-added{background:#16A35E}
+/* Black Friday theme */
+.naw-satc--bf{background:#0a0a0a;border-top:1px solid #FF6A00;backdrop-filter:none;-webkit-backdrop-filter:none}
+.naw-satc--bf .naw-satc__title{color:#fff}
+.naw-satc--bf .naw-satc__sub{color:#b8b4ac}
+.naw-satc--bf .naw-satc__sub [data-naw-satc-price]{color:#FF6A00;font-weight:800;font-size:13.5px}
+.naw-satc--bf .naw-satc__img{border-color:#2b2b2b}
+.naw-satc--bf .naw-satc__dot{color:#4a4a4a}
+.naw-satc__imgwrap{position:relative;flex:none}
+.naw-satc__badge{position:absolute;top:-5px;left:-5px;background:#FF6A00;color:#0a0a0a;font-weight:800;font-size:8.5px;letter-spacing:.02em;padding:2px 5px;border-radius:4px;line-height:1.2;white-space:nowrap;box-shadow:0 1px 5px rgba(0,0,0,.35)}
+.naw-satc--bf .naw-satc__title{text-transform:uppercase;letter-spacing:.06em;font-weight:800;font-size:12px}
+.naw-satc--bf .naw-satc__btn{background:#FF6A00;color:#0a0a0a}
+.naw-satc--bf .naw-satc__btn.is-added{background:#16A35E;color:#fff}
+@media(min-width:990px){.naw-satc{left:auto;right:24px;bottom:24px;width:430px;border:1px solid #E8E8E8;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.14)}.naw-satc--bf{border:1px solid #FF6A00;box-shadow:0 12px 40px rgba(0,0,0,.35)}}
+@media (prefers-reduced-motion:reduce){.naw-satc{transition:none}}
+@supports (padding: env(safe-area-inset-bottom)){
+  @media(max-width:989px){.naw-satc{padding-bottom:calc(10px + env(safe-area-inset-bottom))}}
+}
+/* floating widgets (quiz pill, Gorgias chat) glide above the bar while it's in */
+#nawQuizReturn,#chat-button{transition:transform .35s cubic-bezier(.23,1,.32,1)}
+html.naw-satc-open #nawQuizReturn,html.naw-satc-open #chat-button{transform:translateY(-72px)}
+@media(min-width:990px){html.naw-satc-open #nawQuizReturn{transform:translateY(-104px)}html.naw-satc-open #chat-button{transform:none}}
+@media (prefers-reduced-motion:reduce){#nawQuizReturn,#chat-button{transition:none}}
+</style>
+
+<script>
+(function(){
+  var bar=document.querySelector('[data-naw-satc]');if(!bar)return;
+  var btn=bar.querySelector('[data-naw-satc-btn]');
+  var priceEl=bar.querySelector('[data-naw-satc-price]');
+  var varEl=bar.querySelector('[data-naw-satc-variant]');
+  var isBf=!!bar.dataset.nawBf;
+  var buyZone=document.querySelector('.product-form__buttons');
+  var footer=document.querySelector('footer, .footer');
+  if(!buyZone)return;
+  var buyVisible=true, footerVisible=false, soldOut=false;
+  function paint(){
+    var show=!buyVisible && !footerVisible && !soldOut;
+    bar.classList.toggle('is-in',show);
+    document.documentElement.classList.toggle('naw-satc-open',show);
+    bar.setAttribute('aria-hidden',show?'false':'true');
+  }
+  new IntersectionObserver(function(en){buyVisible=en[0].isIntersecting;paint();},{rootMargin:'-60px 0px 0px 0px'}).observe(buyZone);
+  if(footer)new IntersectionObserver(function(en){footerVisible=en[0].isIntersecting;paint();}).observe(footer);
+  function fmtBf(raw){
+    if(!isBf)return raw;
+    var num=parseFloat((raw||'').replace(/[^0-9.]/g,''));
+    if(isNaN(num))return raw;
+    return '£'+(num*0.7).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function sync(){
+    var form=document.querySelector('form[action*="/cart/add"]');
+    var idInput=form&&form.querySelector('input[name="id"]');
+    if(!idInput)return;
+    var atc=form.querySelector('[type="submit"]');
+    soldOut=!!(atc&&atc.disabled);
+    var priceSrc=document.querySelector('.price__regular .price-item, .price-item--regular');
+    if(priceSrc&&priceEl)priceEl.textContent=fmtBf(priceSrc.textContent.trim().split(' ')[0]);
+    var checked=document.querySelector('variant-radios input[type="radio"]:checked');
+    if(checked&&varEl){
+      var v=(checked.value||'').trim();
+      if(/^[ABC](\/[ABC])?(\/[ABC])?( ?Grade)?$/i.test(v))varEl.textContent='Grade '+v.replace(/ ?grade/i,'').toUpperCase();
+      else if(bar.dataset.fallbackGrade)varEl.textContent='Grade '+bar.dataset.fallbackGrade;
+      else varEl.textContent=v;
+    }
+    paint();
+  }
+  var st;new MutationObserver(function(){clearTimeout(st);st=setTimeout(sync,250);})
+    .observe(document.querySelector('[id^="MainProduct-"]')||document.body,{childList:true,subtree:true});
+  document.addEventListener('change',function(e){
+    if(e.target&&e.target.matches&&e.target.matches('variant-radios input[type="radio"], variant-selects select'))setTimeout(sync,60);
+  });
+  sync();
+  btn.addEventListener('click',function(){
+    var form=document.querySelector('form[action*="/cart/add"]');
+    var idInput=form&&form.querySelector('input[name="id"]');
+    if(!idInput)return;
+    btn.disabled=true;var orig=btn.textContent;btn.textContent='Adding…';
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:idInput.value,quantity:1})})
+      .then(function(r){return r.json();})
+      .then(function(){
+        btn.classList.add('is-added');btn.textContent='Added ✓';
+        fetch('/cart.js').then(function(r){return r.json();}).then(function(c){
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          document.dispatchEvent(new CustomEvent('cart:build',{detail:{cart:c}}));
+        }).catch(function(){});
+        setTimeout(function(){btn.disabled=false;btn.classList.remove('is-added');btn.textContent=orig;},2000);
+      })
+      .catch(function(){btn.textContent='Try again';setTimeout(function(){btn.disabled=false;btn.textContent=orig;},1600);});
+  });
+})();
+</script>
+{%- endif -%}
