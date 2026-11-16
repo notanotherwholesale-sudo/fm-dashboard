@@ -1,0 +1,111 @@
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement_bar_TpcNJB": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_PmhNDh": {
+          "type": "announcement",
+          "settings": {
+            "text": "OVER 7,000 WEBSITE ORDERS COMPLETED ✓",
+            "link": ""
+          }
+        },
+        "announcement_Lb88wp": {
+          "type": "announcement",
+          "settings": {
+            "text": "TRUSTED BY RESELLERS WORLDWIDE 🌎",
+            "link": ""
+          }
+        },
+        "announcement_QJ8XeX": {
+          "type": "announcement",
+          "settings": {
+            "text": "10+ YEARS IN THE VINTAGE INDUSTRY 🎯",
+            "link": ""
+          }
+        },
+        "announcement_fjxUpr": {
+          "type": "announcement",
+          "settings": {
+            "text": "QUALITY CHECKED IN OUR UK WAREHOUSE 🏭",
+            "link": ""
+          }
+        },
+        "announcement_mhanMx": {
+          "type": "announcement",
+          "settings": {
+            "text": "NEXT-DAY DISPATCH FROM OUR UK FACILITY 📦",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_PmhNDh",
+        "announcement_Lb88wp",
+        "announcement_QJ8XeX",
+        "announcement_fjxUpr",
+        "announcement_mhanMx"
+      ],
+      "disabled": true,
+      "custom_css": [
+        "p {letter-spacing: -0.2px; font-weight: 600;}"
+      ],
+      "settings": {
+        "color_scheme": "accent-1",
+        "show_line_separator": false,
+        "show_social": false,
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "custom_css": [],
+      "settings": {
+        "logo": "shopify://shop_images/logo_transparent_black.png",
+        "logo_width": 300
+      }
+    },
+    "ss_atc_button_4_F4HDRy": {
+      "type": "ss-atc-button-4",
+      "disabled": true,
+      "custom_css": [
+        ".ss-atc-button-style {box-shadow: none !important;}",
+        ".ss-atc-button-style:before {box-shadow: none !important; border-bottom: none !important;}"
+      ],
+      "name": "SS - ATC Button #4",
+      "settings": {
+        "custom_class_selector": "",
+        "first_color": "#000000",
+        "button_hover_color": "#282828",
+        "text_color": "#ffffff",
+        "text_color_hover": "#000000",
+        "border_color": "#000000",
+        "ss-border-width": 1,
+        "ss-font-size": 16,
+        "ss-button_padding": 1
+      }
+    },
+    "d7299fd4-2a9b-4a35-94ae-1ca2ef2803f9": {
+      "type": "custom-liquid",
+      "disabled": false,
+      "custom_css": [],
+      "settings": {
+        "custom_liquid": "<div id=\"bfbar\" class=\"bfbar\" data-phase=\"\">\n  <a class=\"bfbar__in\" href=\"/pages/blackout\">\n    <span class=\"bfbar__tag\">BLACKOUT</span>\n    <span class=\"bfbar__msg\" id=\"bfmsg\">Our biggest sale of the year is coming.</span>\n    <span class=\"bfbar__cd\" id=\"bfcd\" hidden><span data-d>00</span>d <span data-h>00</span>h <span data-m>00</span>m <span data-s>00</span>s</span>\n    <span class=\"bfbar__cta\" id=\"bfcta\">Get early access &rarr;</span>\n  </a>\n</div>\n<style>\n.bfbar{background:#0a0a0a;color:#fff;font-family:'Poppins',sans-serif;border-bottom:1px solid #FF6A00;overflow:hidden}\n.bfbar *{box-sizing:border-box}\n.bfbar__in{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;max-width:1200px;margin:0 auto;padding:9px 16px;text-decoration:none;color:#fff;line-height:1.3}\n.bfbar__tag{font-weight:900;letter-spacing:.14em;font-size:11px;color:#0a0a0a;background:#FF6A00;padding:3px 9px;border-radius:3px;white-space:nowrap}\n.bfbar__msg{font-weight:600;font-size:13px;letter-spacing:.01em}\n.bfbar__cd{font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;color:#FF6A00;white-space:nowrap}\n.bfbar__cd [data-d],.bfbar__cd [data-h],.bfbar__cd [data-m],.bfbar__cd [data-s]{color:#fff}\n.bfbar__cta{font-weight:700;font-size:12.5px;color:#FF6A00;white-space:nowrap;border-bottom:1px solid transparent;transition:border-color .15s}\n.bfbar__in:hover .bfbar__cta{border-color:#FF6A00}\n@media(max-width:600px){\n  .bfbar__in{gap:8px;padding:8px 12px}\n  .bfbar__msg{font-size:12px;width:100%;text-align:center;order:2}\n  .bfbar__tag{order:1}\n  .bfbar__cd{order:3;font-size:12.5px}\n  .bfbar__cta{order:4;font-size:12px}\n}\n</style>\n<script>\n(function(){\n  var bar=document.getElementById('bfbar'); if(!bar||bar.__bf)return; bar.__bf=1;\n  var msg=document.getElementById('bfmsg'), cta=document.getElementById('bfcta'), cd=document.getElementById('bfcd');\n  // GMT boundaries (UK is GMT/UTC in late Nov)\n  var EARLY=Date.UTC(2026,10,26,7,0,0);      // Thu 26 Nov 07:00\n  var PUBLIC=Date.UTC(2026,10,27,0,0,0);     // Fri 27 Nov 00:00\n  var END=Date.UTC(2026,11,1,23,59,59);      // Tue 1 Dec 23:59:59\n  var OVER=Date.UTC(2026,11,5,23,59,59);     // keep \"missed it\" a few days\n  function set(phase,html,ctaTxt,target){\n    bar.setAttribute('data-phase',phase);\n    msg.innerHTML=html; cta.textContent=ctaTxt;\n    if(target){cd.hidden=false; cd.__t=target;} else {cd.hidden=true;}\n  }\n  function pad(n){return (n<10?'0':'')+n;}\n  function tick(){\n    var now=Date.now();\n    if(now<EARLY){\n      set('tease','Our biggest sale of the year. Subscribers shop <b>17 hours early</b> — Thu 26 Nov.','Get early access →', EARLY);\n    } else if(now<PUBLIC){\n      set('early','<b>Early access is LIVE.</b> Extra 30% off with code <b>BLACKOUT</b>.','Shop early access →', PUBLIC);\n    } else if(now<=END){\n      set('live','<b>Extra 30% off everything</b> — applied automatically. No code.','Shop the sale →', END);\n    } else if(now<=OVER){\n      set('over','Blackout has ended — fresh winter stock just landed.', 'Shop new in →', null);\n    } else { bar.style.display='none'; return; }\n    if(cd.__t){\n      var diff=Math.max(0,cd.__t-Date.now()), s=Math.floor(diff/1000);\n      var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),ss=s%60;\n      var D=cd.querySelector('[data-d]'),H=cd.querySelector('[data-h]'),M=cd.querySelector('[data-m]'),S=cd.querySelector('[data-s]');\n      if(D)D.textContent=pad(d); if(H)H.textContent=pad(h); if(M)M.textContent=pad(m); if(S)S.textContent=pad(ss);\n    }\n  }\n  tick(); setInterval(tick,1000);\n})();\n</script>\n",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "d7299fd4-2a9b-4a35-94ae-1ca2ef2803f9",
+    "announcement_bar_TpcNJB",
+    "header",
+    "ss_atc_button_4_F4HDRy"
+  ]
+}
