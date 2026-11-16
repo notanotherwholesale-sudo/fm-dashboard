@@ -1,0 +1,284 @@
+{%- comment -%}
+  NAW — Wash Service page (Phase 1: visual page)
+  Self-contained section. All CSS scoped under .nw so it can't collide with the theme.
+  Before/after photos are theme assets (naw_wash_*.webp). Slider + cart-detect are inline.
+  NOV 2026: wash service PAUSED for Black Friday — pause notice added, live add widgets hidden.
+{%- endcomment -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap">
+
+<div class="nw">
+  <div class="nw-wp">
+
+    <div class="nw-pause" role="status">
+      <strong>Wash service paused until December</strong>
+      We've paused new wash add-ons for a few weeks to handle a surge of Black Friday orders — it'll be back in December. Everything below still applies for when it returns.
+    </div>
+
+    <div class="nw-top">
+      <p class="nw-eyebrow">Optional add-on</p>
+      <h2 class="nw-h2">Wash<br>Service</h2>
+      <p class="nw-lede">Get your bundles back <b>washed, dried &amp; folded</b> — ready to photograph and sell.</p>
+      <div class="nw-trust">
+        <div><b>&pound;1</b>a garment</div>
+        <div><b>3&ndash;5 days</b>turnaround</div>
+        <div><b>15+ yrs</b>experience</div>
+        <div><b>Fresh</b>washed, dried, folded</div>
+      </div>
+    </div>
+
+    <div class="nw-sec">
+      <p class="nw-se">How it works</p>
+      <div class="nw-steps">
+        <div class="nw-step"><div class="nw-n">01</div><h4>Add it in your cart</h4><p>Choose which bundles to wash. We count the pieces for you — just &pound;1 each.</p></div>
+        <div class="nw-step"><div class="nw-n">02</div><h4>We wash it</h4><p>Off it goes to our laundrette, cleaned with proper commercial detergent &amp; fabric softener.</p></div>
+        <div class="nw-step"><div class="nw-n">03</div><h4>Back to you fresh</h4><p>Washed, dried &amp; folded, then shipped. No laundry day for you.</p></div>
+      </div>
+    </div>
+
+    <div class="nw-basec">
+      <div class="nw-tabs">
+        <button class="nw-tab" data-g="sweat">Sweatshirts</button>
+        <button class="nw-tab is-on" data-g="fleece">Fleece</button>
+        <button class="nw-tab" data-g="jacket">Jacket</button>
+      </div>
+      <div class="nw-ba" id="nwBa"
+           data-sweat-before="{{ 'naw_wash_sweat_before.webp' | asset_url }}"
+           data-sweat-after="{{ 'naw_wash_sweat_after.webp' | asset_url }}"
+           data-fleece-before="{{ 'naw_wash_fleece_before.webp' | asset_url }}"
+           data-fleece-after="{{ 'naw_wash_fleece_after.webp' | asset_url }}"
+           data-jacket-before="{{ 'naw_wash_jacket_before.webp' | asset_url }}"
+           data-jacket-after="{{ 'naw_wash_jacket_after.webp' | asset_url }}">
+        <div class="nw-ba-l nw-ba-after"><img class="nw-ba-img" id="nwImgA" alt="After washing"></div>
+        <div class="nw-ba-l nw-ba-before" id="nwBefore"><img class="nw-ba-img" id="nwImgB" alt="Before washing"></div>
+        <div class="nw-ba-tag nw-ba-tag--b">Before</div>
+        <div class="nw-ba-tag nw-ba-tag--a">After</div>
+        <div class="nw-ba-div" id="nwDiv"><div class="nw-ba-grip">&#8646;</div></div>
+      </div>
+      <p class="nw-ba-cap" id="nwCap">Fleece — drag to compare</p>
+    </div>
+
+    <div class="nw-sec">
+      <div class="nw-mod">
+        <div class="nw-mod-head">
+          <p class="nw-se" style="margin-bottom:18px">Wash your order</p>
+          <p class="nw-roi"><span class="n">&pound;1</span> invested, <span class="n">&pound;4</span> added<small>on average, per item</small></p>
+          <p class="nw-sub"><b>&pound;1 a garment</b> — washed, dried &amp; folded.</p>
+        </div>
+        <div class="nw-mod-act">
+          <div class="nw-detect" id="nwDetect" hidden>
+            <div class="nw-detect-ico">&#129530;</div>
+            <div class="nw-detect-body">
+              <p class="nw-detect-t" id="nwDetectT">We spotted <b>0 washable items</b> in your cart</p>
+              <p class="nw-detect-s" id="nwDetectS">Want them all washed? Add washing to your bundles in the cart.</p>
+            </div>
+            <button type="button" class="nw-detect-btn" id="nwDetectBtn">Wash all</button>
+          </div>
+          <p class="nw-detect-help" id="nwDetectHelp">Add bundles to your cart, then choose which to wash — &pound;1 a garment, counted for you.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nw-sec">
+      <p class="nw-se">What we wash</p>
+      <div class="nw-dd">
+        <div class="nw-dd-yes"><h5>&#10003; We wash</h5><ul>
+          <li>Denim &amp; jeans</li><li>Tees &amp; tops</li><li>Sweats &amp; tracksuits</li><li>Shirts &amp; workwear</li><li>Shorts &amp; trousers</li><li>Jackets (non-leather)</li></ul></div>
+        <div class="nw-dd-no"><h5>&#10007; We don't wash</h5><ul>
+          <li>Leather &amp; suede</li><li>Knitwear &amp; wool</li><li>Silk &amp; delicates</li><li>Blazers &amp; tailoring</li><li>Puffers &amp; padded coats</li><li>Fur</li></ul></div>
+      </div>
+    </div>
+
+    <div class="nw-sec">
+      <p class="nw-se">What resellers say</p>
+      <div class="nw-revs">
+        <div class="nw-rev"><div class="nw-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>"Goods came cleaned and were immediately ready for listing — great service, highly recommend."</p><cite>Fredrick H.<small>Verified buyer</small></cite></div>
+        <div class="nw-rev"><div class="nw-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>"Great service, clothes smell fresh."</p><cite>Anthony M.<small>Verified buyer &middot; Bundle Washing</small></cite></div>
+        <div class="nw-rev"><div class="nw-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>"Amazing bundle — I'd definitely recommend choosing the wash bundle as well, the items are ready to sell within the second."</p><cite>Sarah K.<small>Verified buyer &middot; Branded Knitwear x30</small></cite></div>
+      </div>
+    </div>
+
+    <div class="nw-sec" style="padding-bottom:20px">
+      <p class="nw-se">FAQ</p>
+      <div class="nw-faq">
+        <details open><summary>Why should I wash the items?</summary>
+          <ul class="nw-faq-list">
+            <li>A more professional finish — clean, folded stock looks the part and photographs better.</li>
+            <li>Adds an estimated <b>20% to each item's value</b> — buyers pay more for ready-to-list stock.</li>
+            <li>Lifts marks, odours and creases picked up from grading overseas and transport, so it arrives fresh.</li>
+          </ul>
+        </details>
+        <details><summary>Will it slow my order down?</summary><p>A little — add <b>3&ndash;5 working days</b> for the wash. We flag it in your cart, so it's never a surprise.</p></details>
+        <details><summary>Can I wash just some of it?</summary><p>Of course — pick and choose in your cart. Wash one bundle, a few, or the lot.</p></details>
+        <details><summary>How much is it?</summary><p><b>&pound;1 a garment.</b> We count each bundle's pieces for you, so a 25-piece bundle is &pound;25.</p></details>
+        <details><summary>Do they come ironed?</summary><p>They come <b>washed, dried &amp; folded</b> — not pressed.</p></details>
+        <details><summary>What can't you wash?</summary><p>Leather &amp; suede, knitwear &amp; wool, silk &amp; delicates, blazers &amp; tailoring, puffers &amp; padded coats, and fur. Those just won't show a wash option.</p></details>
+      </div>
+    </div>
+
+    <div class="nw-disc">Washing is handled by a trusted third-party laundrette (15+ years' experience) using commercial detergent &amp; fabric softener. Please note: we can't be held responsible for any shrinkage, colour runs or damage caused by washing.</div>
+
+  </div>
+
+  <div class="nw-satc" id="nwSatc" hidden>
+    <span class="nw-satc__ico" aria-hidden="true">&#129530;</span>
+    <span class="nw-satc__t" id="nwSatcT">Wash your whole order</span>
+    <button type="button" class="nw-satc__btn" id="nwSatcBtn">Wash all</button>
+  </div>
+</div>
+
+<style>
+.nw{--font:'Poppins',system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;
+  --ink:#153a33;--teal:#1f9d6b;--sky:#3f9fc9;--sky-deep:#2a7ea6;--mint:#eaf7ef;--blue:#e8f3fa;
+  --paper:#f8fdfd;--line:#dcebe7;--no:#d76a55;--mut:#4a635c;
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink)}
+.nw *,.nw *::before,.nw *::after{box-sizing:border-box}
+.nw-wp{width:100%;margin:0 auto;background:var(--paper)}
+/* NOV 2026 — wash paused for Black Friday */
+.nw-pause{background:#fff6e9;border:1px solid #f0d8ad;color:#8a5a1a;font-family:var(--font);font-size:13.5px;line-height:1.5;text-align:center;padding:14px 22px;margin:0}
+.nw-pause strong{display:block;font-weight:800;color:#7a4a10;margin-bottom:3px;font-size:14.5px;letter-spacing:-.01em}
+/* paused: hide the live add-to-cart widgets, keep all the info/features */
+.nw-mod-act{display:none !important}
+.nw-satc{display:none !important}
+/* paused: hide the Restock Rocket "Notify me" back-in-stock button on this page only */
+#restock-rocket,.restock-rocket-button-container-float-right,.restock-rocket-button-product,.restock-rocket-button-float,.restock-rocket-button-cover{display:none !important}
+/* hero + slider run full width; everything else sits in a wider ~78% column */
+@media (min-width:761px){
+  .nw-sec,.nw-disc{width:78%;max-width:1240px;margin-left:auto;margin-right:auto}
+  /* full-width frame; ~80%-scale height so the page reads calmer on desktop */
+  .nw-ba{aspect-ratio:auto;height:480px}
+}
+.nw-eyebrow{font-family:var(--font);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--teal);margin:0 0 16px}
+.nw-top{background:linear-gradient(160deg,#e9f5fb 0%,#eaf7f0 60%,#e4f4ec 100%);color:var(--ink);padding:42px 40px 36px;text-align:center}
+.nw-h2{font-family:var(--font);font-weight:900;text-transform:uppercase;font-size:clamp(34px,6.2vw,56px);line-height:.86;letter-spacing:-.02em;margin:0;color:var(--ink)}
+.nw-lede{margin:15px auto 0;max-width:34ch;color:#4b6b63;font-size:14px;line-height:1.5}
+.nw-lede b{color:var(--ink)}
+.nw-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:0;border-top:1px solid rgba(21,58,51,.14);margin-top:34px}
+.nw-trust div{flex:1 1 25%;min-width:150px;padding:13px 10px;border-left:1px solid rgba(21,58,51,.14);font-family:var(--font);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#517269}
+.nw-trust div:first-child{border-left:0}
+.nw-trust b{display:block;color:var(--teal);font-size:16px;letter-spacing:-.01em;margin-bottom:3px}
+.nw-sec{padding:36px 40px;border-bottom:1px solid var(--line)}
+.nw-se{font-family:var(--font);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--teal);margin:0 0 18px}
+.nw-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.nw-n{font-family:var(--font);font-weight:900;font-size:27px;color:var(--sky);line-height:1}
+.nw-step h4{font-family:var(--font);font-weight:900;text-transform:uppercase;font-size:14px;letter-spacing:-.01em;margin:10px 0 6px;color:var(--ink)}
+.nw-step p{margin:0;font-size:13.5px;line-height:1.5;color:var(--mut)}
+/* before/after */
+.nw-basec{padding:0}
+.nw-tabs{display:flex;border:1px solid var(--line);border-bottom:0}
+.nw-tab{flex:1;font-family:var(--font);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:11.5px;padding:13px 8px;background:#f1f8f6;color:#6a857d;border:0;border-left:1px solid var(--line);cursor:pointer}
+.nw-tab:first-child{border-left:0}
+.nw-tab.is-on{background:#fff;color:var(--ink);box-shadow:inset 0 -3px 0 var(--teal)}
+.nw-tab:hover:not(.is-on){color:var(--ink)}
+.nw-ba{position:relative;width:100%;aspect-ratio:1100 / 720;overflow:hidden;user-select:none;touch-action:none;background:linear-gradient(180deg,#eef2f1,#e2e8e6);cursor:ew-resize}
+.nw-ba-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
+.nw-ba-l{position:absolute;inset:0;background:linear-gradient(180deg,#eef2f1,#e2e8e6)}
+.nw-ba-before{clip-path:inset(0 50% 0 0)}
+.nw-ba-tag{position:absolute;top:14px;font-family:var(--font);font-weight:800;font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:#000;color:#fff;padding:5px 9px}
+.nw-ba-tag--b{left:14px}.nw-ba-tag--a{right:14px;background:var(--teal)}
+.nw-ba-div{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;transform:translateX(-50%);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.nw-ba-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;background:#fff;border:2px solid var(--ink);display:grid;place-items:center;font-weight:900;color:var(--ink);font-family:var(--font)}
+.nw-ba-cap{text-align:center;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#6a857d;margin:12px 0 0;font-family:var(--font)}
+/* ROI module */
+.nw-mod{max-width:720px;margin:0 auto;border:2px solid var(--ink);background:#fff}
+.nw-mod-head{padding:30px 30px 24px;text-align:center}
+.nw-roi{font-family:var(--font);font-weight:900;letter-spacing:-.02em;line-height:.94;color:var(--ink);font-size:clamp(24px,3.6vw,36px);margin:0}
+.nw-roi .n{color:var(--teal)}
+.nw-roi small{display:block;font-size:clamp(12px,1.5vw,15px);font-weight:700;letter-spacing:.02em;color:var(--mut);margin-top:12px;text-transform:none}
+.nw-sub{max-width:44ch;margin:16px auto 0;color:var(--mut);font-size:13.5px;line-height:1.5}
+.nw-sub b{color:var(--ink)}
+.nw-mod-act{border-top:1px solid var(--line);padding:20px 24px}
+.nw-detect{display:flex;align-items:center;gap:14px}
+.nw-detect[hidden],.nw-detect-help[hidden]{display:none}
+.nw-detect-ico{flex:0 0 auto;width:46px;height:46px;display:grid;place-items:center;background:var(--mint);font-size:22px}
+.nw-detect-body{flex:1;min-width:0}
+.nw-detect-t{font-family:var(--font);font-weight:700;font-size:14px;margin:0;color:var(--ink);line-height:1.25}
+.nw-detect-t b{font-weight:900}
+.nw-detect-s{margin:4px 0 0;font-size:12px;color:var(--mut);line-height:1.4}
+.nw-detect-btn{flex:0 0 auto;font-family:var(--font);font-weight:800;text-transform:uppercase;letter-spacing:.07em;font-size:12px;border:0;background:var(--teal);color:#fff;padding:14px 18px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.nw-detect-btn:hover{background:var(--ink)}
+.nw-detect-help{margin:0;font-size:13px;color:var(--mut);line-height:1.5;text-align:center}
+/* do / dont */
+.nw-dd{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line)}
+.nw-dd>div{padding:24px}
+.nw-dd>div+div{border-left:1px solid var(--line)}
+.nw-dd h5{font-family:var(--font);font-weight:900;text-transform:uppercase;font-size:13px;letter-spacing:.02em;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.nw-dd-yes h5{color:var(--teal)} .nw-dd-no h5{color:var(--no)}
+.nw-dd ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.nw-dd li{font-size:13.5px;line-height:1.4;color:var(--mut)}
+/* reviews */
+.nw-revs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.nw-rev{border:1px solid var(--line);padding:18px}
+.nw-stars{color:#f5a623;letter-spacing:1px;font-size:12px;margin-bottom:8px}
+.nw-rev p{margin:0 0 12px;font-size:13px;line-height:1.55;color:var(--ink)}
+.nw-rev cite{font-family:var(--font);font-weight:700;font-size:11px;font-style:normal;letter-spacing:.04em;color:var(--ink)}
+.nw-rev cite small{display:block;color:var(--mut);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:9px;margin-top:3px}
+/* faq */
+.nw-faq{border-top:1px solid var(--line)}
+.nw-faq details{border-bottom:1px solid var(--line)}
+.nw-faq summary{list-style:none;cursor:pointer;padding:16px 0;font-family:var(--font);font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--ink)}
+.nw-faq summary::-webkit-details-marker{display:none}
+.nw-faq summary::after{content:"+";font-weight:900;font-size:20px;color:var(--teal)}
+.nw-faq details[open] summary::after{content:"\2013"}
+.nw-faq p{margin:0 0 18px;font-size:13.5px;line-height:1.6;color:var(--mut);max-width:70ch}
+.nw-faq p b{color:var(--ink)}
+.nw-faq-list{margin:2px 0 18px;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;max-width:70ch}
+.nw-faq-list li{position:relative;padding-left:24px;font-size:13.5px;line-height:1.5;color:var(--mut)}
+.nw-faq-list li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--teal);font-weight:900;font-family:var(--font)}
+.nw-faq-list li b{color:var(--ink)}
+.nw-disc{background:var(--mint);padding:20px 44px;font-size:11.5px;color:#547067;line-height:1.6}
+/* sticky floating wash-all bar */
+.nw-satc{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(180%);z-index:1000;width:min(680px,92vw);display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--ink);box-shadow:0 20px 50px rgba(0,0,0,.28);padding:12px 14px;font-family:var(--font);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.2,.85,.25,1),opacity .3s}
+.nw-satc.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.nw-satc__ico{flex:0 0 auto;width:40px;height:40px;display:grid;place-items:center;background:var(--mint);font-size:20px}
+.nw-satc__t{flex:1;min-width:0;font-size:13.5px;color:var(--ink);line-height:1.25}
+.nw-satc__t b{font-weight:800}
+.nw-satc__btn{flex:0 0 auto;border:0;background:var(--teal);color:#fff;font-family:var(--font);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;padding:13px 20px;cursor:pointer;white-space:nowrap}
+.nw-satc__btn:hover{background:var(--ink)}
+@media (max-width:560px){.nw-satc{padding:10px;gap:9px;bottom:12px}.nw-satc__btn{padding:11px 14px;font-size:11px}.nw-satc__t{font-size:12px}}
+@media (max-width:760px){
+  .nw-steps{grid-template-columns:1fr}
+  .nw-revs{grid-template-columns:1fr}
+  .nw-dd{grid-template-columns:1fr}
+  .nw-dd>div+div{border-left:0;border-top:1px solid var(--line)}
+  .nw-top,.nw-sec,.nw-disc{padding-left:22px;padding-right:22px}
+  .nw-detect{flex-wrap:wrap}.nw-detect-btn{width:100%;text-align:center}
+}
+</style>
+
+<script>
+(function(){
+  var root=document.getElementById('nwBa');
+  if(!root) return;
+  var imgA=document.getElementById('nwImgA'),imgB=document.getElementById('nwImgB'),
+      cap=document.getElementById('nwCap'),before=document.getElementById('nwBefore'),
+      div=document.getElementById('nwDiv'),tabs=root.closest('.nw-basec').querySelectorAll('.nw-tab');
+  var names={sweat:'Sweatshirt',fleece:'Fleece',jacket:'Jacket'};
+  function setGarment(key){
+    imgA.src=root.getAttribute('data-'+key+'-after');
+    imgB.src=root.getAttribute('data-'+key+'-before');
+    tabs.forEach(function(t){t.classList.toggle('is-on',t.dataset.g===key);});
+    cap.textContent=names[key]+' — drag to compare';
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){setGarment(t.dataset.g);});});
+  setGarment('fleece');
+  // slider
+  var drag=false;
+  function setPos(x){var r=root.getBoundingClientRect();var p=Math.max(4,Math.min(96,(x-r.left)/r.width*100));div.style.left=p+'%';before.style.clipPath='inset(0 '+(100-p)+'% 0 0)';}
+  root.addEventListener('pointerdown',function(e){drag=true;root.setPointerCapture(e.pointerId);setPos(e.clientX);});
+  root.addEventListener('pointermove',function(e){if(drag)setPos(e.clientX);});
+  root.addEventListener('pointerup',function(){drag=false;});
+  root.addEventListener('pointercancel',function(){drag=false;});
+  // Wash add-to-cart is PAUSED for Black Friday (Nov 2026) — detect/sticky bars hidden via CSS.
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Wash service page",
+  "tag": "section",
+  "settings": [],
+  "presets": [{ "name": "Wash service page" }]
+}
+{% endschema %}
