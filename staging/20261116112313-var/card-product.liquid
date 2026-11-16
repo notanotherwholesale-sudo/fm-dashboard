@@ -1,0 +1,314 @@
+{{ 'naw-quick-add.css' | asset_url | stylesheet_tag }}
+<style>
+.na-product-info .na-product-price--bf{background:none!important;padding:0!important;display:flex!important;align-items:center;gap:8px;flex-wrap:wrap}
+.na-product-price--bf .na-price-sale--bf{color:#D85900;font-weight:800;font-size:15px}
+.na-product-price--bf .na-price-compare{color:#9A968E;text-decoration:line-through}
+.na-product-price--bf .na-price-pct{display:inline-block;background:#FFF2E8;color:#D85900;font-size:9px;font-weight:800;letter-spacing:.2px;padding:2px 7px;border-radius:999px;line-height:1.3;white-space:nowrap}
+.na-pct-off{display:none!important}
+.na-card-signal-wrap{display:none!important}
+</style>
+{%- assign has_any_stock = card_product.available -%}
+
+{%- liquid
+  assign badge_label = ''
+  assign badge_class = ''
+
+  if has_any_stock == false
+    assign badge_label = 'SOLD OUT'
+    assign badge_class = 'na-pill na-pill--last-left'
+  else
+    if card_product.published_at
+      assign now_ts = 'now' | date: '%s' | plus: 0
+      assign pub_ts = card_product.published_at | date: '%s' | plus: 0
+      assign age_days = now_ts | minus: pub_ts | divided_by: 86400
+      if age_days <= 30
+        assign badge_label = 'NEW IN'
+        assign badge_class = 'na-pill na-pill--new-in'
+      endif
+    endif
+
+    if badge_label == ''
+      assign total_inventory = 0
+      for v in card_product.variants
+        if v.inventory_management
+          assign total_inventory = total_inventory | plus: v.inventory_quantity
+        endif
+      endfor
+      if card_product.available and total_inventory == 1
+        assign badge_label = 'LAST 1 LEFT'
+        assign badge_class = 'na-pill na-pill--last-left'
+      elsif card_product.available and total_inventory == 2
+        assign badge_label = 'LAST 2 LEFT'
+        assign badge_class = 'na-pill na-pill--last-left'
+      endif
+    endif
+
+    if badge_label == '' and card_product.tags contains 'best_seller_tag'
+      assign badge_label = 'BEST SELLER'
+      assign badge_class = 'na-pill na-pill--best-seller'
+    endif
+
+    if badge_label == '' and card_product.metafields.custom.sales_last_30_days != blank
+      assign sales_30 = card_product.metafields.custom.sales_last_30_days | plus: 0
+      if sales_30 >= 5
+        assign badge_label = 'TRENDING'
+        assign badge_class = 'na-pill na-pill--trending'
+      endif
+    endif
+
+    if badge_label == '' and card_product.metafields.custom.resalevalue != blank
+      assign resale_raw = card_product.metafields.custom.resalevalue | plus: 0
+      assign resale_cents = resale_raw | times: 100
+      assign cost_cents = card_product.price | plus: 0
+      if resale_cents > 0 and cost_cents > 0
+        assign roi_percent = resale_cents | times: 100 | divided_by: cost_cents
+        if roi_percent >= 300
+          assign badge_label = 'HIGH MARGIN'
+          assign badge_class = 'na-pill na-pill--high-margin'
+        endif
+      endif
+    endif
+  endif
+-%}
+
+{%- assign first_available_id = '' -%}
+{%- for v in card_product.variants -%}
+  {%- if v.available and first_available_id == '' -%}
+    {%- assign first_available_id = v.id -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if first_available_id == '' -%}
+  {%- assign first_available_id = card_product.variants.first.id -%}
+{%- endif -%}
+
+{%- liquid
+  assign is_single_variant = false
+  if card_product.variants.size == 1 and card_product.variants.first.title == 'Default Title'
+    assign is_single_variant = true
+  endif
+
+  assign grade_display = ''
+  if is_single_variant
+    assign grade_display = card_product.metafields.custom.productgrade1.value | default: card_product.metafields.custom.productgrade1
+    if grade_display == blank
+      assign grade_display = card_product.metafields.custom.productgrade.value | default: card_product.metafields.custom.productgrade
+    endif
+  endif
+-%}
+
+{%- liquid
+  assign usp_icon = ''
+  assign usp_key = ''
+  assign usp_tier = 'logistics'
+  assign cost_p = card_product.price | plus: 0
+  assign compare_p = card_product.compare_at_price | plus: 0
+  assign resale_v = card_product.metafields.custom.resalevalue | plus: 0
+  assign discount_pct = 0
+  assign saving_cents = 0
+
+  if has_any_stock
+
+    assign tier = 'logistics'
+
+    if compare_p > cost_p
+      assign saving_cents = compare_p | minus: cost_p
+      assign discount_pct = saving_cents | times: 100 | divided_by: compare_p
+    endif
+
+    if discount_pct >= 20
+      assign usp_key = 'discount'
+      assign usp_icon = ''
+      assign tier = 'value'
+    endif
+
+    if tier != 'value' and resale_v > 0 and cost_p > 0
+      assign resale_cents = resale_v | times: 100
+      assign roi = resale_cents | times: 100 | divided_by: cost_p
+      if roi >= 250
+        assign usp_key = 'flip'
+        assign usp_icon = ''
+        assign tier = 'value'
+      endif
+    endif
+
+    if tier != 'value' and is_single_variant
+      assign qty_raw = card_product.title | split: 'x'
+      assign qty = qty_raw.last | plus: 0
+      if qty >= 5 and cost_p > 0
+        assign ppp = cost_p | divided_by: qty
+        if ppp <= 500
+          assign usp_key = 'ppp'
+          assign usp_icon = ''
+          assign tier = 'value'
+        endif
+      endif
+    endif
+
+    if tier != 'value'
+      assign sales_30 = card_product.metafields.custom.sales_last_30_days | plus: 0
+      if sales_30 >= 10
+        assign usp_key = 'high-demand'
+        assign usp_icon = ''
+        assign tier = 'demand'
+      elsif sales_30 >= 5
+        assign usp_key = 'fast-moving'
+        assign usp_icon = ''
+        assign tier = 'demand'
+      endif
+    endif
+
+    if tier == 'logistics'
+      if cost_p >= 20000
+        assign usp_key = 'free-shipping'
+        assign usp_icon = ''
+      else
+        assign usp_key = 'ready'
+        assign usp_icon = ''
+      endif
+    endif
+
+    assign usp_tier = tier
+
+  else
+    assign usp_key = 'sold-out'
+    assign usp_icon = ''
+    assign usp_tier = 'logistics'
+  endif
+-%}
+
+{%- liquid
+  assign naw_sold7 = 0
+  assign s7raw = card_product.metafields.custom.sales_last7.value | default: ''
+  if s7raw != ''
+    assign s7parts = s7raw | split: '|'
+    if s7parts.size == 2
+      assign s7ts = s7parts[1] | date: '%s' | plus: 0
+      assign nowts2 = 'now' | date: '%s' | plus: 0
+      assign s7age = nowts2 | minus: s7ts
+      if s7age < 259200
+        assign naw_sold7 = s7parts[0] | plus: 0
+      endif
+    endif
+  endif
+  assign naw_chandles = card_product.collections | map: 'handle'
+-%}
+<div class="na-product-card {% unless has_any_stock %}na-product-card--sold-out{% endunless %}" data-product-id="{{ card_product.id }}" data-resale="{{ resale_v }}" data-sold7="{{ naw_sold7 }}"{% if naw_chandles contains 'winter-drop' %} data-winter="1"{% endif %}>
+  <div class="na-product-image">
+    <a href="{{ card_product.url }}">
+      <img src="{{ card_product.featured_image | image_url: width: 400 }}" alt="{{ card_product.title }}" loading="lazy">
+    </a>
+    {%- if badge_label != '' -%}
+      <div class="na-product-badge">
+        <span class="{{ badge_class }}">{{ badge_label }}</span>
+      </div>
+    {%- endif -%}
+    <button
+      class="na-atc-btn{% unless has_any_stock %} na-atc-btn--disabled{% endunless %}"
+      data-product-id="{{ card_product.id }}"
+      data-variant-id="{{ first_available_id }}"
+      {% unless has_any_stock %}disabled{% endunless %}>
+      {%- if has_any_stock -%}<span class="naw-qa-l">Quick Add</span><span class="naw-qa-s">Add</span>{%- else -%}Sold out{%- endif -%}
+    </button>
+  </div>
+
+  <div class="na-product-info">
+
+    <div class="na-product-title">
+      <a href="{{ card_product.url }}" class="full-unstyled-link">{{ card_product.title }}</a>
+    </div>
+
+    {%- if is_single_variant and grade_display != blank -%}
+      <div class="na-product-subtitle na-grade-row">
+        <span class="na-grade-label">Grade:</span>
+        {%- assign grade_values = grade_display | split: ',' -%}
+        {%- for g in grade_values -%}
+          {%- unless g == blank -%}
+            <span class="na-grade-pill na-grade-pill--btn na-grade-pill--active">{{ g | strip }}</span>
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    {%- elsif is_single_variant == false -%}
+      <div class="na-product-subtitle na-grade-row">
+        <span class="na-grade-label">Grade:</span>
+        {%- for v in card_product.variants -%}
+          <button
+            class="na-grade-pill na-grade-pill--btn{% if forloop.first %} na-grade-pill--active{% endif %}{% unless v.available %} na-grade-pill--sold{% endunless %}"
+            data-variant-id="{{ v.id }}"
+            data-price="{{ v.price }}"
+            data-compare="{{ v.compare_at_price }}"
+            data-available="{{ v.available }}"
+            {% unless v.available %}disabled{% endunless %}>
+            {{ v.title }}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- assign na_excl = false -%}{%- if card_product.tags contains 'bf-exclude' -%}{%- assign na_excl = true -%}{%- endif -%}
+    <div class="na-product-price{% unless na_excl %} na-product-price--bf{% endunless %}"{% unless na_excl %} data-bf="1"{% endunless %} id="na-price-{{ card_product.id }}">
+      {%- assign fv = card_product.variants.first -%}
+      {%- if na_excl -%}
+        {%- if fv.compare_at_price > fv.price -%}<span class="na-price-compare">{{ fv.compare_at_price | money }}</span>{%- endif -%}
+        <span class="na-price-sale">{{ fv.price | money }}</span>
+      {%- else -%}
+        {%- assign na_bf = fv.price | times: 0.7 | round -%}
+        {%- assign na_orig = fv.compare_at_price -%}{%- if na_orig == blank or na_orig < fv.price -%}{%- assign na_orig = fv.price -%}{%- endif -%}
+        {%- assign na_pct = na_orig | minus: na_bf | times: 100.0 | divided_by: na_orig | round -%}
+        <span class="na-price-sale na-price-sale--bf">{{ na_bf | money_without_trailing_zeros }}</span>
+        {%- if na_orig > na_bf -%}<span class="na-price-compare">{{ na_orig | money_without_trailing_zeros }}</span><span class="na-price-pct">{{ na_pct }}% OFF</span>{%- endif -%}
+      {%- endif -%}
+    </div>
+
+    <div class="na-card-signal-wrap">
+
+      {%- comment -%}
+        Urgency bar preserved for PDP use — do not delete
+        <div class="na-urgency" style="display:none">
+          <span class="na-urgency-dot"></span>
+          <span class="na-urgency-item">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
+            <span class="na-urgency-viewers">--</span><span class="na-urgency-label"> people viewed recently</span>
+          </span>
+        </div>
+      {%- endcomment -%}
+
+      <div class="na-usp na-usp--{{ usp_tier }}{% if usp_key == 'discount' %} na-usp--bf{% endif %}">
+        <span class="na-usp__icon">{{ usp_icon }}</span>
+        {%- if usp_key == 'discount' -%}
+          <span class="na-usp__text">Black Friday</span>
+        {%- elsif usp_key == 'flip' -%}
+          <span class="na-usp__text">{{ cost_p | money_without_trailing_zeros }} → £{{ resale_v | floor }}+</span>
+        {%- elsif usp_key == 'ppp' -%}
+          <span class="na-usp__text">{{ ppp | money_without_trailing_zeros }} per piece</span>
+        {%- elsif usp_key == 'high-demand' -%}
+          <span class="na-usp__text">High Demand</span>
+        {%- elsif usp_key == 'fast-moving' -%}
+          <span class="na-usp__text">Fast-Moving</span>
+        {%- elsif usp_key == 'free-shipping' -%}
+          <span class="na-usp__text">Free UK Shipping</span>
+        {%- elsif usp_key == 'ready' -%}
+          <span class="na-usp__text">In Stock Now</span>
+        {%- elsif usp_key == 'sold-out' -%}
+          <span class="na-usp__text">Back Soon</span>
+        {%- endif -%}
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<script>
+  if (!window.__nawQaInit) {
+    window.__nawQaInit = 1;
+    document.addEventListener('DOMContentLoaded', function () {
+      var LBL = '<span class="naw-qa-l">Quick Add</span><span class="naw-qa-s">Add</span>';
+      new MutationObserver(function (muts) {
+        muts.forEach(function (m) {
+          var el = m.target.nodeType === 3 ? m.target.parentElement : m.target;
+          if (!el || !el.classList || !el.classList.contains('na-atc-btn')) return;
+          if (el.textContent.trim() === 'Quick Add' && !el.querySelector('.naw-qa-l')) el.innerHTML = LBL;
+        });
+      }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    });
+  }
+</script>
