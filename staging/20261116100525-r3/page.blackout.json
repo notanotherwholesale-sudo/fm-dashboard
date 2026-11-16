@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "blackout": {
+      "type": "blackout-landing",
+      "settings": {
+        "deals_collection": "best-sellers",
+        "deals_heading": "Best sellers, going fast",
+        "cta_label": "Shop the sale",
+        "cta_link": "/collections/all-bundles"
+      }
+    }
+  },
+  "order": [
+    "blackout"
+  ]
+}
