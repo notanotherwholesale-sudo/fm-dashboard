@@ -1,0 +1,50 @@
+<div class="bfhero">
+  <div class="bfhero__in">
+    <div class="bfhero__eye"><span class="bfhero__tag">BLACKOUT</span> Biggest sale of the year</div>
+    <h2 class="bfhero__h">Additional <span>30% off</span> everything</h2>
+    <p class="bfhero__sub">Applied automatically at checkout &mdash; no code &mdash; on top of prices already reduced. <b>Free UK shipping</b>. Up to 53% off bales, boxes &amp; branded reseller bundles.</p>
+    <div class="bfhero__cd" data-bfh-end="2026-12-01T23:59:59">
+      <div class="bfhero__u"><b data-d>00</b><span>Days</span></div>
+      <div class="bfhero__u"><b data-h>00</b><span>Hrs</span></div>
+      <div class="bfhero__u"><b data-m>00</b><span>Min</span></div>
+      <div class="bfhero__u"><b data-s>00</b><span>Sec</span></div>
+    </div>
+    <div class="bfhero__cta">
+      <a class="bfhero__btn" href="/collections/all-bundles">Shop the sale</a>
+      <a class="bfhero__link" href="/pages/blackout">All Blackout deals &rarr;</a>
+    </div>
+  </div>
+</div>
+<style>
+.bfhero{background:#0a0a0a;color:#fff;font-family:'Poppins',-apple-system,sans-serif;width:100%;min-height:460px;display:flex;align-items:center;justify-content:center;text-align:center;padding:56px 18px}
+.bfhero *{box-sizing:border-box}
+.bfhero__in{max-width:780px}
+.bfhero__eye{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#CFCDC7}
+.bfhero__tag{font-weight:900;letter-spacing:.14em;font-size:11px;color:#0a0a0a;background:#FF6A00;padding:4px 10px;border-radius:4px}
+.bfhero__h{font-size:clamp(36px,6.5vw,66px);font-weight:800;line-height:1.02;letter-spacing:-.02em;margin:18px 0 0}
+.bfhero__h span{color:#FF6A00}
+.bfhero__sub{color:#B8B4AC;font-size:15.5px;font-weight:400;line-height:1.55;max-width:34em;margin:18px auto 0}
+.bfhero__sub b{color:#fff;font-weight:600}
+.bfhero__cd{display:inline-flex;gap:10px;margin:28px 0 4px;font-variant-numeric:tabular-nums}
+.bfhero__u{background:#161616;border:1px solid #2b2b2b;border-radius:10px;padding:12px 16px;min-width:64px}
+.bfhero__u b{display:block;font-size:28px;font-weight:800;line-height:1;letter-spacing:-.02em}
+.bfhero__u span{display:block;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8a877e;margin-top:7px}
+.bfhero__cta{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:28px;flex-wrap:wrap}
+.bfhero__btn{display:inline-flex;align-items:center;justify-content:center;background:#FF6A00;color:#0a0a0a!important;font-weight:700;font-size:14.5px;letter-spacing:.01em;padding:15px 30px;border-radius:8px;text-decoration:none!important;transition:opacity .15s,transform .12s}
+.bfhero__btn:hover{opacity:.9}.bfhero__btn:active{transform:scale(.98)}
+.bfhero__link{color:#fff!important;font-weight:600;font-size:14px;text-decoration:none!important;border-bottom:1.5px solid #FF6A00;padding-bottom:2px}
+@media(max-width:600px){.bfhero{min-height:400px;padding:44px 16px}.bfhero__cd{gap:7px}.bfhero__u{padding:10px 11px;min-width:0;flex:1}.bfhero__u b{font-size:23px}.bfhero__cta{gap:16px}}
+</style>
+<script>
+(function(){
+  var el=document.querySelector('.bfhero__cd[data-bfh-end]'); if(!el||el.__bfh)return; el.__bfh=1;
+  var end=Date.parse(el.getAttribute('data-bfh-end'))||Date.parse(el.getAttribute('data-bfh-end')+'Z');
+  function pad(n){return (n<10?'0':'')+n;}
+  function t(){
+    var s=Math.max(0,Math.floor((end-Date.now())/1000));
+    var v={d:Math.floor(s/86400),h:Math.floor(s%86400/3600),m:Math.floor(s%3600/60),s:s%60};
+    for(var k in v){var n=el.querySelector('[data-'+k+']'); if(n)n.textContent=pad(v[k]);}
+  }
+  t(); setInterval(t,1000);
+})();
+</script>
