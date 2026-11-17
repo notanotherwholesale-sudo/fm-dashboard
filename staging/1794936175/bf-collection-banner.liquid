@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap">
+<div class="bfcol">
+  <div class="bfcol__in">
+    <span class="bfcol__tag">BLACKOUT &middot; BLACK FRIDAY</span>
+    <h1 class="bfcol__h">UP TO <span>55% OFF</span> EVERYTHING</h1>
+    <p class="bfcol__sub">Our biggest sale of the year. Free UK shipping on every order &mdash; ends Tuesday 1 December.</p>
+  </div>
+</div>
+<style>
+  .bfcol{background:#0A0A0A;color:#fff;font-family:'Poppins',sans-serif;text-align:center;padding:48px 20px 44px;position:relative;overflow:hidden;border-bottom:3px solid #FF6A00}
+  .bfcol::before{content:"";position:absolute;inset:0;background:radial-gradient(62% 130% at 50% -12%, rgba(255,106,0,.24), rgba(255,106,0,0) 70%);pointer-events:none}
+  .bfcol__in{position:relative;z-index:1;max-width:1000px;margin:0 auto}
+  .bfcol__tag{display:inline-block;background:#FF6A00;color:#0A0A0A;font-weight:900;letter-spacing:.14em;font-size:12px;text-transform:uppercase;padding:7px 16px;border-radius:5px;margin-bottom:18px}
+  .bfcol__h{font-weight:900;letter-spacing:-.02em;line-height:1.02;font-size:clamp(32px,6vw,62px);margin:0;text-transform:uppercase;color:#fff}
+  .bfcol__h span{color:#FF6A00}
+  .bfcol__sub{font-weight:600;font-size:clamp(13px,1.6vw,16px);color:#cfccc4;margin:16px auto 0;max-width:640px;line-height:1.5}
+  @media(max-width:600px){.bfcol{padding:34px 16px 30px}.bfcol__tag{font-size:10.5px;letter-spacing:.1em;margin-bottom:14px}.bfcol__h{font-size:clamp(28px,8.5vw,40px)}}
+</style>
+<script>
+(function(){
+  var obs=null,t=null;
+  function grid(){ return document.getElementById('product-grid'); }
+  function reorder(){
+    var g=grid(); if(!g)return;
+    if(obs)obs.disconnect();
+    [].slice.call(g.querySelectorAll('.grid__item')).forEach(function(li){
+      var sold = !!li.querySelector('.na-product-card--sold-out, .na-product-badge--sold-out, .badge--sold-out, .price--sold-out');
+      if(sold) g.appendChild(li);
+    });
+    connect();
+  }
+  function sched(){ clearTimeout(t); t=setTimeout(reorder,150); }
+  function connect(){
+    var c=document.getElementById('ProductGridContainer')||grid(); if(!c)return;
+    if(!obs)obs=new MutationObserver(sched);
+    obs.observe(c,{childList:true,subtree:true});
+  }
+  function arm(){ reorder(); connect(); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm); else arm();
+  document.addEventListener('shopify:section:load',function(){ setTimeout(arm,60); });
+  setTimeout(arm,700);
+})();
+</script>
+{% schema %}
+{
+  "name": "BF Collection Banner",
+  "settings": [],
+  "presets": [{ "name": "BF Collection Banner" }]
+}
+{% endschema %}
