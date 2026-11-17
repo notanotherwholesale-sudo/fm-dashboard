@@ -1,0 +1,111 @@
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement_bar_TpcNJB": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_PmhNDh": {
+          "type": "announcement",
+          "settings": {
+            "text": "OVER 7,000 WEBSITE ORDERS COMPLETED ✓",
+            "link": ""
+          }
+        },
+        "announcement_Lb88wp": {
+          "type": "announcement",
+          "settings": {
+            "text": "TRUSTED BY RESELLERS WORLDWIDE 🌎",
+            "link": ""
+          }
+        },
+        "announcement_QJ8XeX": {
+          "type": "announcement",
+          "settings": {
+            "text": "10+ YEARS IN THE VINTAGE INDUSTRY 🎯",
+            "link": ""
+          }
+        },
+        "announcement_fjxUpr": {
+          "type": "announcement",
+          "settings": {
+            "text": "QUALITY CHECKED IN OUR UK WAREHOUSE 🏭",
+            "link": ""
+          }
+        },
+        "announcement_mhanMx": {
+          "type": "announcement",
+          "settings": {
+            "text": "NEXT-DAY DISPATCH FROM OUR UK FACILITY 📦",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_PmhNDh",
+        "announcement_Lb88wp",
+        "announcement_QJ8XeX",
+        "announcement_fjxUpr",
+        "announcement_mhanMx"
+      ],
+      "disabled": true,
+      "custom_css": [
+        "p {letter-spacing: -0.2px; font-weight: 600;}"
+      ],
+      "settings": {
+        "color_scheme": "accent-1",
+        "show_line_separator": false,
+        "show_social": false,
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "custom_css": [],
+      "settings": {
+        "logo": "shopify://shop_images/logo_transparent_black.png",
+        "logo_width": 300
+      }
+    },
+    "ss_atc_button_4_F4HDRy": {
+      "type": "ss-atc-button-4",
+      "disabled": true,
+      "custom_css": [
+        ".ss-atc-button-style {box-shadow: none !important;}",
+        ".ss-atc-button-style:before {box-shadow: none !important; border-bottom: none !important;}"
+      ],
+      "name": "SS - ATC Button #4",
+      "settings": {
+        "custom_class_selector": "",
+        "first_color": "#000000",
+        "button_hover_color": "#282828",
+        "text_color": "#ffffff",
+        "text_color_hover": "#000000",
+        "border_color": "#000000",
+        "ss-border-width": 1,
+        "ss-font-size": 16,
+        "ss-button_padding": 1
+      }
+    },
+    "d7299fd4-2a9b-4a35-94ae-1ca2ef2803f9": {
+      "type": "custom-liquid",
+      "disabled": false,
+      "custom_css": [],
+      "settings": {
+        "custom_liquid": "<div class=\"bfbar\"><div class=\"bfbar__in\">\n  <span class=\"bfbar__tag\">BLACKOUT</span>\n  <span class=\"bfbar__msg\"><span class=\"bfbar__lead\">Biggest sale of the year &mdash; </span>Up to <b>55% off</b> everything <span class=\"bfbar__dot\">&middot;</span> <b>Free</b> UK shipping</span>\n</div></div>\n<style>\n:root{--bfbar-h:44px}\n.bfbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--bfbar-h);background:#0a0a0a;color:#fff;font-family:'Poppins',sans-serif;border-bottom:1px solid #FF6A00;display:flex;align-items:center;justify-content:center}\n.bfbar *{box-sizing:border-box}\n.bfbar__in{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;max-width:1200px;margin:0 auto;padding:0 16px;text-align:center}\n.bfbar__tag{font-weight:900;letter-spacing:.14em;font-size:11px;color:#0a0a0a;background:#FF6A00;padding:4px 10px;border-radius:4px;white-space:nowrap}\n.bfbar__msg{font-weight:600;font-size:13.5px;letter-spacing:.01em}\n.bfbar__msg b{color:#FF6A00;font-weight:800}\n.bfbar__dot{color:#5a5a5a;margin:0 3px}\n/* push the sticky header + all page content below the fixed bar */\nbody{padding-top:var(--bfbar-h)}\nhtml body header.header-wrapper,\nhtml body .shopify-section-group-header-group .header-wrapper{top:var(--bfbar-h) !important}\n@media(max-width:600px){\n  :root{--bfbar-h:40px}\n  .bfbar__msg{font-size:10.5px;letter-spacing:0;white-space:nowrap}\n  .bfbar__lead{display:none}\n  .bfbar__tag{font-size:9px;padding:3px 7px;letter-spacing:.1em}\n  .bfbar__dot{margin:0 2px}\n  .bfbar__in{gap:7px;padding:0 10px;flex-wrap:nowrap}\n}\n</style>\n",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "d7299fd4-2a9b-4a35-94ae-1ca2ef2803f9",
+    "announcement_bar_TpcNJB",
+    "header",
+    "ss_atc_button_4_F4HDRy"
+  ]
+}
