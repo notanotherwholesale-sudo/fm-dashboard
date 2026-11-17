@@ -1,0 +1,134 @@
+{%- if section.settings.enabled -%}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap">
+<style>
+.nabf-root{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:24px;font-family:'Poppins',sans-serif}
+.nabf-root.is-open{display:flex}
+.nabf-root::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:nabf-fade .28s ease forwards}
+@keyframes nabf-fade{from{opacity:0}to{opacity:1}}
+.nabf{position:relative;z-index:1;background:#0f0f0f;color:#fff;width:100%;max-width:440px;border-radius:16px;padding:40px 36px 30px;text-align:center;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6);animation:nabf-pop .42s cubic-bezier(.16,1,.3,1)}
+@keyframes nabf-pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.nabf__x{position:absolute;top:9px;right:12px;width:34px;height:34px;display:grid;place-items:center;background:none;border:0;color:#8a877e;cursor:pointer;font-size:22px;line-height:1}
+.nabf__x:hover{color:#fff}
+.nabf__logo{display:block;height:24px;width:auto;max-width:180px;margin:2px auto 20px;filter:brightness(0) invert(1);opacity:.95}
+.nabf__eye{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#FF6A00;margin:0 0 12px}
+.nabf__h{font-weight:800;font-size:clamp(26px,5.6vw,34px);line-height:1.05;letter-spacing:-.02em;margin:0;color:#fff}
+.nabf__h b{color:#FF6A00;font-weight:800}
+.nabf__sub{font-size:13.5px;color:#a5a19a;margin:14px 0 22px;line-height:1.5}
+.nabf__form{display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto}
+.nabf__input{width:100%;background:#1a1a1a;border:1px solid #2e2e2e;border-radius:8px;color:#fff;font-family:inherit;font-size:14px;padding:13px 14px;text-align:center}
+.nabf__input::placeholder{color:#6b6b6b}
+.nabf__input:focus{outline:none;border-color:#FF6A00}
+.nabf__input.err{border-color:#e35}
+.nabf__btn{width:100%;background:#FF6A00;color:#0a0a0a;border:0;border-radius:8px;font-family:inherit;font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:14px;cursor:pointer;transition:opacity .15s,transform .12s}
+.nabf__btn:hover{opacity:.9}.nabf__btn:active{transform:scale(.98)}
+.nabf__skip{display:block;margin:14px auto 0;background:none;border:0;color:#7d776b;font-family:inherit;font-size:11.5px;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.nabf__skip:hover{color:#cfcdc7}
+.nabf__legal{font-size:10px;color:#6b6b6b;margin:14px auto 0;max-width:34ch;line-height:1.5}
+@media(max-width:600px){.nabf{max-width:340px;padding:32px 22px 24px}}
+@media(prefers-reduced-motion:reduce){.nabf,.nabf-root::before{animation:none}}
+</style>
+<div class="nabf-root" id="nabfRoot" aria-hidden="true">
+  <div class="nabf" role="dialog" aria-modal="true" aria-labelledby="nabfH">
+    <button class="nabf__x" id="nabfX" aria-label="Close">&times;</button>
+    <img class="nabf__logo" src="https://cdn.shopify.com/s/files/1/0810/4090/0375/files/logo_transparent_black.png?v=1773070899" alt="Not Another Wholesale" width="155" height="24" loading="eager">
+    <span class="nabf__eye">{{ section.settings.eyebrow | escape }}</span>
+    <h2 class="nabf__h" id="nabfH">{{ section.settings.headline }}</h2>
+    <p class="nabf__sub">{{ section.settings.subcopy | escape }}</p>
+    <form class="nabf__form" id="nabfForm" novalidate>
+      <input class="nabf__input" id="nabfEmail" type="email" inputmode="email" autocomplete="email" placeholder="{{ section.settings.placeholder | escape }}" aria-label="Email address">
+      <button class="nabf__btn" type="submit">{{ section.settings.cta | escape }}</button>
+    </form>
+    <button class="nabf__skip" id="nabfSkip" type="button">{{ section.settings.skip | escape }}</button>
+    <p class="nabf__legal">{{ section.settings.legal | escape }}</p>
+  </div>
+</div>
+<script>
+(function(){
+  var CFG={
+    company:{{ section.settings.klaviyo_public_key | json }},
+    list:{{ section.settings.klaviyo_list_id | json }},
+    shop:{{ section.settings.shop_url | default: '/collections/all-bundles' | json }},
+    delay:{{ section.settings.delay | default: 20 }}*1000,
+    cool:{{ section.settings.cooldown_days | default: 1 }},
+    hideLogged:{% if section.settings.hide_for_customers %}true{% else %}false{% endif %},
+    loggedIn:{% if customer %}true{% else %}false{% endif %},
+    editor:{% if request.design_mode %}true{% else %}false{% endif %},
+    startAt:{{ section.settings.start_at | json }},
+    endAt:{{ section.settings.end_at | json }}
+  };
+  var KEY_DONE='nabf_done',KEY_SEEN='nabf_seen';
+  var root=document.getElementById('nabfRoot'); if(!root)return;
+  var form=document.getElementById('nabfForm'), email=document.getElementById('nabfEmail');
+  function rd(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function stw(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function inSchedule(){
+    if(CFG.startAt){var s=new Date(CFG.startAt); if(!isNaN(s)&&Date.now()<s.getTime())return false;}
+    if(CFG.endAt){var e=new Date(CFG.endAt); if(!isNaN(e)&&Date.now()>(e.getTime()+86399000))return false;}
+    return true;
+  }
+  function suppressed(){
+    if(CFG.editor)return false;
+    if(!inSchedule())return true;
+    if(rd(KEY_DONE))return true;
+    if(CFG.hideLogged&&CFG.loggedIn)return true;
+    var seen=parseInt(rd(KEY_SEEN)||'0',10);
+    if(seen&&(Date.now()-seen)<CFG.cool*86400000)return true;
+    if(/\/(checkouts?|orders|account)\b/.test(location.pathname))return true;
+    return false;
+  }
+  function open(){
+    if(root.classList.contains('is-open'))return;
+    root.classList.add('is-open'); root.setAttribute('aria-hidden','false');
+    if(!CFG.editor)stw(KEY_SEEN,String(Date.now()));
+    setTimeout(function(){try{email.focus({preventScroll:true})}catch(e){}},260);
+  }
+  function close(){ root.classList.remove('is-open'); root.setAttribute('aria-hidden','true'); }
+  function subscribe(addr){
+    if(!CFG.company||!CFG.list)return;
+    try{ fetch('https://a.klaviyo.com/client/subscriptions/?company_id='+encodeURIComponent(CFG.company),{method:'POST',headers:{'Content-Type':'application/json','revision':'2024-10-15'},body:JSON.stringify({data:{type:'subscription',attributes:{custom_source:'Black Friday popup',profile:{data:{type:'profile',attributes:{email:addr}}}},relationships:{list:{data:{type:'list',id:CFG.list}}}}})}); }catch(e){}
+    try{ if(window.klaviyo&&typeof klaviyo.identify==='function')klaviyo.identify({'$email':addr}); }catch(e){}
+  }
+  document.getElementById('nabfX').addEventListener('click',function(){ if(!CFG.editor)stw(KEY_DONE,'1'); close(); });
+  document.getElementById('nabfSkip').addEventListener('click',function(){ if(!CFG.editor)stw(KEY_DONE,'1'); close(); });
+  root.addEventListener('click',function(e){ if(e.target===root)close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&root.classList.contains('is-open'))close(); });
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var addr=(email.value||'').trim();
+    var ok=/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(addr);
+    if(addr&&!ok){ email.classList.add('err'); email.focus(); return; }
+    if(addr&&ok)subscribe(addr);
+    if(!CFG.editor)stw(KEY_DONE,'1');
+    window.location.href=CFG.shop;
+  });
+  email.addEventListener('input',function(){ email.classList.remove('err'); });
+  if(CFG.editor)open();
+  else if(!suppressed())setTimeout(open,CFG.delay);
+})();
+</script>
+{%- endif -%}
+{% schema %}
+{
+  "name": "NA Black Friday Popup",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable popup", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Black Friday" },
+    { "type": "html", "id": "headline", "label": "Headline (b = orange)", "default": "<b>Up to 55% off</b> everything" },
+    { "type": "textarea", "id": "subcopy", "label": "Subcopy", "default": "Our biggest sale of the year. Free UK shipping on every order — ends Tuesday 1 December." },
+    { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "you@email.com" },
+    { "type": "text", "id": "cta", "label": "Button (orange)", "default": "Shop now" },
+    { "type": "text", "id": "skip", "label": "Dismiss link", "default": "No thanks, just browsing" },
+    { "type": "url", "id": "shop_url", "label": "Shop button destination", "info": "Defaults to /collections/all-bundles" },
+    { "type": "textarea", "id": "legal", "label": "Small print", "default": "No spam — first dibs on drops & offers. Unsubscribe anytime." },
+    { "type": "header", "content": "Klaviyo" },
+    { "type": "text", "id": "klaviyo_public_key", "label": "Public API key", "default": "SHDKyV" },
+    { "type": "text", "id": "klaviyo_list_id", "label": "List ID", "default": "U9Yr2i" },
+    { "type": "header", "content": "Behaviour" },
+    { "type": "range", "id": "delay", "label": "Show after", "unit": "s", "min": 0, "max": 60, "step": 1, "default": 20 },
+    { "type": "range", "id": "cooldown_days", "label": "Don't show again for", "unit": "d", "min": 1, "max": 30, "step": 1, "default": 1 },
+    { "type": "checkbox", "id": "hide_for_customers", "label": "Hide from logged-in customers", "default": false },
+    { "type": "text", "id": "start_at", "label": "Start (ISO)", "default": "2026-11-20T10:00:00", "info": "Only shows from this moment." },
+    { "type": "text", "id": "end_at", "label": "End (YYYY-MM-DD)", "default": "2026-12-01" }
+  ]
+}
+{% endschema %}
