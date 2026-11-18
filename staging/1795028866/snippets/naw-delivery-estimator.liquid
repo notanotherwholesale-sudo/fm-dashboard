@@ -1,0 +1,146 @@
+{% comment %}
+  NAW FEATURE 4 — Delivery estimator
+  Country picker → concrete delivery window + shipping cost, computed from real
+  dispatch rules (24h dispatch, no weekend dispatch). Defaults to the visitor's
+  market country. Replaces the vague "get it between X–Y" line with something
+  a buyer in Germany or the US can actually trust — international buyers convert
+  poorly when delivery feels uncertain.
+  INSTALL: {% render 'naw-delivery-estimator' %} under the dispatch bar on PDP
+  (custom_liquid block or main-product.liquid).
+  CONFIG: the ZONES map below (label / transit days min-max / cost line). Match
+  these to the real shipping profiles in Settings → Shipping.
+{% endcomment %}
+
+<div class="naw-deliv" data-naw-deliv data-country="{{ localization.country.iso_code | default: 'GB' }}">
+  <div class="naw-deliv__row">
+    <span class="naw-deliv__lbl"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg>Location</span>
+    <span class="naw-deliv__val"><select class="naw-deliv__sel" data-naw-deliv-sel aria-label="Delivery country"></select><span class="naw-deliv__cost" data-naw-deliv-cost></span></span>
+  </div>
+  <div class="naw-deliv__row">
+    <span class="naw-deliv__lbl">Dispatched</span>
+    <span class="naw-deliv__val" data-naw-deliv-disp></span>
+  </div>
+  <div class="naw-deliv__row naw-deliv__row--last">
+    <span class="naw-deliv__lbl">Estimated Delivery</span>
+    <span class="naw-deliv__val" data-naw-deliv-arrive></span>
+  </div>
+  <div class="naw-deliv__cut" data-naw-deliv-cut></div>
+</div>
+
+<style>
+.naw-deliv{margin-top:10px;border:1px solid #E8E8E8;border-radius:10px;padding:5px 14px;background:#fff;font-family:'Poppins',sans-serif}
+.naw-deliv[hidden]{display:none !important}
+.naw-deliv__row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #F2F2F0}
+.naw-deliv__row--last{border-bottom:none}
+.naw-deliv__lbl{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#98948C;white-space:nowrap}
+.naw-deliv__lbl svg{color:#98948C}
+.naw-deliv__val{font-size:13px;font-weight:700;color:#111;text-align:right;line-height:1.35}
+.naw-deliv__sel{border:none;background:transparent;font-family:inherit;font-size:13px !important;font-weight:700;color:#111;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;text-align:right}
+.naw-deliv__cost{font-size:11px;color:#0f7a44;font-weight:600;margin-left:8px;white-space:nowrap}
+.naw-deliv__cost:empty{display:none}
+.naw-deliv__cut{font-size:11px;color:#ED2C24;font-weight:600;padding:7px 0 9px;text-align:center}
+.naw-deliv__cut:empty{display:none}
+@media(max-width:480px){
+  .naw-deliv__val, .naw-deliv__sel{font-size:12.5px !important}
+}
+/* the old dispatch bar is folded into this box */
+.dispatch-bar{display:none !important}
+</style>
+
+<script>
+(function(){
+  if(window.__nawDelivInit)return;window.__nawDelivInit=true;
+  var ZONES={
+    GB:{label:'United Kingdom',min:1,max:2,cost:''},
+    IE:{label:'Ireland',min:2,max:4,cost:'from £9.99'},
+    DE:{label:'Germany',min:2,max:4,cost:'from £12.99'},
+    FR:{label:'France',min:2,max:4,cost:'from £12.99'},
+    NL:{label:'Netherlands',min:2,max:4,cost:'from £12.99'},
+    BE:{label:'Belgium',min:2,max:4,cost:'from £12.99'},
+    ES:{label:'Spain',min:3,max:5,cost:'from £14.99'},
+    IT:{label:'Italy',min:3,max:5,cost:'from £14.99'},
+    PL:{label:'Poland',min:3,max:5,cost:'from £14.99'},
+    US:{label:'United States',min:5,max:8,cost:'from £24.99'},
+    CA:{label:'Canada',min:5,max:9,cost:'from £24.99'},
+    AU:{label:'Australia',min:7,max:12,cost:'from £29.99'}
+  };
+  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function addBusinessDispatch(d){ // 11am cut-off, no weekend dispatch
+    var x=new Date(d.getTime());
+    var weekday=x.getDay()!==0&&x.getDay()!==6;
+    if(!(weekday&&x.getHours()<11))x.setDate(x.getDate()+1);
+    while(x.getDay()===0||x.getDay()===6)x.setDate(x.getDate()+1);
+    return x;
+  }
+  function addTransit(d,n){ // no Sunday deliveries
+    var x=new Date(d.getTime()),added=0;
+    while(added<n){x.setDate(x.getDate()+1);if(x.getDay()!==0)added++;}
+    return x;
+  }
+  function fmt(d){return DAYS[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()];}
+  function stockOk(){
+    var atc=document.querySelector('form[action*="/cart/add"] [type="submit"]');
+    return atc?!atc.disabled:true;
+  }
+  function paint(){
+    var root=document.querySelector('[data-naw-deliv]');if(!root)return;
+    var sel=root.querySelector('[data-naw-deliv-sel]');
+    var dispEl=root.querySelector('[data-naw-deliv-disp]');
+    var arrEl=root.querySelector('[data-naw-deliv-arrive]');
+    var costEl=root.querySelector('[data-naw-deliv-cost]');
+    var cutEl=root.querySelector('[data-naw-deliv-cut]');
+    if(!sel||!dispEl||!arrEl)return;
+    var z=ZONES[sel.value];if(!z)return;
+    var now=new Date();
+    var disp=addBusinessDispatch(now);
+    var a=addTransit(disp,z.min),b=addTransit(disp,z.max);
+    var sameDay=now.getDay()!==0&&now.getDay()!==6&&now.getHours()<11;
+    dispEl.textContent=sameDay?'Today':fmt(disp);
+    arrEl.textContent=fmt(a)+' – '+fmt(b);
+    if(costEl)costEl.textContent=z.cost;
+    if(cutEl){
+      if(sameDay){
+        var mins=(11*60)-(now.getHours()*60+now.getMinutes());
+        cutEl.textContent='Order in the next '+Math.floor(mins/60)+'h '+(mins%60)+'m for same-day dispatch';
+      }else cutEl.textContent='';
+    }
+  }
+  // The theme replaces this whole block of HTML on variant change, so never
+  // hold node references — re-find, refill and repaint against the live DOM.
+  function ensure(){
+    var root=document.querySelector('[data-naw-deliv]');if(!root)return;
+    var sel=root.querySelector('[data-naw-deliv-sel]');
+    if(sel&&!sel.options.length){
+      Object.keys(ZONES).forEach(function(k){
+        var o=document.createElement('option');o.value=k;o.textContent=ZONES[k].label;sel.appendChild(o);
+      });
+      var init=root.getAttribute('data-country');if(ZONES[init])sel.value=init;
+      if(window.__nawDelivCountry&&ZONES[window.__nawDelivCountry])sel.value=window.__nawDelivCountry;
+    }
+    // hidden while the selected variant is out of stock; back the moment it isn't
+    if(stockOk()){root.removeAttribute('hidden');paint();}
+    else root.setAttribute('hidden','');
+  }
+  document.addEventListener('change',function(e){
+    var t=e.target;if(!t||!t.matches)return;
+    if(t.matches('[data-naw-deliv-sel]')){window.__nawDelivCountry=t.value;paint();}
+    else if(t.matches('variant-radios input[type="radio"], variant-selects select')){
+      setTimeout(ensure,80);setTimeout(ensure,450);setTimeout(ensure,1100);
+    }
+  });
+  var moT;
+  var mo=new MutationObserver(function(muts){
+    var external=false;
+    for(var i=0;i<muts.length;i++){
+      var tg=muts[i].target;
+      if(!(tg&&tg.closest&&tg.closest('[data-naw-deliv]'))){external=true;break;}
+    }
+    if(!external)return; // ignore our own repaints
+    clearTimeout(moT);moT=setTimeout(ensure,150);
+  });
+  mo.observe(document.querySelector('[id^="MainProduct-"]')||document.body,{childList:true,subtree:true});
+  ensure();
+  setInterval(paint,60000);
+})();
+</script>
