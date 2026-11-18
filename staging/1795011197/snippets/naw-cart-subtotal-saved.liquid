@@ -1,0 +1,49 @@
+{% comment %}
+  NAW — Cart subtotal "You saved X%" badge.
+  Reads the Kaching cart subtotal (original/compare-at vs final) and injects a
+  live % saved badge next to the SUBTOTAL label. Re-computes on every cart
+  change (add / remove / qty / discount) so it stays accurate.
+  INSTALL: {% render 'naw-cart-subtotal-saved' %} near the cart (next to the
+  shipping-meter render in layout/theme.liquid).
+{% endcomment %}
+<style>
+.kaching-cart__subtotal .naw-saved{display:inline-flex;align-items:center;margin-left:10px;background:#E8F6EE;color:#0F7A44;font-family:'Poppins',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.02em;padding:3px 9px;border-radius:100px;white-space:nowrap;vertical-align:middle}
+</style>
+<script>
+(function(){
+  function money(t){ if(t==null)return 0; var n=parseFloat((''+t).replace(/[^0-9.]/g,'')); return isNaN(n)?0:n; }
+  function recalc(){
+    var sub=document.querySelector('.kaching-cart__subtotal'); if(!sub)return;
+    var origEl=sub.querySelector('.kaching-cart__subtotal-original');
+    var og=origEl?money(origEl.textContent):0;
+    var existing=sub.querySelector('.naw-saved');
+    // parse every £ figure from the subtotal text (the final price is a bare text node, not an element)
+    var text=sub.textContent||'';
+    var ms=text.match(/£\s?[0-9][0-9,]*(?:\.[0-9]+)?/g)||[];
+    var amts=ms.map(money).filter(function(a){ return a>0; });
+    // final = the lowest figure that isn't the struck original (the amount actually payable)
+    var fin=0;
+    amts.forEach(function(a){ if(a!==og && (fin===0||a<fin))fin=a; });
+    if(fin===0)fin=og;
+    if(!(og>fin && og>0)){ if(existing)existing.remove(); return; }
+    var pct=Math.round((og-fin)/og*100);
+    if(pct<=0){ if(existing)existing.remove(); return; }
+    var lab=sub.querySelector('.kaching-cart__subtotal-label')||sub;
+    var badge=existing;
+    if(!badge){ badge=document.createElement('span'); badge.className='naw-saved'; lab.appendChild(badge); }
+    badge.textContent='You saved '+pct+'%';
+  }
+  function arm(){
+    recalc();
+    var cart=document.querySelector('kaching-cart')||document.querySelector('.kaching-cart');
+    if(!cart||cart.__nawSavedObs)return; cart.__nawSavedObs=1;
+    var t=null;
+    new MutationObserver(function(){ clearTimeout(t); t=setTimeout(recalc,120); })
+      .observe(cart,{childList:true,subtree:true,characterData:true});
+  }
+  document.addEventListener('cart:refresh',function(){ setTimeout(recalc,150); });
+  document.addEventListener('cart:build',function(){ setTimeout(recalc,150); });
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arm); else arm();
+  setTimeout(arm,800); setTimeout(recalc,1600);
+})();
+</script>
