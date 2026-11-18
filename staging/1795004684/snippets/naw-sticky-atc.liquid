@@ -1,0 +1,135 @@
+{% comment %}
+  NAW FEATURE 9 — Sticky add-to-cart bar
+  Slim bar slides up from the bottom once the real buy button scrolls out of
+  view: thumbnail, title, price, grade, add button. The premium-store standard
+  (END., SSENSE) and a major mobile converter — the buy action is never more
+  than a thumb away on long product pages.
+  Respects state: hides when the variant is unavailable (restock panel owns that
+  moment), syncs price/grade on variant change, disappears at the footer so it
+  never covers payment icons.
+  Shows a discount badge (original vs current price %) in the thumbnail's top-left
+  corner whenever the variant has a compare-at price above the selling price.
+  INSTALL: {% render 'naw-sticky-atc', product: product %} at the end of
+  sections/main-product.liquid (inside the section).
+{% endcomment %}
+
+{%- assign naw_sv = product.selected_or_first_available_variant -%}
+{%- liquid
+  # grade: variant title if it IS a grade, else variant metafield, else product metafield
+  assign naw_satc_vt = naw_sv.title | strip
+  assign naw_satc_grade = ''
+  if naw_satc_vt == 'A' or naw_satc_vt == 'B' or naw_satc_vt == 'C' or naw_satc_vt == 'A/B' or naw_satc_vt == 'B/C' or naw_satc_vt == 'A/B/C'
+    assign naw_satc_grade = naw_satc_vt
+  elsif naw_sv.metafields.custom.productgrade1 != blank
+    assign naw_satc_grade = naw_sv.metafields.custom.productgrade1.value
+  elsif product.metafields.custom.productgrade != blank
+    assign naw_satc_grade = product.metafields.custom.productgrade.value
+  endif
+  # discount %: original (compare-at) vs current price
+  assign naw_orig = naw_sv.compare_at_price
+  assign naw_pct = 0
+  if naw_orig != blank and naw_orig > naw_sv.price
+    assign naw_pct = naw_orig | minus: naw_sv.price | times: 100.0 | divided_by: naw_orig | round
+  endif
+-%}
+{%- if product.available -%}
+<div class="naw-satc" data-naw-satc data-fallback-grade="{{ naw_satc_grade | escape }}" aria-hidden="true">
+  <div class="naw-satc__imgwrap">
+    <img class="naw-satc__img" src="{{ product.featured_image | image_url: width: 96 }}" width="48" height="48" alt="" loading="lazy">
+    {%- if naw_pct > 0 -%}<span class="naw-satc__badge">{{ naw_pct }}% OFF</span>{%- endif -%}
+  </div>
+  <div class="naw-satc__meta">
+    <div class="naw-satc__title">{{ product.title }}</div>
+    <div class="naw-satc__sub"><span data-naw-satc-price>{{ naw_sv.price | money }}</span><span class="naw-satc__dot">&middot;</span><span data-naw-satc-variant>{%- if naw_satc_grade != blank -%}Grade {{ naw_satc_grade }}{%- elsif naw_sv.title != 'Default Title' -%}{{ naw_sv.title }}{%- endif -%}</span></div>
+  </div>
+  <button type="button" class="naw-satc__btn" data-naw-satc-btn>Add to cart</button>
+</div>
+
+<style>
+.naw-satc{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid #E8E8E8;padding:10px 16px;transform:translateY(110%);transition:transform .35s cubic-bezier(.23,1,.32,1);font-family:'Poppins',sans-serif}
+.naw-satc.is-in{transform:none}
+.naw-satc__img{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #EEE;flex:none}
+.naw-satc__imgwrap{position:relative;flex:none}
+.naw-satc__badge{position:absolute;top:-5px;left:-5px;background:#cc0000;color:#fff;font-weight:800;font-size:8.5px;letter-spacing:.02em;padding:2px 5px;border-radius:4px;line-height:1.2;white-space:nowrap;box-shadow:0 1px 5px rgba(0,0,0,.3)}
+.naw-satc__meta{min-width:0;flex:1}
+.naw-satc__title{font-size:13px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.naw-satc__sub{font-size:12px;color:#6B6B6B;display:flex;gap:6px;align-items:baseline}
+.naw-satc__sub [data-naw-satc-price]{font-weight:700;color:#111}
+.naw-satc__btn{flex:none;background:#111;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:13px 26px;cursor:pointer;transition:transform .12s cubic-bezier(.23,1,.32,1),opacity .15s}
+.naw-satc__btn:hover{opacity:.85}
+.naw-satc__btn:active{transform:scale(.96)}
+.naw-satc__btn.is-added{background:#16A35E}
+@media(min-width:990px){.naw-satc{left:auto;right:24px;bottom:24px;width:430px;border:1px solid #E8E8E8;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.14)}}
+@media (prefers-reduced-motion:reduce){.naw-satc{transition:none}}
+@supports (padding: env(safe-area-inset-bottom)){
+  @media(max-width:989px){.naw-satc{padding-bottom:calc(10px + env(safe-area-inset-bottom))}}
+}
+/* floating widgets (quiz pill, Gorgias chat) glide above the bar while it's in */
+#nawQuizReturn,#chat-button{transition:transform .35s cubic-bezier(.23,1,.32,1)}
+html.naw-satc-open #nawQuizReturn,html.naw-satc-open #chat-button{transform:translateY(-72px)}
+@media(min-width:990px){html.naw-satc-open #nawQuizReturn{transform:translateY(-104px)}html.naw-satc-open #chat-button{transform:none}}
+@media (prefers-reduced-motion:reduce){#nawQuizReturn,#chat-button{transition:none}}
+</style>
+
+<script>
+(function(){
+  var bar=document.querySelector('[data-naw-satc]');if(!bar)return;
+  var btn=bar.querySelector('[data-naw-satc-btn]');
+  var priceEl=bar.querySelector('[data-naw-satc-price]');
+  var varEl=bar.querySelector('[data-naw-satc-variant]');
+  var buyZone=document.querySelector('.product-form__buttons');
+  var footer=document.querySelector('footer, .footer');
+  if(!buyZone)return;
+  var buyVisible=true, footerVisible=false, soldOut=false;
+  function paint(){
+    var show=!buyVisible && !footerVisible && !soldOut;
+    bar.classList.toggle('is-in',show);
+    document.documentElement.classList.toggle('naw-satc-open',show);
+    bar.setAttribute('aria-hidden',show?'false':'true');
+  }
+  new IntersectionObserver(function(en){buyVisible=en[0].isIntersecting;paint();},{rootMargin:'-60px 0px 0px 0px'}).observe(buyZone);
+  if(footer)new IntersectionObserver(function(en){footerVisible=en[0].isIntersecting;paint();}).observe(footer);
+  // stay in sync with variant changes (uses the same settle pattern as the summary)
+  function sync(){
+    var form=document.querySelector('form[action*="/cart/add"]');
+    var idInput=form&&form.querySelector('input[name="id"]');
+    if(!idInput)return;
+    var atc=form.querySelector('[type="submit"]');
+    soldOut=!!(atc&&atc.disabled);
+    var priceSrc=document.querySelector('.price__regular .price-item, .price-item--regular');
+    if(priceSrc&&priceEl)priceEl.textContent=priceSrc.textContent.trim().split(' ')[0];
+    var checked=document.querySelector('variant-radios input[type="radio"]:checked');
+    if(checked&&varEl){
+      var v=(checked.value||'').trim();
+      if(/^[ABC](\/[ABC])?(\/[ABC])?( ?Grade)?$/i.test(v))varEl.textContent='Grade '+v.replace(/ ?grade/i,'').toUpperCase();
+      else if(bar.dataset.fallbackGrade)varEl.textContent='Grade '+bar.dataset.fallbackGrade;
+      else varEl.textContent=v;
+    }
+    paint();
+  }
+  var st;new MutationObserver(function(){clearTimeout(st);st=setTimeout(sync,250);})
+    .observe(document.querySelector('[id^="MainProduct-"]')||document.body,{childList:true,subtree:true});
+  document.addEventListener('change',function(e){
+    if(e.target&&e.target.matches&&e.target.matches('variant-radios input[type="radio"], variant-selects select'))setTimeout(sync,60);
+  });
+  sync();
+  btn.addEventListener('click',function(){
+    var form=document.querySelector('form[action*="/cart/add"]');
+    var idInput=form&&form.querySelector('input[name="id"]');
+    if(!idInput)return;
+    btn.disabled=true;var orig=btn.textContent;btn.textContent='Adding…';
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:idInput.value,quantity:1})})
+      .then(function(r){return r.json();})
+      .then(function(){
+        btn.classList.add('is-added');btn.textContent='Added ✓';
+        fetch('/cart.js').then(function(r){return r.json();}).then(function(c){
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          document.dispatchEvent(new CustomEvent('cart:build',{detail:{cart:c}}));
+        }).catch(function(){});
+        setTimeout(function(){btn.disabled=false;btn.classList.remove('is-added');btn.textContent=orig;},2000);
+      })
+      .catch(function(){btn.textContent='Try again';setTimeout(function(){btn.disabled=false;btn.textContent=orig;},1600);});
+  });
+})();
+</script>
+{%- endif -%}
